@@ -101,12 +101,12 @@ class RFAScenarioManager:
 
                             #Move entity:
                             elif entity_next_state_and_action.move_pos:
-                                    self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
+                                self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
                                                                            entity_next_state_and_action.position_location)
-                                    current_entity.state = entity_next_state_and_action.position
-                                    current_entity.target_location = entity_next_state_and_action.position_location
-                                    current_entity.target_location_id = entity_next_state_and_action.position_location_id
-                                    logging.debug("Squad started to move to Attack position: " + str(current_entity.face))
+                                current_entity.state = entity_next_state_and_action.position
+                                current_entity.target_location = entity_next_state_and_action.position_location
+                                current_entity.target_location_id = entity_next_state_and_action.position_location_id
+                                logging.debug("Squad started to move to Attack position: " + str(current_entity.face))
                             #Locate at position:
                             elif entity_next_state_and_action.nextPosture == 'get_in_position':
                                     for j in range(len(self.entity_list)):
