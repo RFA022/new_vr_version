@@ -1,0 +1,69 @@
+2022-05-22 08:04:49,286 [INFO] Initializing RFSM 
+2022-05-22 08:04:49,471 [DEBUG] Communicator is initialized
+2022-05-22 08:04:49,471 [DEBUG] running in vrf mode
+2022-05-22 08:04:49,471 [DEBUG] RFSMManager is initialized
+2022-05-22 08:04:49,471 [INFO] RFSM initialized
+2022-05-22 08:04:49,471 [DEBUG] SpawnManager is initialized
+2022-05-22 08:04:49,471 [DEBUG] area compound AD area of interest X
+2022-05-22 08:04:49,472 [DEBUG] create 4 red forces and 3 civilians in area A
+2022-05-22 08:04:49,472 [DEBUG] create 6 red forces and 3 civilians in area D
+2022-05-22 08:04:49,472 [DEBUG] create 1 long anti tank and 1 civilians in area X
+2022-05-22 08:04:49,472 [DEBUG] start create entity
+2022-05-22 08:04:49,485 [DEBUG] start create civilians
+2022-05-22 08:05:07,587 [DEBUG] Create Entities
+2022-05-22 08:05:07,589 [DEBUG] Send compound
+2022-05-22 08:05:07,589 [DEBUG] Get Forces local 
+2022-05-22 08:05:19,469 [DEBUG] enemy_is_detected
+2022-05-22 08:05:19,469 [DEBUG] current weopon AIRPLATFORMS doesn't match platform GROUNDPLATFORM
+2022-05-22 08:05:19,476 [DEBUG] current position 97 move to state type Cover entity type name SOLDIER7
+2022-05-22 08:05:19,479 [DEBUG] Position found 115
+2022-05-22 08:05:19,479 [DEBUG] case 4 SOLDIER7 entity detected enemy LAV 1 run to cover event!
+2022-05-22 08:05:19,479 [DEBUG] move entity: SOLDIER7 to MOVE_TO_COVER to location 115
+2022-05-22 08:05:19,488 [DEBUG] enemy_is_detected
+2022-05-22 08:05:19,488 [DEBUG] case 4 LONG_RA18 entity detected enemy LAV 1 fire event!
+2022-05-22 08:05:19,489 [DEBUG] fire event with entity: LONG_RA18 to: LAV 1
+2022-05-22 08:05:20,534 [DEBUG] enemy_is_detected
+2022-05-22 08:05:20,535 [DEBUG] case 4 LONG_RA18 entity detected enemy LAV 1 fire event!
+2022-05-22 08:05:20,535 [DEBUG] fire event with entity: LONG_RA18 to: LAV 1
+2022-05-22 08:05:21,574 [DEBUG] enemy_is_detected
+2022-05-22 08:05:21,581 [DEBUG] current position 244 move to state type Cover entity type name LONG_RA18
+2022-05-22 08:05:21,583 [DEBUG] Position found 257
+2022-05-22 08:05:21,584 [DEBUG] case 4 LONG_RA18 entity detected enemy LAV 1 run to cover event!
+2022-05-22 08:05:21,584 [DEBUG] move entity: LONG_RA18 to MOVE_TO_COVER to location 257
+2022-05-22 08:05:23,651 [DEBUG] case 2 SOLDIER7 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 08:05:23,651 [DEBUG] entity: SOLDIER7 changed state to AT_COVER arrived to location 115
+2022-05-22 08:05:49,571 [DEBUG] change op location -> time_difference = 30.085319995880127 rand_time = 30.025857550195436 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 08:05:49,576 [DEBUG] current position 80 move to state type Civil entity type name CIVILIA14
+2022-05-22 08:05:49,576 [DEBUG] Position found 26
+2022-05-22 08:05:49,576 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA14
+2022-05-22 08:05:49,577 [DEBUG] move entity: CIVILIA14 to MOVE_TO_OP to location 26
+2022-05-22 08:05:50,621 [DEBUG] change op location -> time_difference = 31.13478660583496 rand_time = 30.72819243381987 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 08:05:50,630 [DEBUG] current position 242 move to state type Civil entity type name CIVILIA17
+2022-05-22 08:05:50,632 [DEBUG] Position found 278
+2022-05-22 08:05:50,633 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA17
+2022-05-22 08:05:50,633 [DEBUG] move entity: CIVILIA17 to MOVE_TO_OP to location 278
+2022-05-22 08:05:51,678 [DEBUG] change op location -> time_difference = 32.194507360458374 rand_time = 31.956604868728505 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 08:05:51,686 [DEBUG] current position 2 move to state type Civil entity type name CIVILIA11
+2022-05-22 08:05:51,690 [DEBUG] Position found 197
+2022-05-22 08:05:51,690 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA11
+2022-05-22 08:05:51,690 [DEBUG] move entity: CIVILIA11 to MOVE_TO_OP to location 197
+2022-05-22 08:05:51,691 [DEBUG] change op location -> time_difference = 32.206475496292114 rand_time = 32.078885984241815 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 08:05:51,693 [DEBUG] current position 76 move to state type Civil entity type name CIVILIA12
+2022-05-22 08:05:51,694 [DEBUG] Position found 105
+2022-05-22 08:05:51,694 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA12
+2022-05-22 08:05:51,694 [DEBUG] move entity: CIVILIA12 to MOVE_TO_OP to location 105
+2022-05-22 08:05:52,733 [DEBUG] change op location -> time_difference = 33.247194051742554 rand_time = 31.522238740050444 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 08:05:52,739 [DEBUG] current position 193 move to state type Civil entity type name CIVILIA15
+2022-05-22 08:05:52,744 [DEBUG] Position found 203
+2022-05-22 08:05:52,745 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA15
+2022-05-22 08:05:52,745 [DEBUG] move entity: CIVILIA15 to MOVE_TO_OP to location 203
+2022-05-22 08:05:53,774 [DEBUG] change op location -> time_difference = 34.28830599784851 rand_time = 32.8136703136376 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 08:05:53,779 [DEBUG] current position 39 move to state type Civil entity type name CIVILIA13
+2022-05-22 08:05:53,780 [DEBUG] Position found 186
+2022-05-22 08:05:53,780 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA13
+2022-05-22 08:05:53,780 [DEBUG] move entity: CIVILIA13 to MOVE_TO_OP to location 186
+2022-05-22 08:05:53,781 [DEBUG] change op location -> time_difference = 34.29528498649597 rand_time = 31.88033768014423 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 08:05:53,784 [DEBUG] current position 201 move to state type Civil entity type name CIVILIA16
+2022-05-22 08:05:53,784 [DEBUG] Position found 101
+2022-05-22 08:05:53,784 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA16
+2022-05-22 08:05:53,784 [DEBUG] move entity: CIVILIA16 to MOVE_TO_OP to location 101

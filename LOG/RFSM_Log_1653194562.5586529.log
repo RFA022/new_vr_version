@@ -1,0 +1,72 @@
+2022-05-22 07:42:42,568 [INFO] Initializing RFSM 
+2022-05-22 07:42:42,755 [DEBUG] Communicator is initialized
+2022-05-22 07:42:42,756 [DEBUG] running in vrf mode
+2022-05-22 07:42:42,756 [DEBUG] RFSMManager is initialized
+2022-05-22 07:42:42,756 [INFO] RFSM initialized
+2022-05-22 07:42:42,757 [DEBUG] SpawnManager is initialized
+2022-05-22 07:42:42,758 [DEBUG] area compound AF area of interest X
+2022-05-22 07:42:42,758 [DEBUG] create 5 red forces and 3 civilians in area A
+2022-05-22 07:42:42,758 [DEBUG] create 5 red forces and 3 civilians in area F
+2022-05-22 07:42:42,758 [DEBUG] create 1 long anti tank and 1 civilians in area X
+2022-05-22 07:42:42,758 [DEBUG] start create entity
+2022-05-22 07:42:42,762 [DEBUG] start create civilians
+2022-05-22 07:43:00,862 [DEBUG] Create Entities
+2022-05-22 07:43:00,864 [DEBUG] Send compound
+2022-05-22 07:43:00,864 [DEBUG] Get Forces local 
+2022-05-22 07:43:22,614 [DEBUG] enemy_is_detected
+2022-05-22 07:43:22,615 [DEBUG] current weopon AIRPLATFORMS doesn't match platform GROUNDPLATFORM
+2022-05-22 07:43:22,624 [DEBUG] current position 92 move to state type Cover entity type name SNIPER9
+2022-05-22 07:43:22,632 [DEBUG] Position found 108
+2022-05-22 07:43:22,632 [DEBUG] case 4 SNIPER9 entity detected enemy LAV 1 run to cover event!
+2022-05-22 07:43:22,632 [DEBUG] move entity: SNIPER9 to MOVE_TO_COVER to location 108
+2022-05-22 07:43:22,639 [DEBUG] enemy_is_detected
+2022-05-22 07:43:22,639 [DEBUG] case 4 LONG_RA18 entity detected enemy LAV 1 fire event!
+2022-05-22 07:43:22,639 [DEBUG] fire event with entity: LONG_RA18 to: LAV 1
+2022-05-22 07:43:23,669 [DEBUG] entity is under fire
+2022-05-22 07:43:23,669 [DEBUG] case 3 SNIPER3 entity under fire  there is no los, go to cover!
+2022-05-22 07:43:23,678 [DEBUG] current position 41 move to state type Cover entity type name SNIPER3
+2022-05-22 07:43:23,684 [DEBUG] Position found 91
+2022-05-22 07:43:23,685 [DEBUG] move entity: SNIPER3 to MOVE_TO_COVER to location 91
+2022-05-22 07:43:23,688 [DEBUG] entity is under fire
+2022-05-22 07:43:23,689 [DEBUG] case 3 OBSERVE4 entity under fire  there is no los, go to cover!
+2022-05-22 07:43:23,691 [DEBUG] current position 40 move to state type Cover entity type name OBSERVE4
+2022-05-22 07:43:23,695 [DEBUG] Position found 63
+2022-05-22 07:43:23,695 [DEBUG] move entity: OBSERVE4 to MOVE_TO_COVER to location 63
+2022-05-22 07:43:23,696 [DEBUG] entity is under fire
+2022-05-22 07:43:23,696 [DEBUG] case 3 SOLDIER5 entity under fire  there is no los, go to cover!
+2022-05-22 07:43:23,699 [DEBUG] current position 37 move to state type Cover entity type name SOLDIER5
+2022-05-22 07:43:23,701 [DEBUG] Position found 58
+2022-05-22 07:43:23,702 [DEBUG] move entity: SOLDIER5 to MOVE_TO_COVER to location 58
+2022-05-22 07:43:23,702 [DEBUG] entity is under fire
+2022-05-22 07:43:23,702 [DEBUG] case 3 SOLDIER6 entity under fire  there is no los, go to cover!
+2022-05-22 07:43:23,705 [DEBUG] current position 80 move to state type Cover entity type name SOLDIER6
+2022-05-22 07:43:23,710 [DEBUG] Position found 85
+2022-05-22 07:43:23,710 [DEBUG] move entity: SOLDIER6 to MOVE_TO_COVER to location 85
+2022-05-22 07:43:23,712 [DEBUG] entity is under fire
+2022-05-22 07:43:23,712 [DEBUG] case 3 SOLDIER7 entity under fire  there is no los, go to cover!
+2022-05-22 07:43:23,714 [DEBUG] current position 101 move to state type Cover entity type name SOLDIER7
+2022-05-22 07:43:23,716 [DEBUG] Position found 105
+2022-05-22 07:43:23,717 [DEBUG] move entity: SOLDIER7 to MOVE_TO_COVER to location 105
+2022-05-22 07:43:23,718 [DEBUG] entity is under fire
+2022-05-22 07:43:23,726 [DEBUG] case 3 SOLDIER8 entity under fire  there is no los, go to cover!
+2022-05-22 07:43:23,729 [DEBUG] current position 120 move to state type Cover entity type name SOLDIER8
+2022-05-22 07:43:23,741 [DEBUG] Position found 199
+2022-05-22 07:43:23,741 [DEBUG] move entity: SOLDIER8 to MOVE_TO_COVER to location 199
+2022-05-22 07:43:23,748 [DEBUG] enemy_is_detected
+2022-05-22 07:43:23,748 [DEBUG] case 4 LONG_RA18 entity detected enemy LAV 1 fire event!
+2022-05-22 07:43:23,749 [DEBUG] fire event with entity: LONG_RA18 to: LAV 1
+2022-05-22 07:43:24,784 [DEBUG] enemy_is_detected
+2022-05-22 07:43:24,792 [DEBUG] current position 244 move to state type Cover entity type name LONG_RA18
+2022-05-22 07:43:24,801 [DEBUG] Position found 254
+2022-05-22 07:43:24,801 [DEBUG] case 4 LONG_RA18 entity detected enemy LAV 1 run to cover event!
+2022-05-22 07:43:24,801 [DEBUG] move entity: LONG_RA18 to MOVE_TO_COVER to location 254
+2022-05-22 07:43:28,937 [DEBUG] case 2 SOLDIER7 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 07:43:28,937 [DEBUG] entity: SOLDIER7 changed state to AT_COVER arrived to location 105
+2022-05-22 07:43:29,957 [DEBUG] case 2 OBSERVE4 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 07:43:29,957 [DEBUG] entity: OBSERVE4 changed state to AT_COVER arrived to location 63
+2022-05-22 07:43:30,985 [DEBUG] case 2 SOLDIER6 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 07:43:30,985 [DEBUG] entity: SOLDIER6 changed state to AT_COVER arrived to location 85
+2022-05-22 07:43:34,054 [DEBUG] case 2 SNIPER9 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 07:43:34,055 [DEBUG] entity: SNIPER9 changed state to AT_COVER arrived to location 108
+2022-05-22 07:43:35,086 [DEBUG] case 2 SOLDIER5 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 07:43:35,087 [DEBUG] entity: SOLDIER5 changed state to AT_COVER arrived to location 58

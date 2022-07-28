@@ -1,0 +1,22 @@
+2022-07-28 09:49:28,639 [INFO] Initializing RFSM 
+2022-07-28 09:49:29,103 [DEBUG] Communicator is initialized
+2022-07-28 09:49:29,103 [DEBUG] Running in vrf mode
+2022-07-28 09:49:29,103 [DEBUG] RFAScenarioManagerConstructor executed successfully
+2022-07-28 09:49:29,104 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-28 09:49:29,606 [DEBUG] Get Forces local 
+2022-07-28 09:49:44,867 [DEBUG] Next Primitive Action: Change next destination to Attack Position: 54
+2022-07-28 09:49:44,867 [DEBUG] Next destination has been changed to: 54
+2022-07-28 09:49:45,370 [DEBUG] Next Primitive Task: move to Attack position number:  54
+2022-07-28 09:49:45,370 [DEBUG] Squad started to move to Attack position: 54
+2022-07-28 09:50:51,178 [DEBUG] case 2 at_1 Entity arrived to locaionAT_OP movement task completed
+2022-07-28 09:50:51,179 [DEBUG] entity: at_1 changed state to AT_OP arrived to location 
+2022-07-28 09:50:51,681 [DEBUG] Next Primitive Task: locate in position
+2022-07-28 09:50:52,682 [DEBUG] Squad member at_1is locating in Attack position:  54
+2022-07-28 09:50:53,683 [DEBUG] Squad member ob_1is locating in Attack position:  54
+2022-07-28 09:50:54,684 [DEBUG] Squad member so_1is locating in Attack position:  54
+2022-07-28 09:50:55,685 [DEBUG] Squad member so_2is locating in Attack position:  54
+2022-07-28 09:50:56,187 [DEBUG] Next Primitive Task: scan for enemy 
+2022-07-28 09:50:56,188 [DEBUG] Squad is scanning for enemies from Attack position: 54
+2022-07-28 09:50:56,189 [DEBUG] Enemy: DJI 2 has been detected
+2022-07-28 09:50:56,189 [DEBUG] Enemy: LAV_1 has been detected
+2022-07-28 09:50:56,190 [DEBUG] Enemy: DJI 1 has been detected

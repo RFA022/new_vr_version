@@ -1,0 +1,53 @@
+2022-06-15 11:04:22,422 [INFO] Initializing RFSM 
+2022-06-15 11:04:22,628 [DEBUG] Communicator is initialized
+2022-06-15 11:04:22,628 [DEBUG] running in vrf mode
+2022-06-15 11:04:22,628 [DEBUG] RFSMManager is initialized
+2022-06-15 11:04:22,628 [INFO] RFSM initialized
+2022-06-15 11:04:23,656 [DEBUG] enemy_is_detected
+2022-06-15 11:04:23,657 [DEBUG] current weapon range is too small
+2022-06-15 11:04:23,666 [DEBUG] current position -1 move to state type Cover entity type name OBSERVE9
+2022-06-15 11:04:23,692 [DEBUG] current location is not set yet
+2022-06-15 11:04:23,692 [DEBUG] Position found 198
+2022-06-15 11:04:23,692 [DEBUG] case 4 OBSERVE9 entity detected enemy IVECO_LMV 1 run to cover event!
+2022-06-15 11:04:23,701 [DEBUG] move entity: OBSERVE9 to MOVE_TO_COVER to location 198
+2022-06-15 11:04:23,706 [DEBUG] enemy_is_detected
+2022-06-15 11:04:23,706 [DEBUG] current weapon range is too small
+2022-06-15 11:04:23,712 [DEBUG] current position -1 move to state type Cover entity type name OBSERVE10
+2022-06-15 11:04:23,761 [DEBUG] Didn't find position to move to. Stay at current position
+2022-06-15 11:04:23,761 [DEBUG] case 4 OBSERVE10 entity detected enemy IVECO_LMV 1 run to cover event!
+2022-06-15 11:04:24,791 [DEBUG] Task completed, didn't arrive to location, unwanted situation
+2022-06-15 11:04:24,796 [DEBUG] enemy_is_detected
+2022-06-15 11:04:24,796 [DEBUG] current weapon range is too small
+2022-06-15 11:04:24,805 [DEBUG] current position -1 move to state type Cover entity type name OBSERVE10
+2022-06-15 11:04:24,864 [DEBUG] Didn't find position to move to. Stay at current position
+2022-06-15 11:04:24,864 [DEBUG] case 4 OBSERVE10 entity detected enemy IVECO_LMV 1 run to cover event!
+2022-06-15 11:04:25,898 [DEBUG] Task completed, didn't arrive to location, unwanted situation
+2022-06-15 11:04:25,902 [DEBUG] enemy_is_detected
+2022-06-15 11:04:25,903 [DEBUG] current weapon range is too small
+2022-06-15 11:04:25,911 [DEBUG] current position -1 move to state type Cover entity type name OBSERVE10
+2022-06-15 11:04:25,968 [DEBUG] Didn't find position to move to. Stay at current position
+2022-06-15 11:04:25,968 [DEBUG] case 4 OBSERVE10 entity detected enemy DJI 1 run to cover event!
+2022-06-15 11:04:26,997 [DEBUG] Task completed, didn't arrive to location, unwanted situation
+2022-06-15 11:04:27,001 [DEBUG] enemy_is_detected
+2022-06-15 11:04:27,001 [DEBUG] current weapon range is too small
+2022-06-15 11:04:27,011 [DEBUG] current position -1 move to state type Cover entity type name OBSERVE10
+2022-06-15 11:04:27,077 [DEBUG] Didn't find position to move to. Stay at current position
+2022-06-15 11:04:27,077 [DEBUG] case 4 OBSERVE10 entity detected enemy IVECO_LMV 1 run to cover event!
+2022-06-15 11:04:28,099 [DEBUG] Task completed, didn't arrive to location, unwanted situation
+2022-06-15 11:04:28,102 [DEBUG] enemy_is_detected
+2022-06-15 11:04:28,104 [DEBUG] current weapon range is too small
+2022-06-15 11:04:28,112 [DEBUG] current position -1 move to state type Cover entity type name OBSERVE10
+2022-06-15 11:04:28,174 [DEBUG] Didn't find position to move to. Stay at current position
+2022-06-15 11:04:28,174 [DEBUG] case 4 OBSERVE10 entity detected enemy IVECO_LMV 1 run to cover event!
+2022-06-15 11:04:29,201 [DEBUG] Task completed, didn't arrive to location, unwanted situation
+2022-06-15 11:04:29,206 [DEBUG] enemy_is_detected
+2022-06-15 11:04:29,206 [DEBUG] current weapon range is too small
+2022-06-15 11:04:29,214 [DEBUG] current position -1 move to state type Cover entity type name OBSERVE10
+2022-06-15 11:04:29,270 [DEBUG] Didn't find position to move to. Stay at current position
+2022-06-15 11:04:29,270 [DEBUG] case 4 OBSERVE10 entity detected enemy DJI 1 run to cover event!
+2022-06-15 11:04:30,291 [DEBUG] Task completed, didn't arrive to location, unwanted situation
+2022-06-15 11:04:30,295 [DEBUG] enemy_is_detected
+2022-06-15 11:04:30,296 [DEBUG] current weapon range is too small
+2022-06-15 11:04:30,304 [DEBUG] current position -1 move to state type Cover entity type name OBSERVE10
+2022-06-15 11:04:30,362 [DEBUG] Didn't find position to move to. Stay at current position
+2022-06-15 11:04:30,362 [DEBUG] case 4 OBSERVE10 entity detected enemy IVECO_LMV 1 run to cover event!

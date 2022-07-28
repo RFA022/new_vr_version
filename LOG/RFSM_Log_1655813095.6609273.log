@@ -1,0 +1,7 @@
+2022-06-21 15:04:55,660 [INFO] Initializing RFSM 
+2022-06-21 15:04:55,839 [DEBUG] Communicator is initialized
+2022-06-21 15:04:55,839 [DEBUG] running in vrf mode
+2022-06-21 15:04:55,839 [DEBUG] RFSMManager is initialized
+2022-06-21 15:04:55,839 [INFO] RFSM initialized
+2022-06-21 15:04:55,839 [DEBUG] SpawnManager is initialized
+2022-06-21 15:04:55,840 [DEBUG] area compound AD area of interest X

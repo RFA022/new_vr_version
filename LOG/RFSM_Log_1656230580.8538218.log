@@ -1,0 +1,8 @@
+2022-06-26 11:03:00,854 [INFO] Initializing RFSM 
+2022-06-26 11:03:01,032 [DEBUG] Communicator is initialized
+2022-06-26 11:03:01,032 [DEBUG] running in vrf mode
+2022-06-26 11:03:01,033 [DEBUG] RFSMManager is initialized
+2022-06-26 11:03:01,033 [INFO] RFSM initialized
+2022-06-26 11:03:02,034 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:03:03,035 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:03:03,036 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999

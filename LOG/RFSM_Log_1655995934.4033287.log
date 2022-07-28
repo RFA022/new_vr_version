@@ -1,0 +1,12 @@
+2022-06-23 17:52:14,403 [INFO] Initializing RFSM 
+2022-06-23 17:52:14,596 [DEBUG] Communicator is initialized
+2022-06-23 17:52:14,596 [DEBUG] running in vrf mode
+2022-06-23 17:52:14,596 [DEBUG] RFSMManager is initialized
+2022-06-23 17:52:14,596 [INFO] RFSM initialized
+2022-06-23 17:52:14,597 [DEBUG] SpawnManager_Nadav is initialized
+2022-06-23 17:52:16,598 [DEBUG] Get Forces local 
+2022-06-23 17:52:24,244 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-23 17:52:25,244 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-23 17:52:25,245 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-23 17:52:32,186 [DEBUG] SpawnManager_Nadav is initialized
+2022-06-23 17:52:34,189 [DEBUG] Get Forces local 

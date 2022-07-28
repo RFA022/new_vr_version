@@ -1,0 +1,11 @@
+2022-07-26 11:33:02,396 [INFO] Initializing RFSM 
+2022-07-26 11:33:02,850 [DEBUG] Communicator is initialized
+2022-07-26 11:33:02,851 [DEBUG] running in vrf mode
+2022-07-26 11:33:02,851 [DEBUG] RFAScenarioManager is initialized
+2022-07-26 11:33:02,851 [INFO] RFSM initialized
+2022-07-26 11:33:02,851 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-26 11:33:03,352 [DEBUG] Get Forces local 
+2022-07-26 11:33:11,108 [DEBUG] Initiating :Choose position:at_1
+2022-07-26 11:33:11,609 [DEBUG] Initiating: move to location40
+2022-07-26 11:33:11,610 [DEBUG] move entity: at_1 to MOVE_TO_OP to location -1
+2022-07-26 11:33:12,111 [DEBUG] Task completed, didn't arrive to location, unwanted situation

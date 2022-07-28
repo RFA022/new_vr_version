@@ -1,0 +1,1878 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<types xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://community.rti.com/schema/6.0.1/rti_dds_topic_types.xsd">
+
+	<!--version 1.6-->
+	<module name="gw_dds_types">
+
+		<struct name= "LLAPointType" nested="true">
+			<!-- Units: Degrees-->
+			<member name="latitude" type="float64" min="-90.0" max="90.0"/>
+			<!-- Units: Degrees-->
+			<member name="longitude" type="float64" min="-180.0" max="180.0"/>
+			<!-- Units: Meter, Above sea-level altitude-->
+			<member name="altitude" type="float64"/>
+		</struct>
+
+		<typedef name="Area" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+
+		<struct name ="PolarType" nested="true">
+			<!--Units: Degrees-->
+			<member name="azimuth" type="float64" min="0" max="360.0"/>
+			<!--Units: Degrees-->
+			<member name="elevation" type="float64" min="-90.0" max="90.0"/>
+		</struct>
+
+		<struct name="UTCTime">
+			<member name="seconds" type="int64"/>
+			<member name="nanoseconds" type="int32"/>
+		</struct>
+
+		<enum name="AimSensorEnum">
+			<enumerator name="RELATIVE_POLAR"/>
+			<enumerator name="LLA"/>
+			<enumerator name="POLYGON"/>
+			<enumerator name="TARGET"/>
+			<enumerator name="ABSOLUTE_POLAR"/>
+			<enumerator name="PERIMETER_SCAN"/>
+		</enum>
+
+		<enum name="PoleHeightType">
+			<enumerator name="FULL_OPEN"/>
+			<enumerator name="HALF_HEIGHT"/>
+			<enumerator name="CLOSED"/>
+		</enum>
+
+		<enum name="initiatingAgentEnumType">
+			<enumerator name="ARMY_C4I"/>
+			<enumerator name="TIFUL"/>
+			<enumerator name="AWARENESS"/>
+			<enumerator name="OTHER"/>
+		</enum>
+
+		<enum name="sensorControllerEnumType">
+			<enumerator name="AWARENESS"/>
+			<enumerator name="PIKUD"/>
+			<enumerator name="TIFUL"/>
+		</enum>
+
+		<typedef name="LLAPointVec" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+		<typedef name="distanceVector" sequenceMaxLength="-1" type="float64"/>
+		<typedef name="HeightVector" sequenceMaxLength="-1" type="float64"/>
+		<typedef name="distanceMatrix" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::distanceVector"/>
+		<typedef name="boolVec" sequenceMaxLength="-1" type="boolean"/>
+		<typedef name="identifier" type="uint32" min="0"/>
+		<typedef name="timeToMakeTick" type="float64"/>
+		<typedef name="CounterMaxSize" type="unsignedLongLong"/>
+		<const name="session_type_WIRED" type="string" value="&quot;WIRED&quot;"/>
+		<const name="session_type_CALL" type="string" value="&quot;CALL&quot;"/>
+
+
+		<union name="AimType">
+			<discriminator type="nonBasic" nonBasicTypeName="gw_dds_types::AimSensorEnum"/>
+			<case>
+				<caseDiscriminator value="(RELATIVE_POLAR)"/>
+				<!--relative to the entity-->
+				<member name="relativePolar" type="nonBasic" nonBasicTypeName="gw_dds_types::PolarType"/>
+			</case>
+			<case>
+				<caseDiscriminator value="(LLA)"/>
+				<member name="LLA" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+			</case>
+			<case>
+				<caseDiscriminator value="(POLYGON)"/>
+				<member name="POLYGON" type="nonBasic" nonBasicTypeName="gw_dds_types::Area"/>
+			</case>
+			<case>
+				<caseDiscriminator value="(TARGET)"/>
+				<member name="TARGET" stringMaxLength="-1" type="string"/>
+			</case>
+			<case>
+				<caseDiscriminator value="(ABSOLUTE_POLAR)"/>
+				<member name="ABSOLUTE_POLAR"  type="nonBasic" nonBasicTypeName="gw_dds_types::PolarType"/>
+			</case>
+			<case>
+				<caseDiscriminator value="(PERIMETER_SCAN)"/>
+				<member name="PERIMETER_SCAN" type="float64"/>
+			</case>
+		</union>
+
+		<struct name="IntersectPointRequest">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="srcPos" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+			<member name="destPos" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+		</struct>
+
+		<struct name="IntersectPointResponse">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="intersectPos" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+		</struct>
+
+		<!--Monitor the engine ticks  Trigger: Upon engine tick -->
+		<struct name= "TickCounter" extensibility= "mutable">
+			<member name="tickCounter" type="nonBasic" nonBasicTypeName="CounterMaxSize"/>
+			<!--in seconds-->
+			<member name="timeToMakeTick" type="nonBasic" nonBasicTypeName="timeToMakeTick"/>
+		</struct>
+
+		<enum name="PurposeEnum">
+			<enumerator name="NA" value="0"/>
+			<enumerator name="DETECTION" value="1"/>
+			<enumerator name="CLASSIFICATION" value="2"/>
+			<enumerator name="IDENTIFICATION" value="3"/>
+			<enumerator name="TRACKING" value="4"/>
+		</enum>
+
+		<enum name="RequestType">
+			<enumerator name="MANDATORY" value="0"/>
+			<enumerator name="BEST_EFFORTS" value="1"/>
+		</enum>
+
+    <enum name="SensorDesignationTypeEnum">
+      <enumerator name="OBSERVATION" value="0"/>
+      <enumerator name="INVESTIGATION" value="1"/>
+    </enum>
+    
+		<typedef name="coveragePercentage" type="float64" min="0" max="100"/>
+
+		<!--Designate a gimbaled sensor to specific location   Trigger: Upon demand -->
+		<struct name= "AreaOfInterest" extensibility= "mutable">
+			<member name="aoi" type="nonBasic" nonBasicTypeName="gw_dds_types::Area"/>
+			<member name="requiredCoverage" type="nonBasic" nonBasicTypeName="coveragePercentage"/>
+		</struct>
+
+		<struct name="ReleaseSensorAllocationType">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<!--id of the sensor on the entity-->
+			<member name="sensorId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier" key="true"/>
+			<!--id of the entity-->
+			<member name="unitName" type="string" stringMaxLength="-1" key="true"/>
+			<!--name of the requester-->
+			<member name="requesterName" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<!--Designate a gimbaled sensor to specific location   Trigger: Upon demand -->
+		<struct name= "SensorDesignationRequest" extensibility= "mutable">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier" key="true"/>
+			<!--id of the sensor on the entity-->
+			<member name="sensorId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier" key="true"/>
+			<!--name of the entity-->
+			<member name="unit_name" type="string" stringMaxLength="-1" key="true"/>
+			<!--name of the requester-->
+			<member name="requesterName" stringMaxLength="-1" type="string"/>
+			<member name="subSystemAction" type="nonBasic" nonBasicTypeName="SensorDesignationTypeEnum"/>
+			<!--Area of interest -->
+			<member name="aoi" type="nonBasic" nonBasicTypeName="gw_dds_types::AreaOfInterest" sequenceMaxLength="-1" />
+			<member name="aimType" type="nonBasic" nonBasicTypeName="gw_dds_types::AimType"/>
+			<!--only NA is applicable-->
+			<member name="request_objective" type="nonBasic" nonBasicTypeName="gw_dds_types::PurposeEnum"/>
+			<member name="requestType" type="nonBasic" nonBasicTypeName="gw_dds_types::RequestType"/>
+		</struct>
+
+		<!--Aim the weapon at a location   Trigger: Upon event -->
+		<struct name= "AimWeaponCommand" extensibility= "mutable">
+			<member name="entity_name" type="string"/>
+			<member name="aiming_point" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+		</struct>
+
+		<!--Query line-of-sight (LOS)   Trigger: Upon request -->
+		<struct name= "LosQueryRequest" extensibility= "mutable">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="losVectorSrc" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+			<member name="losVectorDest" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+		</struct>
+
+		<!--Query line-of-sight (LOS)   Trigger: Upon request -->
+		<struct name= "LosQueryResponse" extensibility= "mutable">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="losVectorRes" type="nonBasic"  nonBasicTypeName="gw_dds_types::boolVec"/>
+		</struct>
+
+		<struct name ="PoleType" nested="true">
+			<member name="PoleHeight" type="nonBasic" nonBasicTypeName="gw_dds_types::PoleHeightType"/>
+		</struct>
+
+		<!--Query terrain line-of-sight and distance   Trigger: Upon request -->
+		<struct name= "GeoQuery" extensibility= "mutable">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier" key="true"/>
+			<!--Vector#1 points list to compare with the 2nd vector-->
+			<member name="vector1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointVec"/>
+			<!--Vector#2 points list to compare with the 1st vector-->
+			<member name="vector2" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointVec"/>
+			<!--LOS calculation required flag-->
+			<member name="calcLos" type="boolean"/>
+			<!--Distance calculation required flag-->
+			<member name="calcDistance" type="boolean"/>
+		</struct>
+
+		<!--Query terrain line-of-sight and distance   Trigger: Upon request -->
+		<struct name= "GeoQueryResponse" extensibility= "mutable">
+			<!--Request ID correlation-->
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier" key="true"/>
+			<!--Matrix of booleans providing LOS indication for the "i" point from vector#1 and the "j" point from vector#2-->
+			<member name="los" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::boolVec"/>
+			<!--Matrix of booleans providing distance measurement for the "i" point from vector#1 and the "j" point from vector#2-->
+			<member name="distance" type="nonBasic"  nonBasicTypeName= "gw_dds_types::distanceMatrix"/>
+		</struct>
+
+		<!--Query Height above terrain   Trigger: Upon request -->
+		<struct name="HeightAboveTerrainRequest" extensibility= "mutable">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<!--Heightvector contain list of requested heigts-->
+			<member name="HeightRequestedVector" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointVec"/>
+		</struct>
+
+		<!--Query Height above terrain   Trigger: Upon request -->
+		<struct name="HeightAboveTerrainResponse" extensibility= "mutable">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="HeightRequestedVector" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "HeightVector"/>
+		</struct>
+
+		<!--Query path planning to location   Trigger: Upon request -->
+		<struct name="PathPlanningToLocationRequest" extensibility= "mutable">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="srcPoint" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+			<member name="destPoint" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+		</struct>
+
+		<!--Query path planning to location   Trigger: Upon request -->
+		<struct name="PathPlanningToLocationResponse" extensibility= "mutable">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="PathPlanningLLAVector" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+		</struct>
+
+		<enum name="EntityKind">
+			<enumerator name="OTHER" value="0"/>
+			<enumerator name="PLATFORM" value="1"/>
+			<enumerator name="MUNITION" value="2"/>
+			<enumerator name="LIFE_FORM" value="3"/>
+			<enumerator name="ENVIRONMENTAL" value="4"/>
+			<enumerator name="CULTURAL_FEATURE" value="5"/>
+			<enumerator name="SUPPLY" value="6"/>
+			<enumerator name="RADIO" value="7"/>
+			<enumerator name="EXPENDABLE" value="8"/>
+			<enumerator name="SENSOR_OR_EMITTER" value="9"/>
+		</enum>
+
+		<enum name="HostilityType">
+			<enumerator name="UNKNOWN" value="0"/>
+			<enumerator name="FRIENDLY" value="1"/>
+			<enumerator name="OPPOSING" value="2"/>
+			<enumerator name="NEUTRAL" value="3"/>
+			<enumerator name="OTHER" value="4"/>
+		</enum>
+
+		<enum name="EngineStatus">
+			<!--Engine is running with no loaded scenario-->
+			<enumerator name="INITIALIZED" value="0"/>
+			<!--Active scenario is currently running-->
+			<enumerator name="RUNNING" value="1"/>
+			<!--Active scenario is currently paused-->
+			<enumerator name="PAUSE" value="2"/>
+			<!--Active scenario is currently rewind-->
+			<enumerator name="REWIND" value="3"/>
+		</enum>
+
+		<enum name="EngineExecutionOptions">
+			<!--Play the loaded scenario-->
+			<enumerator name="PLAY" value="0"/>
+			<!--Pause the loaded scenario-->
+			<enumerator name="PAUSE" value="1"/>
+			<!--Rewind the loaded scenario-->
+			<enumerator name="REWIND" value="2"/>
+			<!--Load scenario (name is provided is following field)-->
+			<enumerator name="LOAD" value="3"/>
+			<!--Make tick in the current scenario-->
+			<enumerator name="TICK" value="4"/>
+		</enum>
+
+		<enum name="PlayerType">
+			<enumerator name="SHERLOCK" value="0"/>
+			<enumerator name="HUMAN" value="1"/>
+			<enumerator name="GROUND_TRUTH" value="2"/>
+		</enum>
+
+		<enum name="EntityStateType">
+			<enumerator name="DtDamageNone" value="0"/>
+			<enumerator name="DtDamageSlight" value="1"/>
+			<enumerator name="DtDamageModerate" value="2"/>
+			<enumerator name="DtDamageDestroyed" value="3"/>
+		</enum>
+
+		<enum name="ClassificationType">
+			<enumerator name="UNKNOWN" value="0"/>
+			<enumerator name="SOLDIER" value="1"/>
+			<enumerator name="SHORT_RANGE_ANTI_TANK" value="2"/>
+			<enumerator name="OBSERVER" value="3"/>
+			<enumerator name="LONG_RANGE_ANTI_TANK" value="4"/>
+			<enumerator name="SNIPER" value="5"/>
+			<enumerator name="DRONE" value="6"/>
+			<enumerator name="DRONE_OPERATOR" value="7"/>
+			<enumerator name="HIGH_TRAJECTORY_WEAPON" value="8"/>
+			<enumerator name="HQ" value="9"/>
+			<enumerator name="EITAN" value="10"/>
+			<enumerator name="HALUTZ_DRONE" value="11"/>
+			<enumerator name="OHEZ" value="12"/>
+			<enumerator name="HALUTZ" value="13"/>
+			<enumerator name="SUICIDE_DRONE" value="14"/>
+			<enumerator name="NLOS" value="15"/>
+			<enumerator name="CIVILIANS" value="16"/>
+		</enum>
+
+		<enum name="CertaintyLevel">
+			<enumerator name="NONE" value="0"/>
+			<enumerator name="VERY_LOW" value="1"/>
+			<enumerator name="UNKNOWN" value="2"/>
+			<enumerator name="MEDIUM" value="3"/>
+			<enumerator name="HIGH" value="4"/>
+			<enumerator name="VERY_HIGH" value="5"/>
+		</enum>
+
+		<!--relative to north-->
+		<struct name= "PitchRollYawType" nested="true">
+			<!--Units: Degrees-->
+			<member name="pitch" type="float64" min="-90.0" max="90.0"/>
+			<!--Units: Degrees-->
+			<member name="roll" type="float64" min="-180.0" max="180.0"/>
+			<!--Units: Degrees-->
+			<member name="yaw" type="float64" min="0.0" max="360.0"/>
+		</struct>
+
+		<struct name= "ENUVelocityType" nested="true">
+			<!-- Units: meter/sec -->
+			<member name="east" type="float64"/>
+			<!-- Units: meter/sec -->
+			<member name="north" type="float64"/>
+			<!-- Units: meter/sec -->
+			<member name="up" type="float64"/>
+		</struct>
+
+		<struct name= "ENUAccelerationType" nested="true">
+			<!-- Units: meter/sec^2 -->
+			<member name="east" type="float64"/>
+			<!-- Units: meter/sec^2 -->
+			<member name="north" type="float64"/>
+			<!-- Units: meter/sec^2 -->
+			<member name="up" type="float64"/>
+		</struct>
+
+		<struct name= "ENUType">
+			<member name="ENUVelocityVector" type="nonBasic"  nonBasicTypeName= "ENUVelocityType"/>
+		</struct>
+
+		<struct name= "AccelerationType" nested="true">
+			<member name="enuAccelerationVector" type="nonBasic"  nonBasicTypeName= "ENUAccelerationType"/>
+			<member name="velocityError" type="float64"/>
+		</struct>
+
+		<struct name= "PositioningGeometryDataType" nested="true">
+			<!--VRF geodetic location (LLA)-->
+			<member name="location" type="nonBasic"  nonBasicTypeName= "LLAPointType"/>
+			<member name="CEP_radius" type="int32"/>
+		</struct>
+
+		<struct name= "TextualInfoWhenType" nested="true">
+			<member name="when_expression_ID" stringMaxLength="-1" type="string"/>
+			<member name="when_date" stringMaxLength="-1" type="string"/>
+			<member name="when_time" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<struct name= "TextualInfoWhoType" nested="true">
+			<member name="who_ID" stringMaxLength="-1" type="string"/>
+			<member name="role" stringMaxLength="-1" type="string"/>
+			<member name="unit" stringMaxLength="-1" type="string"/>
+			<member name="operational_supervisor" stringMaxLength="-1" type="string"/>
+			<member name="professional_supervisor" stringMaxLength="-1" type="string"/>
+			<member name="first_name" stringMaxLength="-1" type="string"/>
+			<member name="father_name" stringMaxLength="-1" type="string"/>
+			<member name="grand_father_name" stringMaxLength="-1" type="string"/>
+			<member name="family_name" stringMaxLength="-1" type="string"/>
+			<member name="ID_number" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<struct name= "TextualInfoDetailsType" nested="true">
+			<member name="how_inventory_known_ID" stringMaxLength="-1" type="string"/>
+			<member name="category" stringMaxLength="-1" type="string"/>
+			<member name="sub_category" stringMaxLength="-1" type="string"/>
+			<member name="features" stringMaxLength="-1" type="string"/>
+			<member name="features_values" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<struct name= "TextualInfoWhereType" nested="true">
+			<member name="ID_known" stringMaxLength="-1" type="string"/>
+			<member name="location_Known" stringMaxLength="-1" type="string"/>
+			<member name="positioning_geometry" stringMaxLength="-1" type="string"/>
+			<member name="positioning_geometry_values" type="nonBasic"  nonBasicTypeName= "PositioningGeometryDataType"/>
+		</struct>
+
+		<struct name= "TextualInfoReferenceType" nested="true">
+			<member name="sheet" stringMaxLength="-1" type="string"/>
+			<member name="ID" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<enum name="KillOrRevivalEnum">
+			<enumerator name="KILL" value="0"/>
+			<enumerator name="Revival" value="1"/>
+		</enum>
+
+		<!-- Send kill or revival command to entity  Trigger: Upon event-->
+		<struct name="KillOrRevivalType">
+			<member name="entity_id" stringMaxLength="-1" type="string" key="true"/>
+			<member name="kill_or_revival"  type="nonBasic" nonBasicTypeName="KillOrRevivalEnum"/>
+		</struct>
+
+		<!--Monitor cellular radio transmissions   Trigger: Upon event -->
+		<struct name= "CellularReportType">
+			<!--Incremental number for each report-->
+			<member name="id" stringMaxLength="-1" type="string"/>
+			<!--VRF Scenario time ISO8601 format-->
+			<member name="interception_time" stringMaxLength="-1" type="string"/>
+			<!--VRF entity marking text-->
+			<member name="init_unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Based on CSV file with entity radio info-->
+			<member name="initiator_PSTN" stringMaxLength="-1" type="string"/>
+			<!--Based on CSV file with entity radio info-->
+			<member name="initiator_IMEI" stringMaxLength="-1" type="string"/>
+			<!--Based on CSV file with entity radio info-->
+			<member name="initiator_IMSI" stringMaxLength="-1" type="string"/>
+			<!--VRF Transmitting entity location + Randomized CEP-->
+			<member name="initiator_positioning_geometry_values" type="nonBasic"  nonBasicTypeName= "PositioningGeometryDataType"/>
+			<!--VRF entity marking text-->
+			<member name="ansr_unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Based on CSV file with entity radio info-->
+			<member name="answerer_PSTN" stringMaxLength="-1" type="string"/>
+			<!--Based on CSV file with entity radio info-->
+			<member name="answerer_IMEI" stringMaxLength="-1" type="string"/>
+			<!--Based on CSV file with entity radio info-->
+			<member name="answerer_IMSI" stringMaxLength="-1" type="string"/>
+			<!--Based on CSV file with entity radio info-->
+			<member name="answerer_positioning_geometry_values" type="nonBasic"  nonBasicTypeName= "PositioningGeometryDataType"/>
+			<!--CALL/WIRED - Based on radio transmission text-->
+			<member name="session_type" stringMaxLength="-1" type="string"/>
+			<!--Based on radio transmission text-->
+			<member name="session_duration" type="float64"/>
+		</struct>
+
+		<!--Monitor cellular radio transmissions   Trigger: Upon event -->
+		<struct name= "TacticalReportType">
+			<!--VRF entity marking text-->
+			<member name="init_unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--VRF entity marking text-->
+			<member name="ansr_unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--VRF Scenario time ISO8601 format-->
+			<member name="interception_time" stringMaxLength="-1" type="string"/>
+			<!--Based on CSV file with entity radio info-->
+			<member name="tactical_radio_frequency" stringMaxLength="-1" type="string"/>
+			<!--VRF Transmitting entity location. CEP TBD-->
+			<member name="positioning_geometry_values" type="nonBasic"  nonBasicTypeName= "PositioningGeometryDataType"/>
+			<!--Based on radio transmission text-->
+			<member name="session_duration" type="float64"/>
+		</struct>
+
+		<struct name= "TextualReportType">
+			<member name="report_ID" stringMaxLength="-1" type="string"/>
+			<member name="interception_time" stringMaxLength="-1" type="string"/>
+			<member name="analysis_time" stringMaxLength="-1" type="string"/>
+			<member name="topic" stringMaxLength="-1" type="string"/>
+			<member name="sub_topic" stringMaxLength="-1" type="string"/>
+			<member name="intention" stringMaxLength="-1" type="string"/>
+			<member name="when" type="nonBasic"  nonBasicTypeName= "TextualInfoWhenType"/>
+			<member name="who" type="nonBasic"  nonBasicTypeName= "TextualInfoWhoType"/>
+			<member name="how_inventory_ID_or_details" type="nonBasic"  nonBasicTypeName= "TextualInfoDetailsType"/>
+			<member name="where" type="nonBasic"  nonBasicTypeName= "TextualInfoWhereType"/>
+			<member name="reference" type="nonBasic"  nonBasicTypeName= "TextualInfoReferenceType"/>
+			<member name="classification_reliability" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<struct name ="weaponType" nested="true">
+
+			<member name="weapon_name" stringMaxLength="-1" type="string" key="true"/>
+			<member name="amount" type="uint32"/>
+		</struct>
+
+		<typedef name="weapon_map" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::weaponType"/>
+
+		<!--Monitor entities status (location, speed, classification etc.)   Trigger: Cyclically -->
+		<struct name= "EntityReportType">
+			<!--VRF entity marking text-->
+			<member name="unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--VRF entity GUID-->
+			<member name="global_id" type="uint32"/>
+			<!--VRF Scenario time ISO8601 format-->
+			<member name="interception_time" stringMaxLength="-1" type="string"/>
+			<!--VRF entity type ID-->
+			<member name="object_type" stringMaxLength="-1" type="string"/>
+			<!--VRF entity pitch, roll  , yaw-->
+			<member name="attitude" type="nonBasic"  nonBasicTypeName= "PitchRollYawType"/>
+			<!--VRF geocentric velocity (XYZ)-->
+			<member name="velocity" type="nonBasic"  nonBasicTypeName= "ENUType"/>
+			<!--VRF geocentric acceleration (XYZ)-->
+			<member name="acceleration" type="nonBasic"  nonBasicTypeName= "AccelerationType"/>
+			<!--VRF geodetic location (LLA)-->
+			<member name="worldLocation" type="nonBasic"  nonBasicTypeName= "PositioningGeometryDataType"/>
+			<!--force classification - e.g. opposing-->
+			<member name="hostility" type="nonBasic" nonBasicTypeName="HostilityType"/>
+			<!--The area name the unit is currently at-->
+			<member name="area" stringMaxLength="-1" type="string"/>
+			<!--The entity classification-->
+			<member name="classification" type="nonBasic" nonBasicTypeName="ClassificationType"/>
+			<!--Is a commanding officer (CO)-->
+			<member name="is_co" type="boolean"/>
+			<!--Unit power-->
+			<member name="power" type="unsignedLong"/>
+			<!--Unit health-->
+			<member name="health" type="unsignedLong"/>
+			<!--Unit damage state-->
+			<member name="entity_damage_state" type="nonBasic" nonBasicTypeName="gw_dds_types::EntityStateType"/>
+			<!--Angular velocity of the unit-->
+			<member name="angular_velocity" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+			<!--Weapons of the unit-->
+			<member name="weapon" type="nonBasic"  nonBasicTypeName= "gw_dds_types::weapon_map"/>
+		</struct>
+
+		<enum name="PostureEnum">
+			<enumerator name="LIFE_FORM_NA" value="0"/>
+			<enumerator name="LIFE_FORM_STANDING" value="1"/>
+			<enumerator name="LIFE_FORM_WALKING" value="2"/>
+			<enumerator name="LIFE_FORM_RUNNING" value="3"/>
+			<enumerator name="LIFE_FORM_KNEELING" value="4"/>
+			<enumerator name="LIFE_FORM_PRONE" value="5"/>
+			<enumerator name="LIFE_FORM_CRAWLING" value="6"/>
+			<enumerator name="LIFE_FORM_SWIMMING" value="7"/>
+			<enumerator name="LIFE_FORM_PARACHUTING" value="8"/>
+			<enumerator name="LIFE_FORM_JUMPING" value="9"/>
+			<enumerator name="LIFE_FORM_SITTING" value="10"/>
+			<enumerator name="LIFE_FORM_SQUATTING" value="11"/>
+			<enumerator name="LIFE_FORM_CROUCHING" value="12"/>
+			<enumerator name="LIFE_FORM_WADING" value="13"/>
+		</enum>
+
+		<struct name="PostureType">
+			<member name="entity_name" stringMaxLength="-1" type="string" key="true"/>
+			<member name="posture" type="nonBasic" nonBasicTypeName="PostureEnum"/>
+		</struct>
+
+		<enum name="SensorType">
+			<enumerator name="UNKNOWN" value="0"/>
+			<enumerator name="OPTIC" value="1"/>
+			<enumerator name="RADAR" value="2"/>
+			<enumerator name="LASER" value="3"/>
+			<enumerator name="SONAR" value="4"/>
+		</enum>
+
+
+		<!--Monitor sensor of the entities status (bearing, elevation, FOV etc.)   Trigger: Cyclically -->
+		<struct name="SensorStatusType">
+			<!--VRF entity marking text-->
+			<member name="mounted_entity_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Name of the sensor -->
+			<member name="sensor_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--VRF entity GUID-->
+			<member name="mounted_entity_global_id" type="uint32" key="true"/>
+			<!--Type of the sensor-->
+			<member name="sensor_type" type="nonBasic" nonBasicTypeName="gw_dds_types::SensorType"/>
+			<!-- -->
+			<member name="Sensor_controlled" type="nonBasic" nonBasicTypeName="sensorControllerEnumType"/>
+			<!-- Units: Degrees relative to the entity-->
+			<member name="bearing" type="float64" min="0.0" max="360.0"/>
+			<!--Units: Degrees-->
+			<member name="elevation" type="float64" min="-90.0" max="90.0"/>
+			<!--Field of view Units: Degrees-->
+			<member name="fov_width" type="float64" min="-180.0" max="180.0"/>
+			<!--Field of view Units: Degrees-->
+			<member name="fov_height" type="float64" min="-90.0" max="90.0"/>
+			<!--Tensor tracking mode-->
+			<member name="aimType" type="nonBasic" nonBasicTypeName="gw_dds_types::AimType"/>
+			<!--VRF geodetic location (LLA)-->
+			<!--<member name="location" type="nonBasic"  nonBasicTypeName= "PositioningGeometryDataType"/>-->
+			<!--True if the sensor is operational and False if not-->
+			<member name="is_operational" type="boolean"/>
+		</struct>
+
+		<!--Order an entity to attack specific location   Trigger: Upon event -->
+		<struct name="AttackCommand">
+			<!--Attacking id-->
+			<member name="attacking_entity_name" stringMaxLength="-1" type="string"/>
+			<!--Entity to location-->
+			<member name="attack_location" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+			<!--Weapon to use-->
+			<member name="weapon_name" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<!--Order an entity to attack specific Entity   Trigger: Upon event -->
+		<struct name="AttackEntityCommand">
+			<!--Attacking id-->
+			<member name="attacking_entity_name" stringMaxLength="-1" type="string"/>
+			<!--Entity to attack id-->
+			<member name="entity_to_attack_id" stringMaxLength="-1" type="string"/>
+			<!--Weapon to use-->
+			<member name="weapon_name" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<!--Order to stop all tasks command  Trigger: Upon event -->
+		<struct name="StopTasksCommand">
+			<!--Attacking id-->
+			<member name="attacking_entity_name" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<enum name="WeaponTypeEnum">
+			<enumerator name="UNKNOWN" value="0"/>
+			<enumerator name="M16" value="1"/>
+			<enumerator name="RPG" value="2"/>
+			<enumerator name="DRAGUNOV" value="3"/>
+			<enumerator name="EXPLOSIVE_DEVICE" value="4"/>
+			<enumerator name="M240_MACHINE_GUN" value="5"/>
+			<enumerator name="MORTAR" value="6"/>
+		</enum>
+
+		<!--Report if a attack incident occurred  Trigger: Upon event -->
+		<struct name="AttackReportType">
+			<!--Attacking id-->
+			<member name="attacking_entity_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Entity under attack name id-->
+			<member name="entity_under_attack_name" stringMaxLength="-1" type="string" key="true"/>
+			<member name="attack_location" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+			<!--VRF Scenario time ISO8601 format-->
+			<member name="interception_time" stringMaxLength="-1" type="string"/>
+			<!--The type of the weapon-->
+			<member name="weaponType" type="nonBasic"  nonBasicTypeName= "gw_dds_types::WeaponTypeEnum"/>
+		</struct>
+
+
+		<enum name="GeneralClassification">
+			<enumerator name="UNKNOWN" value="0"/>
+			<enumerator name="HUMAN" value="1"/>
+			<enumerator name="VEHICLE" value="2"/>
+			<enumerator name="AERIAL" value="3"/>
+			<enumerator name="ARMED_HUMAN" value="4"/>
+			<enumerator name="DRONE" value="5"/>
+		</enum>
+
+		<struct name="BoundingBoxCenterType" nested="true">
+			<!--Relative to upper left corner of the picture. Units: pixels-->
+			<member name="x" type="int32"/>
+			<!--Relative to upper left corner of the picture. Units: pixels-->
+			<member name="y" type="int32"/>
+		</struct>
+
+		<struct name="BoundingBoxType" nested="true">
+			<member name="boundingBoxCenterType" type="nonBasic" nonBasicTypeName="BoundingBoxCenterType"/>
+			<!--Units: pixels-->
+			<member name="height" type="int32"/>
+			<!--Units: pixels-->
+			<member name="width" type="int32"/>
+		</struct>
+
+		<struct name="SensorDetectionUniqueIDType" nested="true">
+			<!--unique ID of the detecting platform name-->
+			<member name="unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--unique ID of the detecting system/sensor within the platform-->
+			<member name="system_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--detected entity marking text-->
+			<member name="detection_name" stringMaxLength="-1" type="string" key="true"/>
+			<!---detected entity unique id-->
+			<member name="detection_id" type="uint32"/>
+			<member name="PositioningGeometry" type="nonBasic" nonBasicTypeName="PositioningGeometryDataType"/>
+			<member name="boundingBox" type="nonBasic" nonBasicTypeName="BoundingBoxType"/>
+
+		</struct>
+
+		<struct name="SensorOperationalModeCommandType">
+			<!--unique ID of the platform name-->
+			<member name="unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--unique ID of the system/sensor within the platform-->
+			<member name="system_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--For operational mode - TRUE and for non-operational mode - FALSE-->
+			<member name="isOperational" type="boolean"/>
+		</struct>
+
+		<enum name="AreaCategory">
+			<enumerator name="UNKNOWN" value="0"/>
+			<enumerator name="ENEMY" value="1"/>
+			<enumerator name="NEUTRAL" value="2"/>
+			<enumerator name="FRIENDLY" value="3"/>
+			<enumerator name="GENERAL" value="4"/>
+			<enumerator name="RESTRICTION" value="5"/>
+			<enumerator name="UNRESTRICTED" value="6"/>
+		</enum>
+    
+		<struct name="EntitiesInAreaType" nested="true">
+      <member name="entity_name" type="string"/>
+			<member name="entityType" type="nonBasic" nonBasicTypeName="ClassificationType"/>
+      <member name="position" type="nonBasic"  nonBasicTypeName= "LLAPointType"/>
+      <!--Confidence: 0 to 100 (percent)-->
+			<member name="confidence" type="uint16" min="0" max="100"/>
+		</struct>
+    
+		<struct name="EntitiesInAreaWithoutPositionType" nested="true">
+      <member name="entity_name" type="string"/>
+			<member name="entityType" type="nonBasic" nonBasicTypeName="ClassificationType"/>
+      <!--Confidence: 0 to 100 (percent)-->
+			<member name="confidence" type="uint16" min="0" max="100"/>
+		</struct>
+
+    <enum name="SnapshotTypeEnum">
+      <enumerator name="TARGET" value="0"/>
+      <enumerator name="AREA" value="1"/>
+      <enumerator name="POINT" value="2"/>
+    </enum>
+    
+    <union name="SnapshotTypeUnion">
+      <discriminator type="nonBasic" nonBasicTypeName="SnapshotTypeEnum"/>
+      <case>
+        <caseDiscriminator value="TARGET"/>
+        <member name="targetID" stringMaxLength="-1" type="string"/>
+      </case>
+      <case>
+        <caseDiscriminator value="AREA"/>
+        <member name="area" type="nonBasic"  nonBasicTypeName= "Area"/>
+      </case>
+      <case>
+        <caseDiscriminator value="POINT"/>
+        <member name="point" type="nonBasic"  nonBasicTypeName= "LLAPointType"/>
+      </case>
+    </union>
+
+
+
+    <enum name="ActionForSnapshotAreaEnumType">
+      <enumerator name="DELETE" value="0"/>
+      <enumerator name="ADD" value="1"/>
+    </enum>
+
+    <struct name="InitialSnapshotAreaType" nested="true">
+			<!--unique ID of the area-->
+			<member name="areaID" stringMaxLength="-1" type="string" key="true"/>
+			<!--name of the area-->
+			<member name="areaName" stringMaxLength="-1" type="string"/>
+			<!--Action to perform in present area-->
+			<member name="action" type="nonBasic" nonBasicTypeName="ActionForSnapshotAreaEnumType"/>
+			<!--The category for the present area-->
+			<member name="areaCategory" type="nonBasic" nonBasicTypeName="AreaCategory"/>
+			<!--list of assessed entities in the area, quantity and confidence of each classification-->
+			<member name="assessedEntitiesInArea" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="EntitiesInAreaWithoutPositionType"/>
+			<!--The snapshot type: area, point or target-->
+			<member name="snapshotType" type="nonBasic" nonBasicTypeName="SnapshotTypeUnion"/>
+		</struct>
+
+		<struct name="InitialEntitySnapshotType">
+			<!--unique ID of the entity snapshot-->
+			<member name="entitiySnapshotID" stringMaxLength="-1" type="string"/>
+      <!--Reporting system unique identifier-->
+      <member name="reportingSysytemID" stringMaxLength="-1" type="string"/>
+			<!--List of areas containing red and green forces -->
+			<member name="entitySnapshot" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="InitialSnapshotAreaType"/>
+      <!--list of known entities in the area, quantity and confidence of each classification-->
+      <member name="knownEntitiesInArea" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="EntitiesInAreaType"/>
+		</struct>
+
+		<struct name="InitialEntitySnapshotACK">
+      <member name="entitiySnapshotID" stringMaxLength="-1" type="string"/>
+      <member name="reportingSysytemID" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<!--Monitor sensor detections   Trigger: Cyclically -->
+		<struct name= "SensorDetectionType">
+			<member name="id" type="nonBasic" nonBasicTypeName="SensorDetectionUniqueIDType" key="true"/>
+			<!--VRF Scenario time ISO8601 format-->
+			<member name="interception_time" stringMaxLength="-1" type="string" optional="true"/>
+			<!--The entity classification-->
+			<member name="identification" type="nonBasic" nonBasicTypeName="ClassificationType"/>
+			<!--The entity general classification-->
+			<member name="generalClassification" type="nonBasic" nonBasicTypeName="GeneralClassification"/>
+			<!--VRF entity velocity vector-->
+			<member name="velocity" type="nonBasic"  nonBasicTypeName= "ENUType" optional="true"/>
+			<!--VRF Detected location-->
+			<member name="worldLocation" type="nonBasic"  nonBasicTypeName= "PositioningGeometryDataType" optional="true"/>
+			<!--level of confidence/reliability in the detection report-->
+			<member name="combat_identification_level" type="int32" optional="true"/>
+			<!--the range between the sensor and the detection in meters-->
+			<member name="detection_range" type="double" optional="true"/>
+			<!--the azimuth and the elevation-->
+			<member name="detectionOrientation" type="nonBasic" nonBasicTypeName="gw_dds_types::PolarType" optional="true"/>
+			<!--force classification - e.g. opposing-->
+			<member name="hostility" type="nonBasic" nonBasicTypeName="HostilityType" optional="true"/>
+			<!--Units: Degrees-->
+			<member name="course" type="float64" min="0" max="360.0"/>
+		</struct>
+
+		<enum name="ChannelEnum">
+			<enumerator name="NA" value="0"/>
+			<enumerator name="EO" value="1"/>
+			<enumerator name="IR" value="2"/>
+		</enum>
+
+
+		<struct name="PixelsType">
+			<member name="pointID" stringMaxLength="-1" type="string"/>
+			<member name="row" type="float32"/>
+			<member name="column" type="float32"/>
+
+		</struct>
+		<struct name="Pixel2GeoConvertingRequestType">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="requesterName" stringMaxLength="-1" type="string"/>
+			<member name="unitName" stringMaxLength="-1" type="string"/>
+			<member name="cameraID" type="string" stringMaxLength="-1" key="true"/>
+			<member name="pixels" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="gw_dds_types::PixelsType"/>
+		</struct>
+
+		<enum name ="PixelConvertStatusEnum">
+			<enumerator name="FAILED_TO_CONVERT" value="0"/>
+			<enumerator name="MANAGED_TO_CONVERT" value="1"/>
+		</enum>
+
+		<struct name="PixelLLAType">
+			<member name="pointID" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="location" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+		</struct>
+		
+		<struct name="Pixel2GeoConvertingResponseType">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="requesterName" stringMaxLength="-1" type="string"/>
+			<member name="unitName" stringMaxLength="-1" type="string"/>
+			<member name="cameraID" type="string" stringMaxLength="-1" key="true"/>
+			<member name="status" type="nonBasic" nonBasicTypeName="gw_dds_types::PixelConvertStatusEnum"/>
+			<member name="convertedGeoPoints" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="gw_dds_types::PixelLLAType"/>
+		</struct>
+		
+			
+		<struct name="Geo2PixelConvertingRequestType">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+      <member name="requesterName" stringMaxLength="-1" type="string"/>
+      <!--When multiSource == false, it means only pixels from the camera with this unitName will be returned-->
+      <member name="unitName" stringMaxLength="-1" type="string"/>
+      <!-- When true, all pixels from all cameras will be retruned, assuming they all look at the same geographic location. When false, only pixels from the camera with specific unitName will be returned -->
+			<member name="multiSource" type="boolean"/>
+      <member name="cameraID" stringMaxLength="-1" type="string"/>
+			<member name="geographicalValues" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="gw_dds_types::PixelLLAType"/>
+		</struct>
+
+
+    <struct name="cameraPixelType">
+      <member name="unitName" stringMaxLength="-1" type="string"/>
+      <member name="cameraID" type="string" stringMaxLength="-1" key="true"/>
+      <member name="convertedPixels" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="gw_dds_types::PixelsType"/>
+    </struct>
+		
+		<struct name="Geo2PixelConvertingResponseType">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="requesterName" stringMaxLength="-1" type="string"/>
+      <member name="status" type="nonBasic" nonBasicTypeName="gw_dds_types::PixelConvertStatusEnum"/>
+			<member name="cameraPixelList" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="cameraPixelType"/>
+		</struct>
+
+		<struct name="SetCameraParametersType">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="requesterName" stringMaxLength="-1" type="string"/>
+			<member name="unitName" stringMaxLength="-1" type="string"/>
+			<member name="cameraName" type="string" stringMaxLength="-1" key="true"/>
+			<member name="zoomIn" type="int32" optional="true"/>
+			<member name="zoomOut" type="int32" optional="true"/>
+			<member name="focusPositive" type="int32" optional="true"/>
+			<member name="focusNegative" type="int32" optional="true"/>
+			<member name="channel" type="nonBasic" nonBasicTypeName="gw_dds_types::ChannelEnum" optional="true"/>
+		</struct>
+
+		<struct name="FusionStampRequestType">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<!--name of the requester-->
+			<member name="requesterName" stringMaxLength="-1" type="string"/>
+			<member name="fusionID" type="uint32"/>
+      <!--VRF Scenario time ISO8601 format. If none provided - from this point in time-->
+      <member name="time_start" stringMaxLength="-1" type="string" optional="true"/>
+      <!--VRF Scenario time ISO8601 format. if none provided - there is no time limit-->
+      <member name="time_end" stringMaxLength="-1" type="string" optional="true"/>
+      <member name="max_stamps" type="uint32"/>
+      <member name="last_one_only" type="boolean"/>
+		</struct>
+
+		<struct name="FusionStampListType" nested="true">
+			<member name="stampID" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<member name="sensorID"  type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<!--unique ID of the platform name-->
+			<member name="unitName" stringMaxLength="-1" type="string"/>
+			<member name="format" type="string" stringMaxLength="-1"/>
+			<!--Channel number -->
+			<member name="channel" type="int16"/>
+			<!--Number of seconds from the 1970-01-01 00:00:00 UTC Epoch-->
+			<member name="timeStamp" type="nonBasic" nonBasicTypeName="gw_dds_types::UTCTime"/>
+      <member name="url" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<struct name="FusionStampResponseType">
+			<member name="requestId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+			<!--name of the requester-->
+			<member name="responseSystemName" stringMaxLength="-1" type="string"/>
+			<member name="fusionID" type="uint32"/>
+			<member name="fusionStampListType" type="nonBasic" nonBasicTypeName="FusionStampListType" sequenceMaxLength="-1"/>
+		</struct>
+
+		<struct name="OverrideFusedTrackParametersType">
+			<!--unique ID of the reporting system-->
+			<member name="requesterName" stringMaxLength="-1" type="string" key="true"/>
+			<!--detected entity marking text-->
+			<member name="fusionName" stringMaxLength="-1" type="string" key="true"/>
+			<!---detected entity unique id-->
+			<member name="fusionID" type="uint32"/>
+			<!--The entity classification-->
+			<member name="identification" type="nonBasic" nonBasicTypeName="ClassificationType" optional="true"/>
+			<!--The entity general classification-->
+			<member name="generalClassification" type="nonBasic" nonBasicTypeName="GeneralClassification" optional="true"/>
+			<!--force classification - e.g. opposing-->
+			<member name="hostility" type="nonBasic" nonBasicTypeName="HostilityType" optional="true"/>
+		</struct>
+
+		<struct name="FusionReportType">
+			<!--unique ID of the reporting system-->
+			<member name="reporting_system_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--detected entity marking text-->
+			<member name="fusion_name" stringMaxLength="-1" type="string" key="true"/>
+			<!---detected entity unique id-->
+			<member name="fusion_id" type="uint32"/>
+			<!---Simulated entity unique id-->
+			<member name="simulated_entity_id" type="uint32" optional="true"/>
+			<!--lastUpdateTime - ISO8601 format-->
+			<member name="interception_time" stringMaxLength="-1" type="string" optional="true"/>
+			<!--The entity classification-->
+			<member name="identification" type="nonBasic" nonBasicTypeName="ClassificationType"/>
+			<!--The entity classification confidence-->
+			<member name="identificaiotnConfidence" type="float32" min="0" max="100" default="100"/>
+			<!--The entity general classification-->
+			<member name="generalClassification" type="nonBasic" nonBasicTypeName="GeneralClassification"/>
+			<!--The entity general classification confidence-->
+			<member name="generalClassificationConfidence" type="float32" min="0" max="100" default="100"/>
+			<!--VRF entity velocity vector-->
+			<member name="velocity" type="nonBasic"  nonBasicTypeName= "ENUType" optional="true"/>
+			<!--VRF Detected location-->
+			<member name="worldLocation" type="nonBasic"  nonBasicTypeName= "PositioningGeometryDataType" optional="true"/>
+			<!--level of confidence/reliability in the detection report-->
+			<member name="combat_identification_level" type="int32" optional="true"/>
+			<!--The first time the fusion has been reported (according to the first sensor)-->
+			<member name="firstDetectionTime" stringMaxLength="-1" type="string"/>
+			<!--force classification - e.g. opposing-->
+			<member name="hostility" type="nonBasic" nonBasicTypeName="HostilityType"/>
+			<!--return True if exist and False if not-->
+			<member name="stampExist" type="boolean"/>
+			<!--Units: Degrees-->
+			<member name="course" type="float64" min="0" max="360.0"/>
+			<!-- 0: normal, -1: ignore, 1-10: threat level -->
+			<member name="threatLevel" type="int32" min="-1.0" max="10"/>
+			<!--Fusion detection sources-->
+			<member name="detectionSources" sequenceMaxLength="50" type="nonBasic" nonBasicTypeName="gw_dds_types::SensorDetectionUniqueIDType"/>
+		</struct>
+
+		<!--Indicate if an entity is following a certain path   Trigger: Upon event -->
+		<struct name="EntityPathFollowingStatusType">
+			<!--VRF entity marking text-->
+			<member name="unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--VRF Scenario time ISO8601 format-->
+			<member name="interception_time" stringMaxLength="-1" type="string"/>
+			<!--VRF path marking text-->
+			<member name="path_id" stringMaxLength="-1" type="string"/>
+			<!--Ordered path's speed (m/s) -->
+			<member name="ordered_speed" type="float64" min="0"/>
+		</struct>
+
+		<!--Spawn a squad (numerous entites following the commander)   Trigger: Upon demand -->
+		<struct name="SpawnSquadCommandType">
+			<!--Squad name according to provided "Squads-CSV"-->
+			<member name="squad_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Way-point to spawn the squad at-->
+			<member name="location" type="nonBasic"  nonBasicTypeName= "LLAPointType"/>
+		</struct>
+
+		<!--Create entity  Trigger: Upon demand -->
+		<struct name="CreateEntityType">
+			<!--entity name-->
+			<member name="unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Way-point to spawn the entity at-->
+			<member name="location" type="nonBasic"  nonBasicTypeName= "LLAPointType"/>
+			<!--hostility of the entity-->
+			<member name="hostility" type="nonBasic"  nonBasicTypeName= "HostilityType"/>
+			<!--type of the entity in vrf enumeration-->
+			<member name="enumeration" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<!--Perform a cellular/wired tranmission between two entities   Trigger: Upon demand -->
+		<struct name="DuplexTransmitCommandType">
+			<!--VRF entity marking text-->
+			<member name="initiating_unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--VRF entity marking text-->
+			<member name="responding_unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Transmission duration-->
+			<member name="transmission_duration_sec" type="float64"/>
+		</struct>
+
+		<!--Perform a tactical tranmission between two entities   Trigger: Upon demand -->
+		<struct name="TactCommTransmitCommandType">
+			<!--VRF entity marking text-->
+			<member name="initiating_unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--VRF entity marking text-->
+			<member name="responding_unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--T1 - the initiator transmits between [0:T1]-->
+			<member name="initiator_transmission_duration_sec" type="float64"/>
+			<!--T2 - how long after initiator stopped transmitting the responder starts (i.e. T1+T2)-->
+			<member name="initiator_responder_transmission_gap_sec" type="float64"/>
+			<!--T3 - the responder transmits between [T1+T2:T1+T2+T3]-->
+			<member name="responder_transmission_duration_sec" type="float64"/>
+		</struct>
+
+		<enum name="TaskStatusEnum">
+			<enumerator name="TASK_STARTED"/>
+			<enumerator name="TASK_COMPLETED"/>
+			<enumerator name="TASK_SKIPPED"/>
+		</enum>
+
+		<!--Indecation of task progress  Trigger: Upon event -->
+		<struct name="TaskStatus">
+			<!--VRF entity marking text-->
+			<member name="markingText" stringMaxLength="-1" type="string" key="true"/>
+			<!--VRF task Name: "fire-at-target", "vrf-move-to-location-task", "vrf-move-along","ffe-on-location","task-completed-suicide-drone", "Sensor Designation" -->
+			<member name="taskName" stringMaxLength="-1" type="string" key="true"/>
+			<!--Current task status-->
+			<member name="currentStatus" type="nonBasic" nonBasicTypeName="gw_dds_types::TaskStatusEnum"/>
+			<!--uniq id per unit name and task id , for currentStatus started and skipped the value is 0-->
+			<member name="taskId" type="int32"/>
+			<!-- Return True if the task success and False if not -->
+			<member name="taskSuccess" type="boolean"/>
+			<!-- The failure reason if taskSuccess is false -->
+			<member name="failureReason" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<enum name="HeightSelectorEnum">
+			<enumerator name="SEA"/>
+			<enumerator name="TERRAIN"/>
+		</enum>
+
+		<!--Move an entity to location  Trigger: Upon demand -->
+		<struct name="EntityMoveCommandType">
+			<!--VRF entity marking text-->
+			<member name="unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Ordered path's speed (m/s)  -->
+			<member name="ordered_speed" type="float64" min="0"/>
+			<!--Above sea level or Above terrain-->
+			<member name="altitude_reference" type="nonBasic" nonBasicTypeName="gw_dds_types::HeightSelectorEnum"/>
+			<!--Way-point to move the squad to-->
+			<member name="location" type="nonBasic"  nonBasicTypeName= "LLAPointType"/>
+		</struct>
+
+		<enum name="PolarOrLocationEnum">
+			<enumerator name="POLAR" value="0"/>
+			<enumerator name="LOCATION" value="1"/>
+		</enum>
+
+		<union name="PolarOrLocation">
+			<discriminator type="nonBasic" nonBasicTypeName="PolarOrLocationEnum"/>
+			<case>
+				<caseDiscriminator value="POLAR"/>
+				<member name="polar" type="nonBasic"  nonBasicTypeName= "PolarType"/>
+			</case>
+			<case>
+				<caseDiscriminator value="LOCATION"/>
+				<member name="location" type="nonBasic"  nonBasicTypeName= "LLAPointType"/>
+			</case>
+		</union>
+
+		<!--Set an entity location  Trigger: Upon demand -->
+		<struct name="EntitySetLocationType">
+			<!--VRF entity marking text-->
+			<member name="unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Above sea level or Above terrain-->
+			<member name="altitude_reference" type="nonBasic" nonBasicTypeName="gw_dds_types::HeightSelectorEnum"/>
+			<!--Way-point to move the squad to-->
+			<member name="location" type="nonBasic"  nonBasicTypeName= "LLAPointType"/>
+			<member name="look_at_polar_or_location" type="nonBasic" nonBasicTypeName="PolarOrLocation" optional="true"/>
+		</struct>
+
+		<enum name="PathIdOrFullEnum">
+			<enumerator name="FULL_PATH" value="0"/>
+			<enumerator name="PATH_ID" value="1"/>
+		</enum>
+
+		<union name="PathIdOrFullUnion" nested="true">
+			<discriminator type="nonBasic" nonBasicTypeName="PathIdOrFullEnum"/>
+			<case>
+				<caseDiscriminator value="FULL_PATH"/>
+				<!--VRF full path-->
+				<member name="full_path" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "LLAPointType"/>
+			</case>
+			<case>
+				<caseDiscriminator value="PATH_ID"/>
+				<!--VRF path marking text-->
+				<member name="path_id" stringMaxLength="-1" type="string"/>
+			</case>
+		</union>
+
+		<!--Move an entity along path  Trigger: Upon demand -->
+		<struct name="EntityFollowPathCommandType">
+			<!--VRF entity marking text-->
+			<member name="unit_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--Ordered path's speed (m/s)  -->
+			<member name="ordered_speed" type="float64" min="0"/>
+			<member name="path_id_or_full" type="nonBasic" nonBasicTypeName="PathIdOrFullUnion"/>
+		</struct>
+
+		<!--Monitor scenario status (runinng, loading etc.)  Trigger: Upon change -->
+		<struct name="ScenarioStatusType">
+			<!--Current VRF Engine status-->
+			<member name="engine_status" type="nonBasic" nonBasicTypeName="EngineStatus"/>
+			<!--Currently loaded scenario-->
+			<member name="active_scenario_name" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<union name="EngineExecutionSelector" nested="true">
+			<discriminator type="nonBasic" nonBasicTypeName="EngineExecutionOptions"/>
+			<case>
+				<caseDiscriminator value="LOAD"/>
+				<member name="scenario_name" stringMaxLength="-1" type="string"/>
+			</case>
+			<case>
+				<caseDiscriminator value="TICK"/>
+				<member name="number_of_tick" type="uint32"/>
+			</case>
+		</union>
+
+		<!--Control scenario execution parameters (e.g Run/Pause scenario)  Trigger: Upon change -->
+		<struct name="ScenarioExecutionCommandType">
+			<member name="execution_command" type="nonBasic" nonBasicTypeName="EngineExecutionOptions"/>
+			<member name="execution_command_info" type="nonBasic" nonBasicTypeName="EngineExecutionSelector"/>
+		</struct>
+
+		<struct name="ClassificationProbabilityType" nested="true">
+			<member name="classification_type" type="nonBasic" nonBasicTypeName="ClassificationType"/>
+			<member name="classification_probability"  type="nonBasic" nonBasicTypeName="CertaintyLevel"/>
+		</struct>
+
+		<!--Player (Sherlock/Human) incrimination/threat indication  Trigger: Upon change -->
+		<struct name="IncriminationReportType">
+			<!--player type identifier-->
+			<member name="player_type" type="nonBasic" nonBasicTypeName="PlayerType" key="true"/>
+			<!--e.g. Human-1-->
+			<member name="player_name" type="string" stringMaxLength="-1" key="true"/>
+			<!--VRF Scenario time ISO8601 format-->
+			<member name="time" stringMaxLength="-1" type="string"/>
+			<!--VRF site/area names-->
+			<member name="site_name" stringMaxLength="-1" type="string" key="true"/>
+			<!--number of red squads in the area-->
+			<member name="red_squads_number" type="uint32"/>
+			<!--green squad probability in the area-->
+			<member name="green_squad_probability" type="nonBasic" nonBasicTypeName="CertaintyLevel"/>
+			<!--one entry per classification type (e.g. Sniper)-->
+			<member name="classification_probabilities" type="nonBasic" nonBasicTypeName="ClassificationProbabilityType" sequenceMaxLength="-1"/>
+			<!--Marks this report for score calculation (true)-->
+			<member name="view_only_flag" type="boolean"/>
+		</struct>
+
+		<typedef name="UnboundedString" type="string" stringMaxLength="-1"/>
+
+		<struct name="CarmelScoreType">
+			<member name="time" type="nonBasic" nonBasicTypeName="gw_dds_types::UTCTime"/>
+			<member name="score" type="float64"/>
+		</struct>
+
+		<struct name="PlayerScoreType">
+			<!--player type identifier-->
+			<member name="player_type" type="nonBasic" nonBasicTypeName="PlayerType" key="true"/>
+			<!--e.g. Human-1-->
+			<member name="player_name" type="string" stringMaxLength="-1" key="true"/>
+			<!--VRF Scenario time ISO8601 format-->
+			<member name="time" stringMaxLength="-1" type="string"/>
+			<member name="current_score" type="float64"/>
+			<!--score change in current round-->
+			<member name="score_update" type="float64"/>
+			<!--List of reasons for the current score update-->
+			<member name="score_update_reasons" type="nonBasic" nonBasicTypeName="UnboundedString" sequenceMaxLength="-1"/>
+			<member name="incriminated_red_sum" type="uint32"/>
+			<member name="mistakes_sum" type="uint32"/>
+			<member name="green_identification_sum" type="uint32"/>
+			<member name="classification_bonuses_sum" type="uint32"/>
+			<member name="red_squad_incriminated_flag" type="boolean"/>
+		</struct>
+    
+    <struct name="missionScoreType">
+      <!--Number of enemies killed -->
+      <member name="EnemyKilled" type="uint32"/>
+      <!--Time to complete mission. Units: second -->
+      <member name="timeToCompleteMission" type="float64" min="0"/>
+      <!--Number of friendly forces casualties -->
+      <member name="ownForceCasualties" type="uint32"/>
+      <member name="score" type="uint32"/>
+    </struct>
+
+		<struct name="ManualControlRequestType">
+      <member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+      <member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+      <!--ID of the request-->
+      <member name="requestID" stringMaxLength="-1" type="string"/>
+      <!--ID of the Vehicle-->
+      <member name="vehicleID" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<struct name="ManualControlResponseType">
+      <member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+      <member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+      <!--ID of the request-->
+      <member name="requestID" stringMaxLength="-1" type="string"/>
+      <!--ID of the Vehicle-->
+      <member name="vehicleID" stringMaxLength="-1" type="string"/>
+      <!--True: control granted. False: control denied-->
+			<member name="controlGranted" type="boolean"/>
+      <!--Describes why control not granted-->
+      <member name="error" stringMaxLength="-1" type="string"/>
+		</struct>
+
+
+		<struct name="AutomaticControlRequestType">
+      <member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+      <member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+      <!--ID of the request-->
+      <member name="requestID" stringMaxLength="-1" type="string"/>
+      <!--ID of the Vehicle-->
+      <member name="vehicleID" stringMaxLength="-1" type="string"/>
+		</struct>
+
+		<struct name="AutomaticControlACKType">
+      <member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+      <member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+      <!--ID of the request-->
+      <member name="requestID" stringMaxLength="-1" type="string"/>
+		</struct>
+    
+    <enum name="MissionExecutionStatusEnum">
+      <enumerator name="INIT"/>
+      <enumerator name="WAIT"/>
+      <enumerator name="INITIAL_PLANNING"/>
+      <enumerator name="READY"/>
+      <enumerator name="REPLAN"/>
+      <enumerator name="EXECUTION"/>
+      <enumerator name="ABORT"/>
+      <enumerator name="ERROR"/>
+      <enumerator name="IDLE"/>
+      <enumerator name="DEAD"/>
+      <enumerator name="REFLEXIVE_FIRE"/>
+      <enumerator name="COMPLETE"/>
+    </enum>
+    
+   <!--Set upon status change, not periodically-->
+    <struct name="MissionExecutionStatusType">
+      <member name="entityID" stringMaxLength="-1" type="string" key="true"/>
+      <member name="status" type="nonBasic" nonBasicTypeName="MissionExecutionStatusEnum"/>
+      <member name="info" stringMaxLength="-1" type="string"/>
+		</struct>
+        
+    <enum name="TargetSourceEnum">
+      <enumerator name="REAL_FINDING"/>
+      <enumerator name="SIMULATOR"/>
+      <enumerator name="INSTANCE"/>
+    </enum>
+    
+   <!--Set upon status change, not periodically-->
+    <struct name="setManualTargetType">
+      <!--ID of the request-->
+      <member name="requestID" stringMaxLength="-1" type="string"/>
+      <!--unique ID of the reporting system-->
+      <member name="reporting_system_name" stringMaxLength="-1" type="string" key="true"/>      
+      <!--Target name-->
+      <member name="target_name" stringMaxLength="-1" type="string"/>
+      <!--lastUpdateTime - ISO8601 format-->
+      <member name="interception_time" stringMaxLength="-1" type="string" optional="true"/>
+      <member name="targetSource" type="nonBasic" nonBasicTypeName="TargetSourceEnum"/>
+      <!--The entity classification-->
+      <member name="identification" type="nonBasic" nonBasicTypeName="ClassificationType"/>
+      <!--The entity classification confidence-->
+      <member name="identificaiotnConfidence" type="float32" min="0" max="100" default="100"/>
+      <!--The entity general classification-->
+      <member name="generalClassification" type="nonBasic" nonBasicTypeName="GeneralClassification"/>
+      <!--The entity general classification confidence-->
+      <member name="generalClassificationConfidence" type="float32" min="0" max="100" default="100"/>
+      <!--force classification - e.g. opposing-->
+      <member name="hostility" type="nonBasic" nonBasicTypeName="HostilityType"/>
+      <!--VRF Detected location-->
+      <member name="worldLocation" type="nonBasic"  nonBasicTypeName= "PositioningGeometryDataType"/>
+      <!--The first time the fusion has been reported (according to the first sensor)-->
+      <member name="firstDetectionTime" stringMaxLength="-1" type="string"/>
+      <!--Units: Degrees-->
+      <member name="course" type="float64" min="0" max="360.0" optional="true"/>
+      <!-- 0: normal, -1: ignore, 1-10: threat level -->
+      <member name="threatLevel" type="int32" min="-1.0" max="10"/>
+    </struct>
+
+    <struct name= "LosRequestType" extensibility= "mutable">
+      <!-- Unique ID of the reporting system-->
+      <member name="requestID" stringMaxLength="-1" type="string" key="true"/>
+      <member name="resolution" type="uint32"/>
+      <member name="unitName" type="string" stringMaxLength="-1"/>
+      <member name="sensorID" stringMaxLength="-1" type="string"/>
+      <member name="location"  type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType" optional="true"/>
+      <member name="polygon" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType" optional="true"/>
+    </struct>
+
+    <struct name= "LosMatrixType" extensibility= "mutable">
+      <!-- Unique ID of the reporting system-->
+      <member name="location"  type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType" optional="true"/>
+      <!--True- LOS exist. False- no LOS-->
+      <member name="is_LOS"  type="boolean"/>
+      <!--Maximum radius-->
+      <member name="maxRadius" type="float32" min="0"/>
+    </struct>
+
+    <struct name= "LosRsponseType" extensibility= "mutable">
+      <!-- Unique ID of the reporting system-->
+      <member name="requestID" stringMaxLength="-1" type="string" key="true"/>
+      <member name="unitName" type="string" stringMaxLength="-1"/>
+      <member name="sensorID" stringMaxLength="-1" type="string"/>
+      <member name="location"  type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType" optional="true"/>
+      <member name="matrix" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "LosMatrixType" optional="true"/>
+      <member name="polygon" type="nonBasic" nonBasicTypeName="gw_dds_types::Area" optional="true"/>
+    </struct>
+
+    <struct name= "AssessmentRequestType" extensibility= "mutable">
+      <!-- Unique ID of the reporting system-->
+      <member name="requestID" stringMaxLength="-1" type="string" key="true"/>
+      <member name="requestName" type="string" stringMaxLength="-1"/>
+      <member name="fusionID" type="uint32"/>
+      <!--False: Start assesment. True: stop assesment-->
+      <member name="requestType"  type="boolean"/>
+      <!--Mandatory when requestType == True-->
+      <member name="assesmentID" type="uint32"/>      
+    </struct>
+
+    <struct name= "AssessmentAckType" extensibility= "mutable">
+      <!-- Unique ID of the reporting system-->
+      <member name="requestID" stringMaxLength="-1" type="string" key="true"/>
+      <member name="assesmentID" type="uint32"/>      
+    </struct>
+
+    <struct name= "AssessmentCameraType" extensibility= "mutable">
+      <member name="unitName" type="string" stringMaxLength="-1"/>
+      <member name="sensorID" stringMaxLength="-1" type="string"/>
+    </struct>
+
+    <struct name= "AssessmentStatusType" extensibility= "mutable">
+      <member name="assesmentID" type="uint32"/>
+      <!--0 - finish assessment      1 - else-->
+      <member name="isTimeOut"  type="boolean"/>
+      <!--Mandatory only when isTimeOut == 1-->
+      <member name="AssessmentCameras" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "AssessmentCameraType"/>
+    </struct>
+    
+    <!--Defines an automatic incrimination area of all the targets detected within that area-->
+    <struct name= "automatIcIncriminationAreaDefinitionType" extensibility= "mutable">
+      <!--Unique identifier given by TILFUL-->
+      <member name="areaID" stringMaxLength="-1" type="string"/>
+      <member name="action" type="nonBasic"  nonBasicTypeName= "ActionForSnapshotAreaEnumType"/>
+      <!--True: Active. False: Inactive-->
+      <member name="isActive"  type="boolean"/>
+      <!--incrimination area-->
+      <member name="polygon" type="nonBasic" nonBasicTypeName="gw_dds_types::Area" optional="true"/>
+      <!--Initiating agent (who initiated the area)-->
+      <member name="initiatingAgent" type="nonBasic" nonBasicTypeName="initiatingAgentEnumType" optional="true"/>
+      <!--VRF Scenario time ISO8601 format. If none provided - from this point in time-->
+      <member name="time_start" stringMaxLength="-1" type="string" optional="true"/>
+      <!--VRF Scenario time ISO8601 format. if none provided - there is no time limit-->
+      <member name="time_end" stringMaxLength="-1" type="string" optional="true"/>
+
+    </struct>
+    
+
+
+		<module name="mobility">
+
+			<struct name="CostFunctionType" nested="true">
+				<member name="max_cost" type="float64"/>
+				<member name="min_cost" type="float64"/>
+				<member name="weight_cost" type="float64"/>
+			</struct>
+
+			<struct name="CostFunction" nested="true">
+				<member name="distance" type="nonBasic" nonBasicTypeName="gw_dds_types::mobility::CostFunctionType"/>
+				<member name="speed" type="nonBasic" nonBasicTypeName="gw_dds_types::mobility::CostFunctionType"/>
+				<member name="time" type="nonBasic" nonBasicTypeName="gw_dds_types::mobility::CostFunctionType"/>
+				<member name="exposureLevel" type="nonBasic" nonBasicTypeName="gw_dds_types::mobility::CostFunctionType"/>
+				<member name="energy" type="nonBasic" nonBasicTypeName="gw_dds_types::mobility::CostFunctionType"/>
+			</struct>
+
+			<struct name="EnemyListAndThreatRadius" nested="true">
+				<!--The id of the enemy -->
+				<member name="enemyID" stringMaxLength="-1" type="string"/>
+				<!--The radius of the enemy-->
+				<member name="enemyRadius" type="float32" min="0"/>
+			</struct>
+
+			<!--A complex query for route planning  Trigger: Upon request -->
+			<struct name="NavigationPathPlanningRequest" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<!--ID of the request-->
+				<member name="requestID" stringMaxLength="-1" type="string"/>
+				<!--ID of the Vehicle-->
+				<member name="vehicleID" stringMaxLength="-1" type="string"/>
+				<!--The maximum number of routes to plan-->
+				<member name="maximumNumberOfRoutes" type="uint32" min="1" optional="true"/>
+				<!--Starting point of the route-->
+				<member name="origin3DPoint" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+				<!--Ending point of the route-->
+				<member name="destination3DPoint" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+				<!--Tolerance radius of the destination-->
+				<member name="toleranceRadius" type="float32" min="0" optional="true"/>
+				<!--Sequance of point that must go throgh them-->
+				<member name="mustGoThroughPoints" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::LLAPointType" optional="true"/>
+				<!--Location to avoid through-->
+				<member name="locationToAvoid" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType" optional="true"/>
+				<!--Radius to avoid from the location to avoid through Units: Meter -->
+				<member name="avoidanceRadius" type="float64" optional="true" min="0"/>
+				<!--Area to avoid-->
+				<member name="avoidanceArea" type="nonBasic" nonBasicTypeName="gw_dds_types::Area" optional="true"/>
+				<!--Sequance of enemy and threat radius-->
+				<member name="enemyAndThreatRadius" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::mobility::EnemyListAndThreatRadius" optional="true"/>
+				<!--Inside which the routes can be planned (polygon)-->
+				<member name="boundaryArea" type="nonBasic" nonBasicTypeName="gw_dds_types::Area" optional="true"/>
+				<!--A list parameters for the mission priorities and limite-->
+				<member name="costFunction" type="nonBasic" nonBasicTypeName="CostFunction" optional="true"/>
+				<!--Azimuth, Units: Degrees-->
+				<member name="desiredStartState" type="float64" min="0" max="360.0" optional="true"/>
+				<!--Azimuth, Units: Degrees-->
+				<member name="desiredEndState" type="float64" min="0" max="360.0" optional="true"/>
+				<!-- Speed of the route Units: m/s-->
+				<member name="speedOfTheRoute" type="float64" min="0"/>
+			</struct>
+
+			<struct name="PathPlanningResponse" nested="true">
+				<!--ID of the route-->
+				<member name="pathID" stringMaxLength="-1" type="string"/>
+				<!--Route score – per each cost parameter.-->
+				<member name="score" type="float32" optional="true"/>
+				<!-- List of waypoint (PolyLine)-->
+				<member name="path" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+				<!--Distance of the route Units: meter-->
+				<member name="distance" type="float64" min="0"/>
+				<!--Time of the route Units: second -->
+				<member name="duration" type="float64" min="0"/>
+				<!--Energy cost of the route-->
+				<member name="energy" type="float64" min="0"/>
+				<!--Exposure level of the route-->
+				<member name="exposure" type="float64" min="0"/>
+				<!--Avg speed of the route-->
+				<member name="avgSpeed" type="float64" min="0"/>
+
+			</struct>
+
+			<!--A complex query response for route planning  Trigger: Upon request -->
+			<struct name="NavigationPathPlanningResponse" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<!--ID of the request (equivalent to the request id)-->
+				<member name="requestID" stringMaxLength="-1" type="string"/>
+				<!--List of polyline and the parameter for each polyline-->
+				<member name="pathPlanningResponseVector" sequenceMaxLength="-1" type="nonBasic"  nonBasicTypeName= "gw_dds_types::mobility::PathPlanningResponse"/>
+			</struct>
+		</module>
+
+
+
+		<module name="pikud">
+
+			<typedef name="Area" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+
+			<struct name="CombatUnit" nested="true">
+				<member name="uniteName" type="string" stringMaxLength="-1"/>
+				<member name="unitID"  type="string" stringMaxLength="-1"/>
+			</struct>
+
+			<enum name="TargetPurpose">
+				<enumerator name="Detection" value="0"/>
+				<enumerator name="Recognition" value="1"/>
+				<enumerator name="Identification" value="2"/>
+				<enumerator name="Tracking" value="3"/>
+			</enum>
+
+			<struct name="SA" nested="true">
+				<member name="sensorID" stringMaxLength="-1" type="string"/>
+				<member name="zoom" type="float32" min="0"/>
+				<!--Pitch, roll , yaw-->
+				<member name="attitude" type="nonBasic"  nonBasicTypeName= "PitchRollYawType"/>
+				<!--Field of view Units: Degrees-->
+				<member name="fovWidth" type="float64"/>
+				<!--Field of view Units: Degrees-->
+				<member name="fovHeight" type="float64"/>
+				<!--ID of the target to track by the sensor-->
+				<member name="targetToTrack" type="nonBasic" nonBasicTypeName="identifier" optional="true"/>
+				<!--location to look at the waypoint-->
+				<member name="locationToLookAt" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType" optional="true"/>
+			</struct>
+
+			<struct name="System" nested="true">
+				<member name="unitName" type="string" stringMaxLength="-1"/>
+				<member name="unitID"  type="string" stringMaxLength="-1"/>
+				<member name="systemType" type="nonBasic" nonBasicTypeName="ClassificationType"/>
+				<member name="unitLocation" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+				<member name="allowedMoved"  type="boolean"/>
+			</struct>
+
+			<struct name="SpecificZone" nested="true">
+				<member name="polygon" type="nonBasic" nonBasicTypeName= "gw_dds_types::pikud::Area"/>
+				<member name="unitID" stringMaxLength="-1" type="string" sequenceMaxLength="-1"/>
+			</struct>
+
+			<struct name="AreaWithId" nested="true">
+				<member name="areaID" stringMaxLength="-1" type="string"/>
+				<member name="area" type="nonBasic" nonBasicTypeName= "gw_dds_types::pikud::Area"/>
+			</struct>
+
+			<struct name="PolygonResponse" nested="true">
+				<member name="polygon" type="nonBasic" nonBasicTypeName= "gw_dds_types::pikud::AreaWithId"/>
+				<member name="coveragePercentage"  type="float64"/>
+				<member name="overlapOnPolygonPerUnit"  type="float64"/>
+			</struct>
+
+			<struct name="SystemPosition" nested="true">
+				<member name="uniteName" type="string" stringMaxLength="-1"/>
+				<member name="unitID"  type="string" stringMaxLength="-1"/>
+				<member name="position" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+				<member name="centerAzimuthOnPosition"  type="float64" min="0" max="360"/>
+				<member name="centerElevationOnPosition"  type="float64" min="-90.0" max="90.0"/>
+				<member name="coveragePercentagePerUnit"  type="float64"/>
+				<member name="overlapPerUNIT"  type="float64"/>
+				<member name="polygonAOIperUnit" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::pikud::PolygonResponse"/>
+			</struct>
+
+			<struct name="SensorInfo" nested="true">
+				<member name="sensor_name" type="string" stringMaxLength="-1"/>
+				<member name="sensor_orientation"  type="nonBasic" nonBasicTypeName="PolarType"/>
+				<!--Field of view Units: Degrees-->
+				<member name="fov_width" type="float64" min="-180.0" max="180.0"/>
+				<!--Field of view Units: Degrees-->
+				<member name="fov_height" type="float64" min="-90.0" max="90.0"/>
+			</struct>
+
+			<struct name="UnitInfo" nested="true">
+				<member name="sensorInfo" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName="gw_dds_types::pikud::SensorInfo"/>
+				<member name="position" type="nonBasic" nonBasicTypeName="gw_dds_types::LLAPointType"/>
+			</struct>
+
+
+			<struct name="SA_Planning_Request">
+				<member name="requestID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="numberOfOptions" type="uint32"/>
+				<member name="targetToDetect" type="nonBasic" nonBasicTypeName="gw_dds_types::GeneralClassification"/>
+				<member name="purpose" type="nonBasic" nonBasicTypeName="gw_dds_types::PurposeEnum"/>
+				<member name="allocatedUnits" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::pikud::System"/>
+				<member name="toCover" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::pikud::AreaWithId"/>
+				<member name="allowedZone" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::pikud::SpecificZone"/>
+				<member name="restrictedZone" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::pikud::SpecificZone"/>
+			</struct>
+
+			<enum name="SA_Planning_Failure_Enum">
+				<enumerator name="UNKNOWN" value="0"/>
+				<enumerator name="POLYGON_OUT_OF_AOO" value="1"/>
+				<enumerator name="MISSING_POLYGON" value="2"/>
+				<enumerator name="INVALID_POLYGON" value="3"/>
+				<enumerator name="RESTRICTED_ZONE_OVERLAPS_ALLOWED_ZONE" value="4"/>
+				<enumerator name="POLYGONS_ARE_TOO_SMALL" value="5"/>
+				<enumerator name="PLATFORMS_NOT_ASSOSCIATED_TO_ALLOWED_ZONE" value="6"/>
+				<enumerator name="NO_COVER_FOR_REQUESTED_POLYGON" value="7"/>
+			</enum>
+
+			<struct name="SAresponseOptions" nested="true">
+				<member name="coverage"  type="float64"/>
+				<member name="overlap"  type="float64"/>
+				<member name="unitsPositions" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::pikud::SystemPosition"/>
+			</struct>
+
+			<struct name="SA_Planning_Response">
+				<member name="requestID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="responseOptions" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::pikud::SAresponseOptions"/>
+				<member name="isSuccess" type="boolean"/>
+				<member name="failureReason" type="nonBasic" nonBasicTypeName="gw_dds_types::pikud::SA_Planning_Failure_Enum"/>
+			</struct>
+
+			<!--<struct name="LethalityCommand" nested="true">
+        <member name="weaponID" type="nonBasic" nonBasicTypeName="identifier"/>
+        -->
+			<!--ID of the target to engage-->
+			<!--
+        <member name="targetToEngage" type="nonBasic" nonBasicTypeName="identifier" optional="true"/>
+        -->
+			<!--location to engage at the waypoint-->
+			<!--
+        <member name="locationToEngage" type="nonBasic" nonBasicTypeName="gw_dds_types::AttackCommand" optional="true"/>
+      </struct>-->
+
+			<struct name="MobilityHLOExecutionConfiguration" nested="true">
+				<!--Mobility mission planned start time in UTC-->
+				<member name="startTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<!--Mobility mission planned end time in UTC-->
+				<member name="endTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<member name="mobilityHLO" type="nonBasic" nonBasicTypeName= "gw_dds_types::EntityFollowPathCommandType"/>
+			</struct>
+
+			<enum name="Attack">
+				<enumerator name="LOCATION" value="0"/>
+				<enumerator name="ENTITY" value="1"/>
+			</enum>
+
+			<union name="AttackEntityOrLocation">
+				<discriminator type="nonBasic" nonBasicTypeName="gw_dds_types::pikud::Attack"/>
+				<case>
+					<caseDiscriminator value="LOCATION"/>
+					<member name="attackLocation" type="nonBasic" nonBasicTypeName= "gw_dds_types::AttackCommand"/>
+				</case>
+				<case>
+					<caseDiscriminator value="ENTITY"/>
+					<member name="attackEntity" type="nonBasic" nonBasicTypeName= "gw_dds_types::AttackEntityCommand"/>
+				</case>
+			</union>
+
+			<struct name="LethalityHLOExecutionConfiguration" nested="true">
+				<!--Lethality mission planned start time in UTC-->
+				<member name="startTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<!--Lethality mission planned end time in UTC-->
+				<member name="endTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<member name="lethalityHLO" type="nonBasic" nonBasicTypeName= "gw_dds_types::pikud::AttackEntityOrLocation"/>
+			</struct>
+
+			<struct name="SAHLOExecutionConfiguration" nested="true">
+				<!--SA mission planned start time in UTC-->
+				<member name="startTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<!--SA mission planned end time in UTC-->
+				<member name="endTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<member name="saHLO" type="nonBasic" nonBasicTypeName= "gw_dds_types::SensorDesignationRequest"/>
+			</struct>
+
+			<struct name="UnitHLOs" nested="true">
+				<member name="unitName" stringMaxLength="-1" type="string"/>
+				<member name="unitID" stringMaxLength="-1" type="string"/>
+				<member name="mobilityHLOs" type="nonBasic" sequenceMaxLength="-1"  nonBasicTypeName= "gw_dds_types::pikud::MobilityHLOExecutionConfiguration"/>
+				<member name="lethalityHLOs" type="nonBasic" sequenceMaxLength="-1"  nonBasicTypeName= "gw_dds_types::pikud::LethalityHLOExecutionConfiguration"/>
+				<member name="saHLOs" type="nonBasic" sequenceMaxLength="-1"  nonBasicTypeName= "gw_dds_types::pikud::SAHLOExecutionConfiguration"/>
+			</struct>
+
+
+
+			<struct name="MissionPhases" nested="true">
+				<member name="phaseType" type="string" stringMaxLength="-1"/>
+				<!--The large area-->
+				<member name="areaOfInterest"  type="nonBasic" nonBasicTypeName= "gw_dds_types::pikud::Area"/>
+				<!--Execution area, the area where you are (per phase)-->
+				<member name="areaOfOperation" type="nonBasic" nonBasicTypeName= "gw_dds_types::pikud::Area"/>
+				<!--Mission planned start time in UTC-->
+				<member name="startTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<!--Mission planned start end in UTC-->
+				<member name="endTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<!--Units: second -->
+				<member name="duration" type="float64" min="0"/>
+				<!-- List of path for each vehicle-->
+				<member name="vehiclePhasePlan" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::pikud::UnitHLOs"/>
+			</struct>
+
+			<!--   -->
+			<struct name="MissionPlanType" extensibility= "mutable">
+        <member name="planID" stringMaxLength="-1" type="string" key="true"/>
+        <member name="score" type="float64"/>
+        <!-- Coverage: [0,100] -->
+				<member name="coverage"  type="nonBasic" nonBasicTypeName= "gw_dds_types::coveragePercentage"/>
+        <!-- Units: second -->
+        <member name="duration" type="float64" min="0"/>
+        <!-- Number of enemies killed -->
+        <member name="numberOfEnemiesKilled" type="float32"/>
+        <member name="Survivability" type="float32"/>
+				<member name="areaOfInterest"  type="nonBasic" nonBasicTypeName= "gw_dds_types::pikud::Area"/>
+				<!--Execution area, the area where you are-->
+				<member name="areaOfOperation" type="nonBasic" nonBasicTypeName= "gw_dds_types::pikud::Area"/>
+				<!--Destination area at the end of the mission-->
+				<member name="destinationArea" type="nonBasic" nonBasicTypeName= "gw_dds_types::pikud::Area"/>
+				<!--allocated Combat Unit identifiers (name + id) -->
+				<member name="allocatedCombatUnit" type="nonBasic" sequenceMaxLength="100" nonBasicTypeName="gw_dds_types::pikud::CombatUnit"/>
+				<member name="missionPhases" type="nonBasic" sequenceMaxLength="10" nonBasicTypeName= "gw_dds_types::pikud::MissionPhases"/>
+			</struct>
+
+			<!--Complex mission planning, which contains the units and areas and time for each step in the mission (from Planner/Executer to Tiful(C2))  Trigger: Upon request -->
+			<struct name="MissionPlan" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="missionName" stringMaxLength="-1" type="string"/>
+				<!--Unique identifier of the request-->
+				<member name="requestID" stringMaxLength="-1" type="string" key="true"/>
+				<!--The large area-->
+				<member name="missionPlans" sequenceMaxLength="-1" type="nonBasic" nonBasicTypeName= "MissionPlanType"/>
+			</struct>
+
+		</module>
+
+		<module name="mission">
+			<typedef name="PolyLine" type="nonBasic" sequenceMaxLength="-1" nonBasicTypeName= "gw_dds_types::LLAPointType"/>
+			<typedef name="priorityLevel" type="uint32" min="0" max="10"/>
+
+			<struct name="CostFunction" extensibility="mutable" nested="true">
+				<member name="lethalityPriorityLevel" type="nonBasic"  nonBasicTypeName="gw_dds_types::mission::priorityLevel"/>
+				<member name="budgetPriorityLevel" type="nonBasic"  nonBasicTypeName="gw_dds_types::mission::priorityLevel"/>
+				<member name="uninvolvedDamagePriorityLevel" type="nonBasic"  nonBasicTypeName="gw_dds_types::mission::priorityLevel"/>
+				<member name="survivabilityPriorityLevel" type="nonBasic"  nonBasicTypeName="gw_dds_types::mission::priorityLevel"/>
+				<member name="timePriorityLevel" type="nonBasic"  nonBasicTypeName="gw_dds_types::mission::priorityLevel"/>
+			</struct>
+
+			<enum name="ResponseCodeType">
+				<enumerator name="RESPONSE_INVALID" value="0"/>
+				<enumerator name="RESPONSE_VALID" value="1"/>
+				<enumerator name="RESPONSE_APPROVE" value="2"/>
+				<enumerator name="RESPONSE_DISAPPROVE" value="3"/>
+			</enum>
+
+			<enum name="MissionTypeEnum">
+				<enumerator name="THREAT_DETECTION" value="0"/>
+				<enumerator name="STRIKE" value="1"/>
+				<enumerator name="DETECT_AND_STRIKE" value="2"/>
+				<enumerator name="LEAD_COMPONENT" value="3"/>
+				<enumerator name="ADVANCE_GUARD" value="4"/>
+			</enum>
+
+			<!--Request for start mission planning (from Tiful(C2) to Planner/Executer) Trigger: Upon request -->
+			<struct name= "MissionStart" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="planID" stringMaxLength="-1" type="string" />
+				<member name="missionName" stringMaxLength="-1" type="string"/>
+				<!--Unique identifier of the request-->
+				<member name="requestID" type="nonBasic" nonBasicTypeName="identifier" key="true"/>
+			</struct>
+
+			<!--Request for complex mission planning, which contains the units and areas and time for each step in the mission (from Tiful(C2) to Planner/Executer) Trigger: Upon request -->
+			<struct name= "MissionPlanningCommand" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="missionName" stringMaxLength="-1" type="string"/>
+				<!--Unique identifier of the request-->
+				<member name="requestID" type="nonBasic" nonBasicTypeName="identifier" key="true"/>
+				<!--The type of the platoon mission-->
+				<member name="missionType" type="nonBasic" nonBasicTypeName="gw_dds_types::mission::MissionTypeEnum"/>
+				<!--The large area-->
+				<member name="areaOfInterest"  type="nonBasic" nonBasicTypeName= "gw_dds_types::mission::PolyLine"/>
+				<!--Execution area, the area where you are-->
+				<member name="areaOfOperation" type="nonBasic" nonBasicTypeName= "gw_dds_types::mission::PolyLine"/>
+				<!--Destination area at the end of the mission-->
+				<member name="destinationArea" type="nonBasic" nonBasicTypeName= "gw_dds_types::mission::PolyLine"/>
+				<!--Mission planned start time in UTC-->
+				<member name="startTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<!--Mission planned end time in UTC-->
+				<member name="endTime" type="nonBasic"  nonBasicTypeName= "gw_dds_types::UTCTime"/>
+				<!--A list of routes the mission go through-->
+				<member name="mustPassThroughRoutes" type="nonBasic" sequenceMaxLength="100" nonBasicTypeName="gw_dds_types::mission::PolyLine"/>
+				<!--A list parameters for the mission priorities-->
+				<member name="costFunction" type="nonBasic" nonBasicTypeName="gw_dds_types::mission::CostFunction"/>
+				<!--Area which is restricted to mobility-->
+				<member name="mobilityRestrictedArea"  type="nonBasic" nonBasicTypeName= "gw_dds_types::mission::PolyLine"/>
+				<!--An area which is not allowed to fire-->
+				<member name="fireInhibitZones"  type="nonBasic" nonBasicTypeName= "gw_dds_types::mission::PolyLine"/>
+				<!--An area where free fire is allowed-->
+				<member name="freeFireZones"  type="nonBasic" nonBasicTypeName= "gw_dds_types::mission::PolyLine"/>
+				<!--allocated Combat Force identifiers (name + id) -->
+				<member name="allocatedCombatUnit" type="nonBasic" sequenceMaxLength="10" nonBasicTypeName="gw_dds_types::pikud::CombatUnit"/>
+				<!--Defined by the commander. Enable the operator to decide about next step in the execution. List of waypoints-->
+				<!--
+        <member name="interventionPoints" type="nonBasic" sequenceMaxLength="100" nonBasicTypeName= "gw_dds_types::LLAPointType"/>-->
+			</struct>
+
+
+			<!--Manual BDA message, Allow the operator to report target destruction after firing.  Trigger: Upon event -->
+			<struct name= "ManualBDAReport" extensibility= "mutable">
+				<member name="unitName" stringMaxLength="-1" type="string"/>
+				<member name="unitID" stringMaxLength="-1" type="string"/>
+				<member name="entityDamageState" type="nonBasic" nonBasicTypeName="gw_dds_types::EntityStateType"/>
+			</struct>
+
+			<!--Answer to the Mission Plan message  Trigger: Upon request -->
+			<struct name= "Mission_CommandResponse" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<!--Unique identifier of the request-->
+				<member name="requestID" stringMaxLength="-1" type="string"/>
+				<member name="responseCode" type="nonBasic"  nonBasicTypeName= "gw_dds_types::mission::ResponseCodeType"/>
+				<member name="reason" stringMaxLength="-1" type="string" optional="true"/>
+        <!--Planning duration (seconds) -->
+        <member name="duration" type="float64" min="0"/>
+			</struct>
+		</module>
+
+		<module name="dilemma">
+
+			<enum name="DisApprovalReason">
+				<enumerator name="NA" value="0"/>
+				<enumerator name="SEND_OTHER_OPTION" value="1"/>
+				<enumerator name="CANCEL_INCRIMINATION" value="2"/>
+			</enum>
+      
+			<enum name="DillemaTypeEnum">
+				<enumerator name="FIRE" value="0"/>
+				<enumerator name="EXECUTION_FAILURE" value="1"/>
+			</enum>
+
+			<enum name="CancelReason">
+				<enumerator name="INCRIMINATION_CANCELED" value="0"/>
+				<enumerator name="TARGET_DISAPPEAR" value="1"/>
+				<enumerator name="DANGER_FOR_UNINVOLVED" value="2"/>
+				<enumerator name="DANGER_FOR_BLUEFORCE" value="3"/>
+			</enum>
+
+			<!--A dilemma message which describes the chance of success of each option (From Planner/Executer to Tiful(C2))  Trigger: Upon event -->
+			<struct name="Dilemma" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="dilemmaID" stringMaxLength="-1" type="string" key="true"/>
+				<!--ID of the target-->
+				<member name="targetID" stringMaxLength="-1" type="string"/>
+				<!--ID of the veicle-->
+				<member name="vehicleID" stringMaxLength="-1" type="string"/>
+        <!--Dillema type -->
+        <member name="dillemaType"  type="nonBasic" nonBasicTypeName="DillemaTypeEnum"/>
+        <!--id of the allocated sensor-->
+        <member name="allocatedSensorId" type="nonBasic" nonBasicTypeName="gw_dds_types::identifier"/>
+				<!--Weapon to use in the dilemma-->
+				<member name="allocatedWeapon" stringMaxLength="-1" type="string"/>
+				<!--Units: Precent-->
+				<member name="killProbability" type="float64" min="0" max="100"/>
+				<!--Units: Meter-->
+				<member name="effectRadius" type="float64" min="0"/>
+				<!--Units: Meter-->
+				<member name="deltaAccuracy" type="float64" min="0"/>
+				<!--Units: seconds-->
+				<member name="timeWindow" type="float64" min="0"/>
+			</struct>
+
+			<!--Answer to the dilemma message (i.e. whether it was approved or not and the reason for it)  (From Tiful(C2) to Planner/Executer) Trigger: Upon event -->
+			<struct name="DilemmaResponse" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="dilemmaID" stringMaxLength="-1" type="string" key="true"/>
+				<!-- True for approved and False for not approved-->
+				<member name="approve" type="boolean"/>
+				<!--if approved N/A is return-->
+				<member name="disApprovalReason"  type="nonBasic" nonBasicTypeName="gw_dds_types::dilemma::DisApprovalReason"/>
+			</struct>
+
+			<!--Cancel the dilemma and the reason (From Planner/Executer to Tiful(C2)) Trigger: Upon event -->
+			<struct name="DilemmaCancel" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="dilemmaID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="cancelReason"  type="nonBasic" nonBasicTypeName="gw_dds_types::dilemma::CancelReason"/>
+			</struct>
+
+			<!--"Cease" message, this message is applicable after approval by the operator and until the expiration of the execution time (From Tiful(C2) to Planner/Executer)  Trigger: Upon event -->
+			<struct name="DilemmaCeasefire" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="dilemmaID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="reason" stringMaxLength="-1" type="string"/>
+			</struct>
+
+			<!--Applicative answer to the dilemma message (From Tiful(C2) to Planner/Executer) Trigger: Upon event -->
+			<struct name="DilemmaACK" extensibility= "mutable">
+				<member name="sourceID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="recipientID" stringMaxLength="-1" type="string" key="true"/>
+				<member name="dilemmaID" stringMaxLength="-1" type="string" key="true"/>
+			</struct>
+
+		</module>
+	</module>
+</types>
+

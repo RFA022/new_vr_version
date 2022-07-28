@@ -1,0 +1,12 @@
+2022-06-21 15:11:45,830 [INFO] Initializing RFSM 
+2022-06-21 15:11:46,016 [DEBUG] Communicator is initialized
+2022-06-21 15:11:46,016 [DEBUG] running in vrf mode
+2022-06-21 15:11:46,016 [DEBUG] RFSMManager is initialized
+2022-06-21 15:11:46,016 [INFO] RFSM initialized
+2022-06-21 15:11:46,016 [DEBUG] SpawnManager is initialized
+2022-06-21 15:11:46,017 [DEBUG] area compound CD area of interest X
+2022-06-21 15:11:46,017 [DEBUG] create 6 red forces and 3 civilians in area C
+2022-06-21 15:11:46,017 [DEBUG] create 6 red forces and 2 civilians in area D
+2022-06-21 15:11:46,017 [DEBUG] create 1 long anti tank and 1 civilians in area X
+2022-06-21 15:11:46,017 [DEBUG] start create entity
+2022-06-21 15:11:46,018 [DEBUG] start create civilians

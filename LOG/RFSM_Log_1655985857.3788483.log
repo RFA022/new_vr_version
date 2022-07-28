@@ -1,0 +1,30 @@
+2022-06-23 15:04:17,378 [INFO] Initializing RFSM 
+2022-06-23 15:04:17,559 [DEBUG] Communicator is initialized
+2022-06-23 15:04:17,559 [DEBUG] running in vrf mode
+2022-06-23 15:04:17,559 [DEBUG] RFSMManager is initialized
+2022-06-23 15:04:17,559 [INFO] RFSM initialized
+2022-06-23 15:04:17,559 [DEBUG] SpawnManager is initialized
+2022-06-23 15:04:17,560 [DEBUG] area compound AD area of interest Y
+2022-06-23 15:04:17,560 [DEBUG] create 4 red forces and 0 civilians in area A
+2022-06-23 15:04:17,560 [DEBUG] create 6 red forces and 0 civilians in area D
+2022-06-23 15:04:17,560 [DEBUG] create 1 long anti tank and 1 civilians in area Y
+2022-06-23 15:04:17,560 [DEBUG] start create entity
+2022-06-23 15:04:17,561 [DEBUG] start create civilians
+2022-06-23 15:04:29,567 [DEBUG] Create Entities
+2022-06-23 15:04:29,568 [DEBUG] Send compound
+2022-06-23 15:04:29,568 [DEBUG] Get Forces local 
+2022-06-23 15:05:03,664 [DEBUG] change op location -> time_difference = 33.09232449531555 rand_time = 32.12790544246149 timeop_min = 30.0 timeop_max = 40.0
+2022-06-23 15:05:03,667 [DEBUG] current position 264 move to state type Civil entity type name CIVILIA11
+2022-06-23 15:05:03,667 [DEBUG] Position found 262
+2022-06-23 15:05:03,667 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA11
+2022-06-23 15:05:03,668 [DEBUG] move entity: CIVILIA11 to MOVE_TO_OP to location 262
+2022-06-23 15:05:04,670 [DEBUG] change op location -> time_difference = 34.09845042228699 rand_time = 33.69849711685503 timeop_min = 30.0 timeop_max = 40.0
+2022-06-23 15:05:04,673 [DEBUG] current position -1 move to state type Civil entity type name CIVILIA12
+2022-06-23 15:05:04,673 [DEBUG] current location is not set yet
+2022-06-23 15:05:04,673 [DEBUG] Position found 258
+2022-06-23 15:05:04,673 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA12
+2022-06-23 15:05:04,674 [DEBUG] move entity: CIVILIA12 to MOVE_TO_OP to location 258
+2022-06-23 15:05:07,683 [DEBUG] case 2 CIVILIA11 entity arrived to locaionAT_OP movement task completed
+2022-06-23 15:05:07,683 [DEBUG] entity: CIVILIA11 changed state to AT_OP arrived to location 262
+2022-06-23 15:05:13,700 [DEBUG] case 2 CIVILIA12 entity arrived to locaionAT_OP movement task completed
+2022-06-23 15:05:13,700 [DEBUG] entity: CIVILIA12 changed state to AT_OP arrived to location 258

@@ -1,0 +1,31 @@
+2022-07-20 09:56:29,481 [INFO] Initializing RFSM 
+2022-07-20 09:56:29,925 [DEBUG] Communicator is initialized
+2022-07-20 09:56:29,925 [DEBUG] running in vrf mode
+2022-07-20 09:56:29,925 [DEBUG] RFAScenarioManager is initialized
+2022-07-20 09:56:29,925 [INFO] RFSM initialized
+2022-07-20 09:56:29,925 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-20 09:56:30,426 [DEBUG] Get Forces local 
+2022-07-20 09:56:33,511 [DEBUG] case 3 need to choose position (from op to op position) at_1
+2022-07-20 09:56:35,430 [DEBUG] case 3 need to choose position (from op to op position) ob_1
+2022-07-20 09:56:37,365 [DEBUG] case 3 need to choose position (from op to op position) so_1
+2022-07-20 09:56:39,303 [DEBUG] case 3 need to choose position (from op to op position) so_2
+2022-07-20 09:56:39,803 [DEBUG] case 3 need to move location (from op to op position) 3
+2022-07-20 09:56:39,804 [DEBUG] move entity: at_1 to MOVE_TO_OP to location -1
+2022-07-20 09:56:39,804 [DEBUG] case 3 need to move location (from op to op position) 3
+2022-07-20 09:56:39,804 [DEBUG] move entity: ob_1 to MOVE_TO_OP to location -1
+2022-07-20 09:56:39,804 [DEBUG] case 3 need to move location (from op to op position) 3
+2022-07-20 09:56:39,804 [DEBUG] move entity: so_1 to MOVE_TO_OP to location -1
+2022-07-20 09:56:39,805 [DEBUG] case 3 need to move location (from op to op position) 3
+2022-07-20 09:56:39,805 [DEBUG] move entity: so_2 to MOVE_TO_OP to location -1
+2022-07-20 09:56:56,853 [DEBUG] case 2 so_2 entity arrived to locaionAT_OP movement task completed
+2022-07-20 09:56:56,853 [DEBUG] entity: so_2 changed state to AT_OP arrived to location 
+2022-07-20 09:56:57,354 [DEBUG] case 2 ob_1 entity arrived to locaionAT_OP movement task completed
+2022-07-20 09:56:57,354 [DEBUG] entity: ob_1 changed state to AT_OP arrived to location 
+2022-07-20 09:56:57,354 [DEBUG] case 2 so_1 entity arrived to locaionAT_OP movement task completed
+2022-07-20 09:56:57,354 [DEBUG] entity: so_1 changed state to AT_OP arrived to location 
+2022-07-20 09:56:57,354 [DEBUG] case 3 need to change posture to cruch so_2
+2022-07-20 09:56:57,856 [DEBUG] case 2 at_1 entity arrived to locaionAT_OP movement task completed
+2022-07-20 09:56:57,856 [DEBUG] entity: at_1 changed state to AT_OP arrived to location 
+2022-07-20 09:56:57,856 [DEBUG] case 3 need to change posture to cruch ob_1
+2022-07-20 09:56:57,856 [DEBUG] case 3 need to change posture to cruch so_1
+2022-07-20 09:56:58,358 [DEBUG] case 3 need to change posture to cruch at_1

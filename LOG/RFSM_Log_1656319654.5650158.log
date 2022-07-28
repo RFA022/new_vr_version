@@ -1,0 +1,40 @@
+2022-06-27 11:47:34,566 [INFO] Initializing RFSM 
+2022-06-27 11:47:34,761 [DEBUG] Communicator is initialized
+2022-06-27 11:47:34,762 [DEBUG] running in vrf mode
+2022-06-27 11:47:34,762 [DEBUG] RFSMManager is initialized
+2022-06-27 11:47:34,762 [INFO] RFSM initialized
+2022-06-27 11:47:34,762 [DEBUG] SpawnManager_Nadav is initialized
+2022-06-27 11:47:36,764 [DEBUG] Get Forces local 
+2022-06-27 11:47:41,429 [DEBUG] case 4 need to change face to South Agent
+2022-06-27 11:47:42,430 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-27 11:47:42,431 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-06-27 11:47:43,432 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-27 11:47:43,432 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-27 11:47:44,434 [DEBUG] case 4 need to change face to South Agent
+2022-06-27 11:47:45,435 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-27 11:47:45,436 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-06-27 11:47:46,436 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-27 11:47:46,436 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-27 11:47:47,438 [DEBUG] case 4 need to change face to South Agent
+2022-06-27 11:47:48,440 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-27 11:47:48,441 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-06-27 11:47:49,441 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-27 11:47:49,441 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-27 11:47:50,443 [DEBUG] case 4 need to change face to South Agent
+2022-06-27 11:47:51,444 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-27 11:47:51,445 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-06-27 11:47:52,446 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-27 11:47:52,446 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-27 11:47:53,448 [DEBUG] case 4 need to change face to South Agent
+2022-06-27 11:47:54,449 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-27 11:47:54,450 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-06-27 11:47:55,450 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-27 11:47:55,450 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-27 11:47:56,451 [DEBUG] case 4 need to change face to South Agent
+2022-06-27 11:47:57,452 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-27 11:47:57,453 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-06-27 11:47:58,454 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-27 11:47:58,454 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-27 11:47:59,455 [DEBUG] case 4 need to change face to East Agent
+2022-06-27 11:48:00,456 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-27 11:48:00,457 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1

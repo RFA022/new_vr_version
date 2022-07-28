@@ -1,0 +1,23 @@
+2022-07-21 11:13:41,153 [INFO] Initializing RFSM 
+2022-07-21 11:13:41,591 [DEBUG] Communicator is initialized
+2022-07-21 11:13:41,591 [DEBUG] running in vrf mode
+2022-07-21 11:13:41,591 [DEBUG] RFAScenarioManager is initialized
+2022-07-21 11:13:41,591 [INFO] RFSM initialized
+2022-07-21 11:13:41,592 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-21 11:13:42,092 [DEBUG] Get Forces local 
+2022-07-21 11:13:48,379 [DEBUG] case 3 need to choose position (from op to op position) at_1
+2022-07-21 11:13:48,880 [DEBUG] case 3 need to move location (from op to op position) 38
+2022-07-21 11:13:48,881 [DEBUG] move entity: at_1 to MOVE_TO_OP to location -1
+2022-07-21 11:13:52,387 [DEBUG] case 2 at_1 entity arrived to locaionAT_OP movement task completed
+2022-07-21 11:13:52,387 [DEBUG] entity: at_1 changed state to AT_OP arrived to location 
+2022-07-21 11:13:52,888 [DEBUG] case 3 need to change posture to position posture at_1
+2022-07-21 11:14:14,633 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-21 11:14:15,134 [DEBUG] Get Forces local 
+2022-07-21 11:18:17,512 [DEBUG] case 3 need to choose position (from op to op position) at_1
+2022-07-21 11:18:18,012 [DEBUG] case 3 need to move location (from op to op position) 36
+2022-07-21 11:18:18,013 [DEBUG] move entity: at_1 to MOVE_TO_OP to location -1
+2022-07-21 11:18:19,516 [DEBUG] case 2 at_1 entity arrived to locaionAT_OP movement task completed
+2022-07-21 11:18:19,517 [DEBUG] entity: at_1 changed state to AT_OP arrived to location 
+2022-07-21 11:18:20,018 [DEBUG] case 3 need to change posture to position posture at_1
+2022-07-21 11:21:26,052 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-21 11:21:26,553 [DEBUG] Get Forces local 

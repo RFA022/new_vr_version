@@ -1,0 +1,29 @@
+2022-06-26 13:51:08,103 [INFO] Initializing RFSM 
+2022-06-26 13:51:08,279 [DEBUG] Communicator is initialized
+2022-06-26 13:51:08,280 [DEBUG] running in vrf mode
+2022-06-26 13:51:08,280 [DEBUG] RFSMManager is initialized
+2022-06-26 13:51:08,280 [INFO] RFSM initialized
+2022-06-26 13:51:08,280 [DEBUG] SpawnManager_Nadav is initialized
+2022-06-26 13:51:10,280 [DEBUG] Get Forces local 
+2022-06-26 13:51:14,215 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:14,216 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:14,216 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:14,217 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:15,219 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:15,219 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:16,222 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:16,222 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:17,223 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:17,224 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:18,226 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:18,227 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:19,229 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:19,230 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:20,232 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:20,232 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:21,235 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:21,235 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:22,239 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:22,239 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:51:23,242 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:51:23,242 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999

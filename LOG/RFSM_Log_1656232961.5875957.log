@@ -1,0 +1,75 @@
+2022-06-26 11:42:41,588 [INFO] Initializing RFSM 
+2022-06-26 11:42:41,766 [DEBUG] Communicator is initialized
+2022-06-26 11:42:41,766 [DEBUG] running in vrf mode
+2022-06-26 11:42:41,767 [DEBUG] RFSMManager is initialized
+2022-06-26 11:42:41,767 [INFO] RFSM initialized
+2022-06-26 11:42:42,769 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:43,769 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:43,770 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:43,770 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:44,772 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:44,772 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:44,773 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:45,774 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:45,774 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:45,775 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:46,778 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:46,778 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:46,779 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:47,782 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:47,782 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:47,783 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:48,786 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:48,786 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:48,789 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:49,793 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:49,794 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:49,794 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:50,802 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:50,802 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:50,803 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:51,812 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:51,812 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:51,813 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:52,820 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:52,820 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:52,821 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:53,831 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:53,832 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:53,833 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:54,843 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:54,843 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:54,844 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:55,855 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:55,855 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:55,856 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:56,868 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:56,868 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:56,869 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:57,885 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:57,885 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:57,886 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:58,898 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:58,898 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:58,899 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:42:59,912 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:42:59,912 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:42:59,913 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:43:00,930 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:43:00,930 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:43:00,932 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:43:01,950 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:43:01,951 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:43:01,952 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:43:02,970 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:43:02,970 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:43:02,971 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:43:03,992 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:43:03,992 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:43:03,993 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:43:05,014 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:43:05,015 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:43:05,016 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 11:43:06,039 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 11:43:06,039 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 11:43:06,041 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999

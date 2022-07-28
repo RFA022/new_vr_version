@@ -1,0 +1,8 @@
+2022-07-18 18:16:18,618 [INFO] Initializing RFSM 
+2022-07-18 18:16:19,031 [DEBUG] Communicator is initialized
+2022-07-18 18:16:19,031 [DEBUG] running in vrf mode
+2022-07-18 18:16:19,031 [DEBUG] RFAScenarioManager is initialized
+2022-07-18 18:16:19,032 [INFO] RFSM initialized
+2022-07-18 18:16:19,032 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-18 18:16:42,343 [ERROR] writer SpanSquadCommand_DW dont exist
+2022-07-18 18:16:42,344 [DEBUG] Get Forces local 

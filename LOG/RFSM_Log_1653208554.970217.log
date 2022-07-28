@@ -1,0 +1,80 @@
+2022-05-22 11:35:54,970 [INFO] Initializing RFSM 
+2022-05-22 11:35:55,121 [DEBUG] Communicator is initialized
+2022-05-22 11:35:55,121 [DEBUG] running in vrf mode
+2022-05-22 11:35:55,121 [DEBUG] RFSMManager is initialized
+2022-05-22 11:35:55,121 [INFO] RFSM initialized
+2022-05-22 11:35:55,121 [DEBUG] SpawnManager is initialized
+2022-05-22 11:35:55,121 [DEBUG] area compound AE area of interest Y
+2022-05-22 11:35:55,122 [DEBUG] create 4 red forces and 3 civilians in area A
+2022-05-22 11:35:55,122 [DEBUG] create 5 red forces and 3 civilians in area E
+2022-05-22 11:35:55,122 [DEBUG] create 1 long anti tank and 1 civilians in area Y
+2022-05-22 11:35:55,122 [DEBUG] start create entity
+2022-05-22 11:35:55,135 [DEBUG] start create civilians
+2022-05-22 11:36:12,325 [DEBUG] Create Entities
+2022-05-22 11:36:12,327 [DEBUG] Send compound
+2022-05-22 11:36:12,327 [DEBUG] Get Forces local 
+2022-05-22 11:36:20,207 [DEBUG] enemy_is_detected
+2022-05-22 11:36:20,208 [DEBUG] case 4 LONG_RA17 entity detected enemy LAV 1 fire event!
+2022-05-22 11:36:20,208 [DEBUG] fire event with entity: LONG_RA17 to: LAV 1
+2022-05-22 11:36:21,242 [DEBUG] enemy_is_detected
+2022-05-22 11:36:21,248 [DEBUG] current position 248 move to state type Cover entity type name LONG_RA17
+2022-05-22 11:36:21,251 [DEBUG] Position found 271
+2022-05-22 11:36:21,251 [DEBUG] case 4 LONG_RA17 entity detected enemy LAV 1 run to cover event!
+2022-05-22 11:36:21,252 [DEBUG] move entity: LONG_RA17 to MOVE_TO_COVER to location 271
+2022-05-22 11:36:22,264 [DEBUG] entity is under fire
+2022-05-22 11:36:22,264 [DEBUG] case 3 SHORT_R1 entity under fire  there is no los, go to cover!
+2022-05-22 11:36:22,271 [DEBUG] current position 80 move to state type Cover entity type name SHORT_R1
+2022-05-22 11:36:22,273 [DEBUG] Position found 81
+2022-05-22 11:36:22,273 [DEBUG] move entity: SHORT_R1 to MOVE_TO_COVER to location 81
+2022-05-22 11:36:22,275 [DEBUG] entity is under fire
+2022-05-22 11:36:22,275 [DEBUG] case 3 SHORT_R2 entity under fire  there is no los, go to cover!
+2022-05-22 11:36:22,278 [DEBUG] current position 102 move to state type Cover entity type name SHORT_R2
+2022-05-22 11:36:22,281 [DEBUG] Position found 118
+2022-05-22 11:36:22,282 [DEBUG] move entity: SHORT_R2 to MOVE_TO_COVER to location 118
+2022-05-22 11:36:22,284 [DEBUG] entity is under fire
+2022-05-22 11:36:22,284 [DEBUG] case 3 OBSERVE3 entity under fire  there is no los, go to cover!
+2022-05-22 11:36:22,287 [DEBUG] current position 41 move to state type Cover entity type name OBSERVE3
+2022-05-22 11:36:22,292 [DEBUG] Position found 67
+2022-05-22 11:36:22,292 [DEBUG] move entity: OBSERVE3 to MOVE_TO_COVER to location 67
+2022-05-22 11:36:22,292 [DEBUG] entity is under fire
+2022-05-22 11:36:22,292 [DEBUG] case 3 SOLDIER5 entity under fire  there is no los, go to cover!
+2022-05-22 11:36:22,295 [DEBUG] current position 50 move to state type Cover entity type name SOLDIER5
+2022-05-22 11:36:22,301 [DEBUG] Position found 70
+2022-05-22 11:36:22,302 [DEBUG] move entity: SOLDIER5 to MOVE_TO_COVER to location 70
+2022-05-22 11:36:22,304 [DEBUG] entity is under fire
+2022-05-22 11:36:22,304 [DEBUG] case 3 OBSERVE6 entity under fire  there is no los, go to cover!
+2022-05-22 11:36:22,307 [DEBUG] current position 184 move to state type Cover entity type name OBSERVE6
+2022-05-22 11:36:22,312 [DEBUG] Position found 208
+2022-05-22 11:36:22,313 [DEBUG] move entity: OBSERVE6 to MOVE_TO_COVER to location 208
+2022-05-22 11:36:22,314 [DEBUG] entity is under fire
+2022-05-22 11:36:22,314 [DEBUG] case 3 SNIPER7 entity under fire  there is no los, go to cover!
+2022-05-22 11:36:22,317 [DEBUG] current position 93 move to state type Cover entity type name SNIPER7
+2022-05-22 11:36:22,336 [DEBUG] Position found 114
+2022-05-22 11:36:22,336 [DEBUG] move entity: SNIPER7 to MOVE_TO_COVER to location 114
+2022-05-22 11:36:22,338 [DEBUG] entity is under fire
+2022-05-22 11:36:22,338 [DEBUG] case 3 SOLDIER8 entity under fire  there is no los, go to cover!
+2022-05-22 11:36:22,340 [DEBUG] current position 172 move to state type Cover entity type name SOLDIER8
+2022-05-22 11:36:22,349 [DEBUG] Position found 176
+2022-05-22 11:36:22,349 [DEBUG] move entity: SOLDIER8 to MOVE_TO_COVER to location 176
+2022-05-22 11:36:22,351 [DEBUG] entity is under fire
+2022-05-22 11:36:22,351 [DEBUG] Fire is within 15 from me
+2022-05-22 11:36:22,351 [DEBUG] case 3 SOLDIER9 entity under fire  there is no los, go to cover!
+2022-05-22 11:36:22,353 [DEBUG] current position 94 move to state type Cover entity type name SOLDIER9
+2022-05-22 11:36:22,357 [DEBUG] Position found 104
+2022-05-22 11:36:22,357 [DEBUG] move entity: SOLDIER9 to MOVE_TO_COVER to location 104
+2022-05-22 11:36:24,415 [DEBUG] case 2 OBSERVE6 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 11:36:24,415 [DEBUG] entity: OBSERVE6 changed state to AT_COVER arrived to location 208
+2022-05-22 11:36:25,449 [DEBUG] case 2 SOLDIER5 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 11:36:25,449 [DEBUG] entity: SOLDIER5 changed state to AT_COVER arrived to location 70
+2022-05-22 11:36:25,453 [DEBUG] case 1 alive check Fail for SOLDIER9
+2022-05-22 11:36:26,483 [DEBUG] case 1 alive check Fail for SOLDIER9
+2022-05-22 11:36:27,506 [DEBUG] case 2 SHORT_R2 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 11:36:27,506 [DEBUG] entity: SHORT_R2 changed state to AT_COVER arrived to location 118
+2022-05-22 11:36:27,512 [DEBUG] case 1 alive check Fail for SOLDIER9
+2022-05-22 11:36:28,538 [DEBUG] case 1 alive check Fail for SOLDIER9
+2022-05-22 11:36:29,560 [DEBUG] case 2 SHORT_R1 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 11:36:29,560 [DEBUG] entity: SHORT_R1 changed state to AT_COVER arrived to location 81
+2022-05-22 11:36:29,566 [DEBUG] case 1 alive check Fail for SOLDIER9
+2022-05-22 11:36:30,593 [DEBUG] case 2 SOLDIER8 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 11:36:30,593 [DEBUG] entity: SOLDIER8 changed state to AT_COVER arrived to location 176
+2022-05-22 11:36:30,594 [DEBUG] case 1 alive check Fail for SOLDIER9

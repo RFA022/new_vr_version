@@ -1,0 +1,195 @@
+2022-07-10 10:00:54,026 [INFO] Initializing RFSM 
+2022-07-10 10:00:54,206 [DEBUG] Communicator is initialized
+2022-07-10 10:00:54,207 [DEBUG] running in vrf mode
+2022-07-10 10:00:54,207 [DEBUG] RFSMManager is initialized
+2022-07-10 10:00:54,207 [INFO] RFSM initialized
+2022-07-10 10:00:54,207 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-10 10:00:56,208 [DEBUG] Get Forces local 
+2022-07-10 10:01:05,614 [DEBUG] case 4 need to change face to West Agent
+2022-07-10 10:01:05,716 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:05,716 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:06,221 [DEBUG] case 4 need to change face to North Green
+2022-07-10 10:01:06,322 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:06,322 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:07,976 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:07,976 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:08,078 [DEBUG] case 4 need to change face to West Agent
+2022-07-10 10:01:08,178 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:08,178 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:08,280 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:08,280 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:08,381 [DEBUG] case 4 need to change face to South Green
+2022-07-10 10:01:08,482 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:08,483 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:09,971 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:09,971 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:10,073 [DEBUG] case 4 need to change face to South Agent
+2022-07-10 10:01:10,173 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:10,174 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:10,376 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:10,376 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:10,477 [DEBUG] case 4 need to change face to North Green
+2022-07-10 10:01:10,578 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:10,579 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:12,194 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:12,195 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:12,296 [DEBUG] case 4 need to change face to West Agent
+2022-07-10 10:01:12,397 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:12,398 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:12,689 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:12,689 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:12,790 [DEBUG] case 4 need to change face to North Green
+2022-07-10 10:01:12,891 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:12,891 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:14,806 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:14,806 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:14,908 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:14,908 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:14,909 [DEBUG] case 4 need to change face to South Green
+2022-07-10 10:01:15,009 [DEBUG] case 4 need to change face to West Agent
+2022-07-10 10:01:15,009 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:15,010 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:15,112 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:15,112 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:17,032 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:17,032 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:17,133 [DEBUG] case 4 need to change face to South Agent
+2022-07-10 10:01:17,234 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:17,235 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:17,235 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:17,235 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:17,336 [DEBUG] case 4 need to change face to South Green
+2022-07-10 10:01:17,437 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:17,438 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:19,195 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:19,195 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:19,296 [DEBUG] case 4 need to change face to South Agent
+2022-07-10 10:01:19,398 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:19,399 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:19,399 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:19,399 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:19,500 [DEBUG] case 4 need to change face to South Green
+2022-07-10 10:01:19,601 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:19,601 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:20,784 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:20,784 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:20,885 [DEBUG] case 4 need to change face to South Agent
+2022-07-10 10:01:20,986 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:20,987 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:21,593 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:21,594 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:21,694 [DEBUG] case 4 need to change face to East Green
+2022-07-10 10:01:21,796 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:21,796 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:22,704 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:22,705 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:22,806 [DEBUG] case 4 need to change face to South Agent
+2022-07-10 10:01:22,907 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:22,908 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:24,104 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:24,104 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:24,205 [DEBUG] case 4 need to change face to South Green
+2022-07-10 10:01:24,307 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:24,307 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:24,711 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:24,711 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:24,812 [DEBUG] case 4 need to change face to South Agent
+2022-07-10 10:01:24,914 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:24,914 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:26,311 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:26,311 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:26,412 [DEBUG] case 4 need to change face to West Green
+2022-07-10 10:01:26,513 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:26,514 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:26,716 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:26,716 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:26,817 [DEBUG] case 4 need to change face to South Agent
+2022-07-10 10:01:26,919 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:26,919 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:28,603 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:28,603 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:28,704 [DEBUG] case 4 need to change face to West Agent
+2022-07-10 10:01:28,805 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:28,805 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:28,805 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:28,806 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:28,908 [DEBUG] case 4 need to change face to South Green
+2022-07-10 10:01:29,008 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:29,009 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:30,942 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:30,943 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:31,044 [DEBUG] case 4 need to change face to East Green
+2022-07-10 10:01:31,146 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:31,146 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:31,146 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:31,146 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:31,248 [DEBUG] case 4 need to change face to South Agent
+2022-07-10 10:01:31,349 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:31,350 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:33,488 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:33,488 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:33,488 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:33,488 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:33,589 [DEBUG] case 4 need to change face to East Agent
+2022-07-10 10:01:33,589 [DEBUG] case 4 need to change face to East Green
+2022-07-10 10:01:33,690 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:33,690 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:33,690 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:33,690 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:36,031 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:36,032 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:36,032 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:36,032 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:36,133 [DEBUG] case 4 need to change face to East Agent
+2022-07-10 10:01:36,133 [DEBUG] case 4 need to change face to North Green
+2022-07-10 10:01:36,234 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:36,235 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:36,235 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:36,235 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:38,070 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:38,070 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:38,172 [DEBUG] case 4 need to change face to North Agent
+2022-07-10 10:01:38,274 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:38,274 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:38,275 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:38,275 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:38,376 [DEBUG] case 4 need to change face to West Green
+2022-07-10 10:01:38,476 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:38,477 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:40,312 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:40,312 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:40,414 [DEBUG] case 4 need to change face to West Agent
+2022-07-10 10:01:40,515 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:40,515 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:40,717 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:40,717 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:40,819 [DEBUG] case 4 need to change face to South Green
+2022-07-10 10:01:40,920 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:40,921 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:42,857 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:42,857 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:42,857 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:42,857 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:42,959 [DEBUG] case 4 need to change face to South Agent
+2022-07-10 10:01:42,959 [DEBUG] case 4 need to change face to East Green
+2022-07-10 10:01:43,060 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:43,061 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:43,061 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:43,061 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:44,979 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:44,979 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:45,284 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:45,284 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:45,385 [DEBUG] case 4 need to change face to West Green
+2022-07-10 10:01:45,504 [DEBUG] case 4 need to change face to East Agent
+2022-07-10 10:01:45,504 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:45,504 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-07-10 10:01:45,605 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-07-10 10:01:45,605 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-07-10 10:01:47,826 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:47,826 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-07-10 10:01:47,927 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-07-10 10:01:47,927 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-07-10 10:01:47,928 [DEBUG] case 4 need to change face to East Green
+2022-07-10 10:01:48,028 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-07-10 10:01:48,029 [DEBUG] move entity: Green to MOVE_TO_OP to location -1

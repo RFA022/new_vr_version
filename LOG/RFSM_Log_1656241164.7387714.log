@@ -1,0 +1,32 @@
+2022-06-26 13:59:24,739 [INFO] Initializing RFSM 
+2022-06-26 13:59:24,914 [DEBUG] Communicator is initialized
+2022-06-26 13:59:24,914 [DEBUG] running in vrf mode
+2022-06-26 13:59:24,914 [DEBUG] RFSMManager is initialized
+2022-06-26 13:59:24,914 [INFO] RFSM initialized
+2022-06-26 13:59:24,915 [DEBUG] SpawnManager_Nadav is initialized
+2022-06-26 13:59:26,916 [DEBUG] Get Forces local 
+2022-06-26 13:59:33,492 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:33,493 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 13:59:43,501 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 13:59:43,502 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 13:59:44,503 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:45,504 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:46,506 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:47,507 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:48,510 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:49,511 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:50,512 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:51,513 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:52,515 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:53,517 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:54,518 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:55,519 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:56,521 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:57,522 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:58,524 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 13:59:59,525 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:00:00,527 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:00:01,529 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:00:02,530 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:00:03,532 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:00:04,534 [DEBUG] case 3 need to move position (from op to op position) Agent

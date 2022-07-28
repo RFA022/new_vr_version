@@ -1,0 +1,104 @@
+2022-05-22 07:47:33,515 [INFO] Initializing RFSM 
+2022-05-22 07:47:33,674 [DEBUG] Communicator is initialized
+2022-05-22 07:47:33,674 [DEBUG] running in vrf mode
+2022-05-22 07:47:33,674 [DEBUG] RFSMManager is initialized
+2022-05-22 07:47:33,674 [INFO] RFSM initialized
+2022-05-22 07:47:33,674 [DEBUG] SpawnManager is initialized
+2022-05-22 07:47:33,675 [DEBUG] area compound BE area of interest Y
+2022-05-22 07:47:33,675 [DEBUG] create 5 red forces and 3 civilians in area B
+2022-05-22 07:47:33,675 [DEBUG] create 5 red forces and 2 civilians in area E
+2022-05-22 07:47:33,675 [DEBUG] create 1 long anti tank and 1 civilians in area Y
+2022-05-22 07:47:33,675 [DEBUG] start create entity
+2022-05-22 07:47:33,688 [DEBUG] start create civilians
+2022-05-22 07:47:50,788 [DEBUG] Create Entities
+2022-05-22 07:47:50,790 [DEBUG] Send compound
+2022-05-22 07:47:50,790 [DEBUG] Get Forces local 
+2022-05-22 07:48:39,916 [DEBUG] change op location -> time_difference = 32.84604525566101 rand_time = 31.167304405778996 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 07:48:39,921 [DEBUG] current position 98 move to state type Civil entity type name CIVILIA14
+2022-05-22 07:48:39,922 [DEBUG] Position found 148
+2022-05-22 07:48:39,922 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA14
+2022-05-22 07:48:39,922 [DEBUG] move entity: CIVILIA14 to MOVE_TO_OP to location 148
+2022-05-22 07:48:40,946 [DEBUG] enemy_is_detected
+2022-05-22 07:48:40,947 [DEBUG] current weopon AIRPLATFORMS doesn't match platform GROUNDPLATFORM
+2022-05-22 07:48:40,953 [DEBUG] current position 102 move to state type Cover entity type name SOLDIER9
+2022-05-22 07:48:40,954 [DEBUG] Position found 107
+2022-05-22 07:48:40,954 [DEBUG] case 4 SOLDIER9 entity detected enemy IVECO_LMV 1 run to cover event!
+2022-05-22 07:48:40,955 [DEBUG] move entity: SOLDIER9 to MOVE_TO_COVER to location 107
+2022-05-22 07:48:42,005 [DEBUG] change op location -> time_difference = 34.9357807636261 rand_time = 32.69900891063249 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 07:48:42,011 [DEBUG] current position 154 move to state type Civil entity type name CIVILIA12
+2022-05-22 07:48:42,012 [DEBUG] Position found 98
+2022-05-22 07:48:42,012 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA12
+2022-05-22 07:48:42,012 [DEBUG] move entity: CIVILIA12 to MOVE_TO_OP to location 98
+2022-05-22 07:48:42,013 [DEBUG] change op location -> time_difference = 34.94276213645935 rand_time = 33.268517100303114 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 07:48:42,016 [DEBUG] current position 276 move to state type Civil entity type name CIVILIA16
+2022-05-22 07:48:42,017 [DEBUG] Position found 268
+2022-05-22 07:48:42,017 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA16
+2022-05-22 07:48:42,017 [DEBUG] move entity: CIVILIA16 to MOVE_TO_OP to location 268
+2022-05-22 07:48:43,056 [DEBUG] change op location -> time_difference = 35.985424280166626 rand_time = 35.88878188452782 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 07:48:43,061 [DEBUG] current position 153 move to state type Civil entity type name CIVILIA13
+2022-05-22 07:48:43,061 [DEBUG] Position found 65
+2022-05-22 07:48:43,061 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA13
+2022-05-22 07:48:43,062 [DEBUG] move entity: CIVILIA13 to MOVE_TO_OP to location 65
+2022-05-22 07:48:43,062 [DEBUG] change op location -> time_difference = 35.99140691757202 rand_time = 35.526253898143786 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 07:48:43,065 [DEBUG] current position 206 move to state type Civil entity type name CIVILIA15
+2022-05-22 07:48:43,065 [DEBUG] Position found 70
+2022-05-22 07:48:43,066 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA15
+2022-05-22 07:48:43,066 [DEBUG] move entity: CIVILIA15 to MOVE_TO_OP to location 70
+2022-05-22 07:48:44,110 [DEBUG] change op location -> time_difference = 37.040284872055054 rand_time = 33.455194076209956 timeop_min = 30.0 timeop_max = 40.0
+2022-05-22 07:48:44,116 [DEBUG] current position 163 move to state type Civil entity type name CIVILIA11
+2022-05-22 07:48:44,117 [DEBUG] Position found 166
+2022-05-22 07:48:44,117 [DEBUG] case 5 time passed and need to move position (from op to op position) CIVILIA11
+2022-05-22 07:48:44,117 [DEBUG] move entity: CIVILIA11 to MOVE_TO_OP to location 166
+2022-05-22 07:48:45,163 [DEBUG] case 2 SOLDIER9 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 07:48:45,164 [DEBUG] entity: SOLDIER9 changed state to AT_COVER arrived to location 107
+2022-05-22 07:48:53,105 [DEBUG] case 2 CIVILIA11 entity arrived to locaionAT_OP movement task completed
+2022-05-22 07:48:53,105 [DEBUG] entity: CIVILIA11 changed state to AT_OP arrived to location 166
+2022-05-22 07:48:59,334 [DEBUG] entity is under fire
+2022-05-22 07:48:59,334 [DEBUG] case 3 SHORT_R1 entity under fire  there is no los, go to cover!
+2022-05-22 07:48:59,343 [DEBUG] current position 51 move to state type Cover entity type name SHORT_R1
+2022-05-22 07:48:59,355 [DEBUG] Position found 61
+2022-05-22 07:48:59,356 [DEBUG] move entity: SHORT_R1 to MOVE_TO_COVER to location 61
+2022-05-22 07:48:59,357 [DEBUG] entity is under fire
+2022-05-22 07:48:59,358 [DEBUG] case 3 SHORT_R2 entity under fire  there is no los, go to cover!
+2022-05-22 07:48:59,362 [DEBUG] current position 190 move to state type Cover entity type name SHORT_R2
+2022-05-22 07:48:59,365 [DEBUG] Position found 203
+2022-05-22 07:48:59,365 [DEBUG] move entity: SHORT_R2 to MOVE_TO_COVER to location 203
+2022-05-22 07:48:59,368 [DEBUG] entity is under fire
+2022-05-22 07:48:59,368 [DEBUG] case 3 SNIPER3 entity under fire  there is no los, go to cover!
+2022-05-22 07:48:59,370 [DEBUG] current position 39 move to state type Cover entity type name SNIPER3
+2022-05-22 07:48:59,371 [DEBUG] Position found 74
+2022-05-22 07:48:59,372 [DEBUG] move entity: SNIPER3 to MOVE_TO_COVER to location 74
+2022-05-22 07:48:59,373 [DEBUG] entity is under fire
+2022-05-22 07:48:59,373 [DEBUG] case 3 SOLDIER4 entity under fire  there is no los, go to cover!
+2022-05-22 07:48:59,376 [DEBUG] current position 50 move to state type Cover entity type name SOLDIER4
+2022-05-22 07:48:59,379 [DEBUG] Position found 89
+2022-05-22 07:48:59,379 [DEBUG] move entity: SOLDIER4 to MOVE_TO_COVER to location 89
+2022-05-22 07:48:59,382 [DEBUG] entity is under fire
+2022-05-22 07:48:59,382 [DEBUG] case 3 OBSERVE5 entity under fire  there is no los, go to cover!
+2022-05-22 07:48:59,384 [DEBUG] current position 38 move to state type Cover entity type name OBSERVE5
+2022-05-22 07:48:59,385 [DEBUG] Position found 68
+2022-05-22 07:48:59,385 [DEBUG] move entity: OBSERVE5 to MOVE_TO_COVER to location 68
+2022-05-22 07:48:59,385 [DEBUG] entity is under fire
+2022-05-22 07:48:59,386 [DEBUG] case 3 SOLDIER6 entity under fire  there is no los, go to cover!
+2022-05-22 07:48:59,389 [DEBUG] current position 80 move to state type Cover entity type name SOLDIER6
+2022-05-22 07:48:59,390 [DEBUG] Position found 81
+2022-05-22 07:48:59,390 [DEBUG] move entity: SOLDIER6 to MOVE_TO_COVER to location 81
+2022-05-22 07:48:59,392 [DEBUG] entity is under fire
+2022-05-22 07:48:59,392 [DEBUG] case 3 SNIPER7 entity under fire  there is no los, go to cover!
+2022-05-22 07:48:59,395 [DEBUG] current position 186 move to state type Cover entity type name SNIPER7
+2022-05-22 07:48:59,397 [DEBUG] Position found 180
+2022-05-22 07:48:59,397 [DEBUG] move entity: SNIPER7 to MOVE_TO_COVER to location 180
+2022-05-22 07:48:59,400 [DEBUG] entity is under fire
+2022-05-22 07:48:59,400 [DEBUG] case 3 OBSERVE8 entity under fire  there is no los, go to cover!
+2022-05-22 07:48:59,402 [DEBUG] current position 93 move to state type Cover entity type name OBSERVE8
+2022-05-22 07:48:59,434 [DEBUG] Position found 113
+2022-05-22 07:48:59,435 [DEBUG] move entity: OBSERVE8 to MOVE_TO_COVER to location 113
+2022-05-22 07:48:59,438 [DEBUG] entity is under fire
+2022-05-22 07:48:59,439 [DEBUG] case 3 SOLDIER10 entity under fire  there is no los, go to cover!
+2022-05-22 07:48:59,442 [DEBUG] current position 122 move to state type Cover entity type name SOLDIER10
+2022-05-22 07:48:59,443 [DEBUG] Position found 104
+2022-05-22 07:48:59,443 [DEBUG] move entity: SOLDIER10 to MOVE_TO_COVER to location 104
+2022-05-22 07:49:05,667 [DEBUG] case 2 SHORT_R2 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 07:49:05,668 [DEBUG] entity: SHORT_R2 changed state to AT_COVER arrived to location 203
+2022-05-22 07:49:06,720 [DEBUG] case 2 SOLDIER6 entity arrived to locaionAT_COVER movement task completed
+2022-05-22 07:49:06,720 [DEBUG] entity: SOLDIER6 changed state to AT_COVER arrived to location 81

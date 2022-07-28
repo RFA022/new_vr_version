@@ -1,0 +1,7 @@
+2022-06-21 15:36:47,995 [INFO] Initializing RFSM 
+2022-06-21 15:36:48,197 [DEBUG] Communicator is initialized
+2022-06-21 15:36:48,197 [DEBUG] running in vrf mode
+2022-06-21 15:36:48,197 [DEBUG] RFSMManager is initialized
+2022-06-21 15:36:48,197 [INFO] RFSM initialized
+2022-06-21 15:36:48,198 [DEBUG] SpawnManager is initialized
+2022-06-21 15:36:48,198 [DEBUG] area compound BD area of interest Y

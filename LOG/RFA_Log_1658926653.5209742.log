@@ -1,0 +1,19 @@
+2022-07-27 15:57:33,520 [INFO] Initializing RFSM 
+2022-07-27 15:57:33,986 [DEBUG] Communicator is initialized
+2022-07-27 15:57:33,986 [DEBUG] Running in vrf mode
+2022-07-27 15:57:33,986 [DEBUG] RFAScenarioManagerConstructor executed successfully
+2022-07-27 15:57:33,987 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-27 15:57:34,488 [DEBUG] Get Forces local 
+2022-07-27 15:58:23,856 [DEBUG] Next Primitive Action: Change next destination to Attack Position: 46
+2022-07-27 15:58:23,856 [DEBUG] Next destination has been changed to: 46
+2022-07-27 15:58:24,358 [DEBUG] Next Primitive Task: move to Attack position number:  46
+2022-07-27 15:58:24,359 [DEBUG] Squad started to move to Attack position: 46
+2022-07-27 15:58:36,422 [DEBUG] case 2 at_1 Entity arrived to locaionAT_OP movement task completed
+2022-07-27 15:58:36,423 [DEBUG] entity: at_1 changed state to AT_OP arrived to location 
+2022-07-27 15:58:36,926 [DEBUG] Next Primitive Task: locate in position
+2022-07-27 15:58:37,926 [DEBUG] Squad member at_1is locating in Attack position:  46
+2022-07-27 15:58:38,928 [DEBUG] Squad member ob_1is locating in Attack position:  46
+2022-07-27 15:58:39,929 [DEBUG] Squad member so_1is locating in Attack position:  46
+2022-07-27 15:58:40,930 [DEBUG] Squad member so_2is locating in Attack position:  46
+2022-07-27 15:58:41,047 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-27 15:58:41,548 [DEBUG] Get Forces local 

@@ -1,0 +1,9 @@
+2022-07-27 18:01:09,623 [INFO] Initializing RFSM 
+2022-07-27 18:01:10,101 [DEBUG] Communicator is initialized
+2022-07-27 18:01:10,102 [DEBUG] Running in vrf mode
+2022-07-27 18:01:10,102 [DEBUG] RFAScenarioManagerConstructor executed successfully
+2022-07-27 18:01:10,104 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-27 18:01:10,607 [DEBUG] Get Forces local 
+2022-07-27 18:01:22,179 [DEBUG] Next Primitive Action: Change next destination to Attack Position: 54
+2022-07-27 18:01:22,179 [DEBUG] Next destination has been changed to: 54
+2022-07-27 18:01:22,684 [DEBUG] Next Primitive Task: move to Attack position number:  54

@@ -1,0 +1,579 @@
+2022-06-26 14:11:34,136 [INFO] Initializing RFSM 
+2022-06-26 14:11:34,314 [DEBUG] Communicator is initialized
+2022-06-26 14:11:34,314 [DEBUG] running in vrf mode
+2022-06-26 14:11:34,314 [DEBUG] RFSMManager is initialized
+2022-06-26 14:11:34,314 [INFO] RFSM initialized
+2022-06-26 14:11:34,315 [DEBUG] SpawnManager_Nadav is initialized
+2022-06-26 14:11:36,316 [DEBUG] Get Forces local 
+2022-06-26 14:11:40,785 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:40,786 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:40,786 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:40,787 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:50,807 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,808 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:50,808 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,808 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:50,808 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,809 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:50,809 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,809 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:50,809 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,809 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:50,810 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,810 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:50,810 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,810 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:50,810 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,810 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:50,811 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,811 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:50,811 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,811 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:50,811 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,811 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:50,812 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:50,812 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 14:11:51,812 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,813 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,813 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,814 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,814 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,814 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,814 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,815 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,815 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,815 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,815 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,816 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,816 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,816 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,817 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,817 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,817 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,817 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,818 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,818 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,818 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,818 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:51,819 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:51,819 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:52,819 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:52,820 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:52,820 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,820 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,821 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,821 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,821 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,821 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,821 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,821 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,822 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,822 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,822 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,822 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,822 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,822 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,823 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,823 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,823 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,823 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,823 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,823 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,824 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:52,824 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:52,824 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:52,824 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:53,827 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,827 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,827 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,828 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,828 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,828 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,829 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,829 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,829 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,829 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,830 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,830 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,830 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,830 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:53,831 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:53,831 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:53,831 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:54,831 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,832 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,832 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,832 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,833 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,833 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,833 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,834 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,834 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,834 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,834 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,835 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,835 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,835 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,835 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:54,836 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:54,836 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:54,836 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:55,837 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,838 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,838 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,838 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,839 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,839 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,839 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,839 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,840 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,840 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,840 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,841 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,841 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,841 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,841 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,842 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:55,842 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:55,842 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:55,842 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:56,844 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,845 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,845 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,845 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,846 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,846 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,846 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,847 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,847 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,847 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,847 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,848 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,848 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,848 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,849 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,849 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,849 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:56,849 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:56,849 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:56,850 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:57,850 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,851 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,851 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,851 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,852 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,852 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,852 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,852 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,853 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,853 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,853 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,854 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,854 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,854 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,854 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,855 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,855 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,855 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:57,855 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:57,856 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:57,856 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:58,857 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,858 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,858 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,858 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,859 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,859 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,859 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,859 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,860 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,860 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,860 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,861 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,861 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,861 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,861 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,862 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,862 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,862 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,862 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:58,862 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:58,863 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:58,863 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:11:59,864 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,865 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,865 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,865 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,866 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,866 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,866 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,867 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,867 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,867 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,867 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,868 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,868 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,868 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,869 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,869 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,869 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,869 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,870 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,870 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:11:59,870 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:11:59,870 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:11:59,870 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:00,871 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,872 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,872 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,872 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,873 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,873 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,873 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,873 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,874 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,874 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,874 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,874 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,875 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,875 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,875 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,876 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,876 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,876 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,876 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,877 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,877 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:00,877 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:00,877 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:00,878 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:01,879 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,880 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,880 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,880 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,881 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,881 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,881 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,881 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,882 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,882 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,882 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,883 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,883 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,883 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,884 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,884 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,884 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,884 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,884 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,885 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,885 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,885 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:01,885 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:01,885 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:01,885 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:02,887 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,888 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,888 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,888 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,889 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,889 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,889 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,889 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,890 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,890 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,890 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,890 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,891 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,891 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,891 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,892 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,892 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,892 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,892 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,893 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,893 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,893 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,894 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:02,894 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:02,894 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:02,894 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:03,896 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,896 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,897 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,897 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,897 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,897 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,897 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,898 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,898 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,898 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,898 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,898 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,899 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,899 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,899 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,899 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,899 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,899 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,900 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,900 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,900 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,900 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,900 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,901 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:03,901 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:03,901 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:03,901 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:04,902 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,903 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,903 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,903 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,903 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,903 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,904 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,904 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,904 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,904 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,905 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,905 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,905 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,905 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,905 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,906 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,906 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,906 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,906 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,906 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,907 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,907 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,907 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,907 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,907 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:04,907 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:04,908 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:04,908 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:05,908 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,909 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,909 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,909 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,909 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,909 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,910 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,910 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,910 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,910 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,910 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,911 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,911 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,911 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,911 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,911 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,911 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,912 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,912 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,912 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,912 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,912 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,913 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,913 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,913 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,913 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:05,913 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:05,913 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:05,914 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:06,915 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,916 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,916 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,916 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,916 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,916 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,917 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,917 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,917 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,917 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,917 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,918 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,918 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,918 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,918 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,918 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,919 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,919 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,919 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,919 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,919 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,920 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,920 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,920 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,920 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,920 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,921 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:06,921 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:06,921 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:06,921 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:07,921 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,922 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,922 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,922 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,922 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,922 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,923 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,923 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,923 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,923 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,923 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,924 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,924 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,924 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,924 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,924 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,925 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,925 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,925 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,925 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,925 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,925 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,926 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,926 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,926 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,926 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,926 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,927 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:07,927 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:07,927 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:07,927 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:08,928 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,929 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,929 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,929 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,929 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,929 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,930 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,930 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,930 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,930 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,930 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,931 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,931 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,931 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,931 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,931 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,932 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,932 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,932 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,932 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,932 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,933 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,933 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,933 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,933 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,933 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,933 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,934 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,934 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:08,934 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:08,934 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:08,934 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:09,935 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,936 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,936 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,936 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,937 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,937 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,937 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,937 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,938 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,938 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,938 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,939 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,939 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,939 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,939 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,940 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,940 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,940 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,940 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,941 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,942 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,942 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,942 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,942 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,942 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,942 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,942 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,943 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,943 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,943 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:09,943 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:09,944 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:09,944 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:10,945 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,946 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,946 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,946 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,946 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,946 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,947 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,947 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,947 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,947 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,947 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,948 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,948 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,948 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,948 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,948 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,949 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,949 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,949 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,949 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,949 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,949 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,950 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,950 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,950 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,950 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,950 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,951 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,951 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,951 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,951 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:10,951 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:10,951 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:10,952 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999
+2022-06-26 14:12:11,953 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,954 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,954 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,955 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,955 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,955 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,955 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,956 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,956 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,956 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,956 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,957 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,957 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,957 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,957 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,958 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,958 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,958 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,959 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,959 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,959 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,960 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,960 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,960 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,960 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,961 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,961 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,961 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,961 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,961 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,961 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,962 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 14:12:11,962 [DEBUG] entity: Agent changed state to AT_OP arrived to location 999
+2022-06-26 14:12:11,962 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 14:12:11,962 [DEBUG] move entity: Agent to MOVE_TO_OP to location 999

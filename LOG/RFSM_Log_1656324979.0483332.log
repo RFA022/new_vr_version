@@ -1,0 +1,26 @@
+2022-06-27 13:16:19,048 [INFO] Initializing RFSM 
+2022-06-27 13:16:19,228 [DEBUG] Communicator is initialized
+2022-06-27 13:16:19,228 [DEBUG] running in vrf mode
+2022-06-27 13:16:19,228 [DEBUG] RFSMManager is initialized
+2022-06-27 13:16:19,228 [INFO] RFSM initialized
+2022-06-27 13:16:19,229 [DEBUG] SpawnManager_Nadav is initialized
+2022-06-27 13:16:21,230 [DEBUG] Get Forces local 
+2022-06-27 13:16:28,568 [DEBUG] case 4 need to change face to North Agent
+2022-06-27 13:16:29,569 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-27 13:16:29,570 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-06-27 13:16:30,570 [DEBUG] case 4 need to change face to South Green
+2022-06-27 13:16:31,570 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-06-27 13:16:31,571 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-06-27 13:16:34,573 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-27 13:16:34,573 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-27 13:16:35,909 [DEBUG] case 4 need to change face to East Agent
+2022-06-27 13:16:36,909 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-27 13:16:36,910 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-06-27 13:16:36,910 [DEBUG] case 2 Green entity arrived to locaionAT_OP movement task completed
+2022-06-27 13:16:36,910 [DEBUG] entity: Green changed state to AT_OP arrived to location -1
+2022-06-27 13:16:37,912 [DEBUG] case 4 need to change face to North Green
+2022-06-27 13:16:38,913 [DEBUG] case 3 need to move position (from op to op position) Green
+2022-06-27 13:16:38,914 [DEBUG] move entity: Green to MOVE_TO_OP to location -1
+2022-06-27 13:16:40,915 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-27 13:16:40,915 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-27 13:16:42,299 [DEBUG] case 4 need to change face to North Agent

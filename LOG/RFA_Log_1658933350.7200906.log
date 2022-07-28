@@ -1,0 +1,4 @@
+2022-07-27 17:49:10,721 [INFO] Initializing RFSM 
+2022-07-27 17:49:11,219 [DEBUG] Communicator is initialized
+2022-07-27 17:49:11,220 [DEBUG] Running in vrf mode
+2022-07-27 17:49:11,220 [DEBUG] RFAScenarioManagerConstructor executed successfully

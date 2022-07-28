@@ -1,0 +1,5 @@
+2022-06-27 10:08:16,959 [INFO] Initializing RFSM 
+2022-06-27 10:08:17,260 [DEBUG] Communicator is initialized
+2022-06-27 10:08:17,261 [DEBUG] running in vrf mode
+2022-06-27 10:08:17,261 [DEBUG] RFSMManager is initialized
+2022-06-27 10:08:17,261 [INFO] RFSM initialized

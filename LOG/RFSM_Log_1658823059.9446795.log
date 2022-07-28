@@ -1,0 +1,14 @@
+2022-07-26 11:10:59,944 [INFO] Initializing RFSM 
+2022-07-26 11:11:00,399 [DEBUG] Communicator is initialized
+2022-07-26 11:11:00,399 [DEBUG] running in vrf mode
+2022-07-26 11:11:00,399 [DEBUG] RFAScenarioManager is initialized
+2022-07-26 11:11:00,400 [INFO] RFSM initialized
+2022-07-26 11:11:00,400 [DEBUG] SpawnManager_Nadav is initialized
+2022-07-26 11:11:00,902 [DEBUG] Get Forces local 
+2022-07-26 11:11:05,839 [DEBUG] Initiating :Choose position:at_1
+2022-07-26 11:11:06,341 [DEBUG] Initiating: move to location3
+2022-07-26 11:11:06,341 [DEBUG] move entity: at_1 to MOVE_TO_OP to location -1
+2022-07-26 11:11:10,857 [DEBUG] case 2 at_1 Entity arrived to locaionAT_OP movement task completed
+2022-07-26 11:11:10,858 [DEBUG] entity: at_1 changed state to AT_OP arrived to location 
+2022-07-26 11:11:11,360 [DEBUG] Initiating: change posture to position posture at_1
+2022-07-26 11:11:15,867 [DEBUG] Initiating: scan for enemy at_1

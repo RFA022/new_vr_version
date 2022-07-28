@@ -1,0 +1,31 @@
+2022-06-26 15:36:20,609 [INFO] Initializing RFSM 
+2022-06-26 15:36:20,893 [DEBUG] Communicator is initialized
+2022-06-26 15:36:20,893 [DEBUG] running in vrf mode
+2022-06-26 15:36:20,893 [DEBUG] RFSMManager is initialized
+2022-06-26 15:36:20,893 [INFO] RFSM initialized
+2022-06-26 15:36:20,894 [DEBUG] SpawnManager_Nadav is initialized
+2022-06-26 15:36:22,895 [DEBUG] Get Forces local 
+2022-06-26 15:36:23,897 [DEBUG] case 3 need to move position (from op to op position) Agent
+2022-06-26 15:36:23,897 [DEBUG] move entity: Agent to MOVE_TO_OP to location -1
+2022-06-26 15:36:52,968 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:52,969 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:53,742 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:53,742 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:54,382 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:54,382 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:54,957 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:54,957 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:55,542 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:55,542 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:56,060 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:56,060 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:56,500 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:56,500 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:56,955 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:56,955 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:57,407 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:57,407 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:57,989 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:57,990 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
+2022-06-26 15:36:58,564 [DEBUG] case 2 Agent entity arrived to locaionAT_OP movement task completed
+2022-06-26 15:36:58,564 [DEBUG] entity: Agent changed state to AT_OP arrived to location -1
