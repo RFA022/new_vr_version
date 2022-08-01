@@ -4,6 +4,7 @@ import sys
 import ConfigManager
 import EntityCurrentState
 #import PlacementManager
+import ext_funs
 from HTNLogic import *
 from EntityNextStateAndAction import *
 from SpawnManager_Nadav import *
@@ -25,6 +26,7 @@ class RFAScenarioManager:
         #Entities Lists:
         self.entity_list = []
         self.blue_entity_list = []
+        self.blue_entity_list_HTN=[]
 
         #General config data:
         self.configuration = pd.read_csv('Configuration.csv',
@@ -64,6 +66,7 @@ class RFAScenarioManager:
                 self.CreateAndUpdateEntityList(self.entity_list)
                 #update Blue list from simulator and from last iteration (info about last seen location)
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
+                self.blue_entity_list_HTN=ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
 
                 under_fire_list = self.communicator.GetFireEvent()
                 task_status_list = self.communicator.GetTaskStatusEvent()
@@ -86,7 +89,7 @@ class RFAScenarioManager:
                         #planning:
                         if current_entity.planBool==1:
                             current_entity.planBool=0
-                            self.entity_list[i].COA=htnModel.findplan(current_entity.current_location)
+                            self.entity_list[i].COA=htnModel.findplan(current_entity.current_location,self.blue_entity_list_HTN)
                         #next state and action
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                             self.start_scenario_time,self.AttackPos)
@@ -157,6 +160,7 @@ class RFAScenarioManager:
                             spawnManager.Run()
                             self.entity_list = spawnManager.spawn_entity_list
                             self.blue_entity_list = self.getBlueEntityList()
+                            self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                             logging.debug("Get Forces local ")
                         else:
                             logging.debug("Get Forces remotely ")

@@ -1,10 +1,11 @@
 import sys
-BOUND=1000
 import pyhop_mcts_game as pyhop
 import numpy as np
 import matplotlib.pyplot as plt
 import ext_funs
 import scipy.stats
+import pandas as pd
+
 
 def locate_at_position_op(state,a):
     state.squad_state = 'at_position'
@@ -28,16 +29,31 @@ def scan_for_enemy_op(state,a):
             enemy['location']['longitude'] ==  None and
             enemy['location']['altitude']  ==  None):
             #simple example: detected or not detected 50% ro be detected:
-            r_n = scipy.stats.randint.rvs(0, 1000)
-            if r_n>500:
+            num=1000
+            r_n = scipy.stats.randint.rvs(0, num)
+            if r_n>num*state.weights['basic_detection_probability']:
                 enemy['observed']=True
         else:
             pass
-
     return state
 
+def null_op(state,a):
+    return state
 
-pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_op)
+def shoot_op(state,a):
+    state.shoot=1
+    return state
+
+def aim_op(state,a):
+    aim_list=[]
+    for enemy in state.assesedBlues:
+        if enemy['observed']==True:
+            aim_list.append(enemy)
+    #sort: observed list by classification when Eitan comes before Ohez
+    aim_list=sorted(aim_list,key=lambda x:x['val'])
+    state.aim_list=aim_list
+    return state
+pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_op,null_op,aim_op,shoot_op)
 
 
 def end_mission_m(state,a):
@@ -51,7 +67,7 @@ def attack_from_position_m(state,a):
     #agent still did not reach the target
     if (state.enemy_number == 0):
             return False
-    return [('choose_position',a),('move_to_position',a),('locate_at_position_op',a),('scan_for_enemy',a)]
+    return [('choose_position',a)]
 
 pyhop.declare_methods('attack', attack_from_position_m,end_mission_m)
 pyhop.declare_original_methods('attack', attack_from_position_m,end_mission_m)
@@ -59,23 +75,46 @@ pyhop.declare_original_methods('attack', attack_from_position_m,end_mission_m)
 
 def choose_position_m(state,param,a):
     nextPosition=param
-    return [('choose_position_op',nextPosition)]
+    return [('choose_position_op',nextPosition),('move_to_position',a)]
 
 pyhop.declare_methods('choose_position', choose_position_m)
 pyhop.declare_original_methods('choose_position', choose_position_m)
 
 def move_to_position_m(state,a):
-    return [('move_to_position_op',a)]
+    return [('move_to_position_op',a),('locate_at_position_op',a),('scan_for_enemy',a)]
 
 pyhop.declare_methods('move_to_position', move_to_position_m)
 pyhop.declare_original_methods('move_to_position', move_to_position_m)
 
 def scan_for_enemy_m(state,a):
-    return [('scan_for_enemy_op', a)]
+    return [('scan_for_enemy_op', a),('continue_task',a)]
 
 pyhop.declare_methods('scan_for_enemy', scan_for_enemy_m)
-pyhop.declare_original_methods('scan_for_enemy', scan_for_enemy_m,)
+pyhop.declare_original_methods('scan_for_enemy', scan_for_enemy_m)
 
+def attack_from_another_position_m(state,a):
+    #agent still did not reach the target
+    observed_count=0
+    for enemy in state.assesedBlues:
+        if enemy['observed']==True:
+            observed_count+=1
+    if (state.enemy_number == 0):
+            return False
+    if (observed_count!=0):
+            return False
+    return [('null_op',a)]
+
+def shoot_m(state,a):
+    observed_count = 0
+    for enemy in state.assesedBlues:
+        if enemy['observed'] == True:
+            observed_count += 1
+    if (observed_count==0):
+            return False
+    return [('aim_op', a),('shoot_op',a)]
+
+pyhop.declare_methods('continue_task',shoot_m, attack_from_another_position_m)
+pyhop.declare_original_methods('continue_task',shoot_m, attack_from_another_position_m)
 
 #After defining all tasks - updating method list#
 #####----------------------------------------#####
@@ -83,46 +122,45 @@ pyhop.update_method_list()
 #####----------------------------------------#####
 
 
-
-def plot_map(state):
-    blue_polygon=state.blue_polygon
-    blue_polygon.append(state.blue_polygon[0])
-    x_pol, y_pol = zip(*state.blue_polygon)  # create lists of x and y values
-    x_pos=[]
-    y_pos=[]
-    col_pos=[]
-    for i in range(len(state.positions)):
-        x_pos.append(state.positions[i][0])
-        y_pos.append(state.positions[i][1])
-        col_pos.append(state.positions[i][2]/10)
-    plt.figure()
-    plt.plot(x_pol, y_pol)
-    for i in range(len(state.positions)):
-        plt.scatter(x_pos[i],y_pos[i],c=[col_pos[i],0,0])
-    plt.show()
-
-
-
-
-def findplan(loc):
+def findplan(loc,blueList):
     init_state = pyhop.State('init_state')
-    init_state.nextPositionIndex=[]
-    init_state.assesedBlues=[]
-    init_state.enemy_number=None
-    init_state.squad_state='stand'
-    init_state.positions=[]
-    init_state.distance_from_positions=[]
-    init_state.debug_task=0
-    init_state.debug_method=0
-    init_state.debug_ope=0
-    #Update distances from positions
-    init_state.positions=ext_funs.get_positions_fromCSV('RedAttackPos.csv')
+    init_state.nextPositionIndex = []
+    init_state.blues = []
+    init_state.assesedBlues = []
+    init_state.enemy_number = None
+    init_state.positions = []
+    init_state.squad_state = 'stand'
+    init_state.distance_from_positions = []
+    init_state.debug_task = 0
+    init_state.debug_method = 0
+    init_state.debug_ope = 0
+    init_state.aim_list = 0
+
+    # Update distances from positions
+    init_state.positions = ext_funs.get_positions_fromCSV('RedAttackPos.csv')
     init_state.loc = loc
-    init_state.distance_from_positions=ext_funs.update_distance_from_positions(init_state)
-    init_state.assesedBlues = ext_funs.getBluesDataFromCSV('BluesConfig.csv')
+    init_state.distance_from_positions = ext_funs.update_distance_from_positions(init_state)
+    init_state.assesedBlues = blueList
     init_state.enemy_number = len(init_state.assesedBlues)
-    print('initial state:')
-    pyhop.print_state(init_state)
-    plan = pyhop.shop_m(init_state, [('attack','me')])
-    print("Plan is:", plan)
-    return (plan)
+    print('initial state is:')
+
+    init_state.htnConfig = pd.read_csv('htnConfig.csv',
+                                       header=[0],
+                                       index_col=[0])
+    # updateSpecificConfigs
+    init_state.weights = {}
+    init_state.weights['choose_position_op'] = float(init_state.htnConfig.at['choose_position_op', 'value'])
+    init_state.weights['move_to_position_op'] = float(init_state.htnConfig.at['move_to_position_op', 'value'])
+    init_state.weights['locate_at_position_op'] = float(init_state.htnConfig.at['locate_at_position_op', 'value'])
+    init_state.weights['scan_for_enemy_op'] = float(init_state.htnConfig.at['scan_for_enemy_op', 'value'])
+    init_state.weights['bda_op'] = float(init_state.htnConfig.at['bda_op', 'value'])
+    init_state.weights['shoot_enemy_op'] = float(init_state.htnConfig.at['shoot_enemy_op', 'value'])
+    init_state.weights['basic_detection_probability'] = float(
+        init_state.htnConfig.at['basic_detection_probability', 'value'])
+
+    pyhop.print_state_simple(init_state)
+
+    plan = pyhop.shop_m(init_state, [('attack', 'me')])
+    print(plan)
+    return plan
+

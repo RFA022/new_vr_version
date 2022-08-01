@@ -1,6 +1,8 @@
 import numpy as np
 import csv
 import math
+from CommunicatorInterface import EntityTypeEnum
+
 
 def simple_update_distance_from_positions(state):
     '''
@@ -74,5 +76,24 @@ def getBluesDataFromCSV(filename):
             entities.append(entity)
         return entities
 
-
-
+def getBluesDataFromVRFtoHTN(blueList):
+    entities=[]
+    for entity in blueList:
+        if entity.last_seen_worldLocation['location']['latitude']==None and\
+           entity.last_seen_worldLocation['location']['longitude'] == None and\
+           entity.last_seen_worldLocation['location']['altitude'] == None:
+                obs=False
+        else:
+                obs=True
+        val=0
+        if entity.classification==EntityTypeEnum.EITAN:
+            val=1
+        HTNentity = {'name': entity.unit_name,
+                  'classification': entity.classification,
+                  'location': entity.last_seen_worldLocation['location'],
+                  'observed': obs,
+                  'is_alive': entity.is_alive,
+                  'val': val
+                  }
+        entities.append(HTNentity)
+    return entities

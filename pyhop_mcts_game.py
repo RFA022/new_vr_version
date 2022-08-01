@@ -102,6 +102,7 @@ import random
 import math
 import numpy as np
 import methods_config as mc
+from CommunicatorInterface import EntityTypeEnum
 ############################################################
 # States and goals
 
@@ -132,6 +133,18 @@ def print_state(state, indent=4):
     else:
         print('False')
 
+def print_state_simple(state, indent=4):
+    """Print each variable in state, indented by indent spaces."""
+    if state != False:
+        for (name, val) in vars(state).items():
+            if name != '__name__' and \
+                    name!= 'htnConfig' and \
+                    name!='weights':
+                for x in range(indent): sys.stdout.write(' ')
+                sys.stdout.write(state.__name__ + '.' + name)
+                print(' =', val)
+    else:
+        print('False')
 
 def print_goal(goal, indent=4):
     """Print each variable in goal, indented by indent spaces."""
@@ -289,7 +302,7 @@ def seek_mcts_plan(state, tasks, plan, depth):
             newstate = operator(copy.deepcopy(state), *task1[1:])
             ###print('depth {} new state:'.format(depth))
             print("real state")
-            print_state(newstate)
+            print_state_simple(newstate)
             if newstate:
                 solution = seek_mcts_plan(newstate, tasks[1:], plan + [task1], depth + 1)
                 if solution != False:
@@ -422,15 +435,16 @@ def calValue(state,subtask):
             ret_val=100
         else:
             ret_val= 100/state.distance_from_positions[subtask[1]]
+        ret_val=state.weights['choose_position_op']*ret_val
     elif subtask[0]=='scan_for_enemy_op':
         #-value of unit of evaluation-#
         #-supports only in Eitan and Ohez-#
         Eitan_number=0
         Ohez_number=0
         for enemy in state.assesedBlues:
-            if enemy['classification']=='EITAN':
+            if enemy['classification']== EntityTypeEnum.EITAN:
                 Eitan_number+=1
-            elif enemy['classification']=='OHEZ':
+            elif enemy['classification']== EntityTypeEnum.OHEZ:
                 Ohez_number+=1
         sum=2*Ohez_number+7*Eitan_number
         x=100/sum #value for each evaluation unit
@@ -438,10 +452,13 @@ def calValue(state,subtask):
         ret_val=0
         for enemy in state.assesedBlues:
             if enemy['observed']== True:
-                if enemy['classification']=='EITAN':
+                if enemy['classification']==EntityTypeEnum.EITAN:
                     ret_val += x * 7
-                elif enemy['classification']=='OHEZ':
+                elif enemy['classification']==EntityTypeEnum.EITAN:
                     ret_val += x * 2
+        ret_val=state.weights['scan_for_enemy_op']*ret_val
+    elif subtask[0]=='null_op':
+        ret_val=100
     else:
         ret_val=0
     return ret_val
