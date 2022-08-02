@@ -29,9 +29,6 @@ class EntityCurrentState:
         self.movement_task_completed = -1
         self.movement_task_success = False
 
-        self.posture_task_completed = -1
-        self.posture_task_success = False
-
         self.fire_task_completed = -1
         self.fire_task_success = False
 

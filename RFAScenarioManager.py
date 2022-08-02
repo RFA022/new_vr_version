@@ -70,7 +70,7 @@ class RFAScenarioManager:
 
                 under_fire_list = self.communicator.GetFireEvent()
                 task_status_list = self.communicator.GetTaskStatusEvent()
-
+                print(task_status_list)
                 # Run over all entity
                 for i in range(len(self.entity_list)):
                     current_entity = self.entity_list[i]
@@ -83,6 +83,7 @@ class RFAScenarioManager:
                                         if task.get("taskName") == "vrf-move-to-location-task":
                                             current_entity.movement_task_completed = task.get("currentStatus")
                                             current_entity.movement_task_success = task.get("taskSuccess")
+
 
                     #---#---get the next state and action---#---#
                     if current_entity.unit_name=="at_1":
@@ -269,8 +270,6 @@ class RFAScenarioManager:
             #task statuses:
             current_entity.movement_task_completed = entity_previous_list[k].movement_task_completed
             current_entity.movement_task_success   = entity_previous_list[k].movement_task_success
-            current_entity.posture_task_completed  = entity_previous_list[k].fire_task_success
-            current_entity.posture_task_success    = entity_previous_list[k].fire_task_success
             current_entity.fire_task_completed     = entity_previous_list[k].fire_task_success
             current_entity.fire_task_success       = entity_previous_list[k].fire_task_success
 
