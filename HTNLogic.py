@@ -66,6 +66,14 @@ class HTNLogic:
                     entity_next_state_and_action.scan_for_enemy = 1
                     logging.debug(
                         "Next Primitive Task: scan for enemy ")
+                if entity_current_state.COA[0][0] == 'aim_op':
+                    entity_next_state_and_action.aim = True
+                    logging.debug(
+                        "Next Primitive Task: aim at most valuable enemy")
+                if entity_current_state.COA[0][0] == 'shoot_op':
+                    entity_next_state_and_action.shoot = True
+                    logging.debug(
+                        "Next Primitive Task: shoot the first enemy in aim list")
                 entity_next_state_and_action.takeAction=1
 
         return entity_next_state_and_action

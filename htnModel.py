@@ -50,7 +50,7 @@ def aim_op(state,a):
         if enemy['observed']==True:
             aim_list.append(enemy)
     #sort: observed list by classification when Eitan comes before Ohez
-    aim_list=sorted(aim_list,key=lambda x:x['val'])
+    aim_list=sorted(aim_list,key=lambda x:x['val'], reverse=True)
     state.aim_list=aim_list
     return state
 pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_op,null_op,aim_op,shoot_op)
@@ -104,17 +104,23 @@ def attack_from_another_position_m(state,a):
             return False
     return [('null_op',a)]
 
-def shoot_m(state,a):
+def aim_and_shoot_m(state,a):
     observed_count = 0
     for enemy in state.assesedBlues:
         if enemy['observed'] == True:
             observed_count += 1
     if (observed_count==0):
             return False
-    return [('aim_op', a),('shoot_op',a)]
+    return [('aim_op', a),('shoot',a)]
 
-pyhop.declare_methods('continue_task',shoot_m, attack_from_another_position_m)
-pyhop.declare_original_methods('continue_task',shoot_m, attack_from_another_position_m)
+pyhop.declare_methods('continue_task',aim_and_shoot_m, attack_from_another_position_m)
+pyhop.declare_original_methods('continue_task',aim_and_shoot_m, attack_from_another_position_m)
+
+def shoot_m(state,a):
+    return [('shoot_op',str(state.aim_list[0]['name']))]
+
+pyhop.declare_methods('shoot',shoot_m)
+pyhop.declare_original_methods('shoot',shoot_m)
 
 #After defining all tasks - updating method list#
 #####----------------------------------------#####

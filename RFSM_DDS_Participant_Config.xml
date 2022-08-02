@@ -114,6 +114,9 @@
             <register_type name="gw_dds_types::SpawnSquadCommandType" type_ref="gw_dds_types::SpawnSquadCommandType"/>
             <register_type name="gw_dds_types::PostureType" type_ref="gw_dds_types::PostureType"/>
             <register_type name="gw_dds_types::AimWeaponCommand" type_ref="gw_dds_types::AimWeaponCommand"/>
+            <register_type name="gw_dds_types::GetAreasListRequest" type_ref="gw_dds_types::GetAreasListRequest"/>
+            <register_type name="gw_dds_types::GetAreasListResponse" type_ref="gw_dds_types::GetAreasListResponse"/>
+
 
             <topic name="LosQueryRequest" register_type_ref="gw_dds_types::LosQueryRequest"/>
             <topic name="LosQueryResponse" register_type_ref="gw_dds_types::LosQueryResponse"/>
@@ -132,7 +135,8 @@
             <topic name="SpawnSquadCommand" register_type_ref="gw_dds_types::SpawnSquadCommandType"/>
             <topic name="EntityPosture" register_type_ref="gw_dds_types::PostureType"/>
             <topic name="AimWeaponCommand" register_type_ref="gw_dds_types::AimWeaponCommand"/>
-
+            <topic name="GetAreasListRequest" register_type_ref="gw_dds_types::GeoQuery"/>
+            <topic name="GetAreasListResponse" register_type_ref="gw_dds_types::GeoQueryResponse"/>
         </domain>
     </domain_library>
 
@@ -141,6 +145,7 @@
             <participant_qos name="RFSM_Participant_Qos" base_name="QOSLibrary::DefaultProfile"/>
             <subscriber name="Subscriber">
                 <subscriber_qos/>
+                <data_reader name="GetAreasListResponse_DR" topic_ref="GetAreasListResponse"/>
                 <data_reader name="LosQueryResponse_DR" topic_ref="LosQueryResponse"/>
                 <data_reader name="GeoQueryResponse_DR" topic_ref="GeoQueryResponse"/>
                 <data_reader name="EntityReport_DR" topic_ref="EntityReport"/>
@@ -176,6 +181,7 @@
 
             <publisher name="Publisher">
                 <publisher_qos/>
+                <data_writer name="GetAreasListRequest_DW" topic_ref="GetAreasListRequest"/>
                 <data_writer name="LosQueryRequest_DW" topic_ref="LosQueryRequest"/>
                 <data_writer name="GeoQueryRequest_DW" topic_ref="GeoQueryRequest"/>
                 <data_writer name="InitialEntitySnapshot_DW" topic_ref="InitialEntitySnapshot">

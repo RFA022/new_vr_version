@@ -115,6 +115,7 @@ class RFAScenarioManager:
                                     for j in range(len(self.entity_list)):
                                         self.communicator.setEntityPosture(self.entity_list[j].unit_name,12)
                                         self.communicator.aim_weapon_at_target(self.entity_list[j].unit_name, self.BluePolygon[-1])
+                                        #Heading command
                                         logging.debug("Squad member " +  str(self.entity_list[j].unit_name) +"is locating in Attack position:  " + str(current_entity.face))
 
                             #LOS:
@@ -136,7 +137,21 @@ class RFAScenarioManager:
                                             detection+=1
                                 if detection == 0:
                                     logging.debug("No enemy has been detected")
-
+                            #Aim
+                            elif entity_next_state_and_action.aim == True:
+                                aim_list=[]
+                                for enemy in self.blue_entity_list_HTN:
+                                    if enemy['observed'] == True:
+                                        aim_list.append(enemy)
+                                # sort: observed list by classification when Eitan comes before Ohez
+                                if aim_list!=[]:
+                                    aim_list = sorted(aim_list, key=lambda x: x['val'], reverse=True)
+                                    self.aim_list = aim_list
+                                    print("aim list is: " + str(aim_list))
+                                if aim_list==[]:
+                                    logging.debug("No enemy has been inserted to the aim list - emptying COA - planBool = 1")
+                                    current_entity.COA=[]
+                                    current_entity.planBool=1
                     # check if entity arrived to location:
                     if current_entity.state == PositionType.MOVE_TO_OP:
                         if entity_next_state_and_action.position == PositionType.AT_OP:
@@ -227,6 +242,7 @@ class RFAScenarioManager:
             current_entity.face = entity_previous_list[k].face
             current_entity.planBool = entity_previous_list[k].planBool
             current_entity.state = entity_previous_list[k].state
+            current_entity.aim_list = entity_previous_list[k].aim_list
             self.entity_list.append(current_entity)
     def CreateEntityInfoFromVrf(self, entity_info_list: list) -> list:
         list_to_return = []

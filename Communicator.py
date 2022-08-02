@@ -13,6 +13,8 @@ sys.path.append(file_path)
 
 
 class Communicator(CommunicatorInterface):
+    GetAreasListRequest_DW="GetAreasListRequest_DW"
+    GetAreasListResponse_DR="GetAreasListResponse_DR"
     LosQueryResponse_DR = "LosQueryResponse_DR"
     GeoQueryResponse_DR = "GeoQueryResponse_DR"
     EntityReport_DR = "EntityReport_DR"
@@ -205,6 +207,14 @@ class Communicator(CommunicatorInterface):
             except:
                 logging.error("reader " + self.LosQueryResponse_DR + " dont exist")
                 return los
+
+    # def getAreasQuery(self):
+    #     with self.lock_read_write:
+    #         try:
+    #             current_DW = self.RFSM_connector.getOutput(self.publisher + self.GetAreasListRequest_DW)
+    #         except:
+    #             logging.error("writer " + self.GetAreasListRequest_DW + " don't exist")
+    #             return ans
 
     def GetGeoQuery(self, src_locations: dict, dest_locations: dict, calcLos: bool, calcDistance: bool) -> dict:
         """

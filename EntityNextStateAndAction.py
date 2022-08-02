@@ -15,6 +15,8 @@ class EntityNextStateAndAction:
         self.nextPos = None
         self.nextPosture = None
         self.scan_for_enemy=None
+        self.aim=False
+        self.shoot=False
 
     def SetPosition(self, new_position: PositionType, location: dict):
         self.position = new_position

@@ -38,4 +38,5 @@ class EntityCurrentState:
         self.face=None
         self.planBool=1
         self.state = PositionType.AT_OP
+        self.aim_list=[]
 
