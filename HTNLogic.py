@@ -19,8 +19,10 @@ class HTNLogic:
         if entity_current_state.alive is False:
             logging.debug("Alive check Fail for " + entity_current_state.unit_name.strip())
             return entity_next_state_and_action
-        moving_position = ((entity_current_state.state == PositionType.MOVE_TO_OP) or (entity_current_state.state == PositionType.MOVE_TO_COVER))
 
+        #Checking current moving or firing status
+        moving_position = (entity_current_state.state == PositionType.MOVE_TO_OP)
+        firing = (entity_current_state.state == isFire.yes)
         # case 2 check if entity is moving position (not in teleport mode)
 
         # check if we are still moving or arrived to location
@@ -40,6 +42,20 @@ class HTNLogic:
                 else:
                     logging.debug("Task completed, didn't arrive to location, unwanted situation")
 
+        # check if still firing:
+        if firing:
+            # check task status
+            if entity_current_state.fire_task_completed == 1:
+                if entity_current_state.fire_task_success:
+                    # At this case we tried to shoot at target
+                    if entity_current_state.fireStatestate == isFire.yes:
+                        entity_current_state.fireState = isFire.no
+                    entity_next_state_and_action.shoot = False
+                    logging.debug(
+                        "case 2 " + entity_current_state.unit_name.strip() + "shooting action completed")
+                    return entity_next_state_and_action
+                else:
+                    logging.debug("Task completed, fire failed, unwanted situation")
         #case 3:
         if entity_current_state.COA != []:
             if entity_current_state.state is PositionType.AT_OP:

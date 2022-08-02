@@ -265,6 +265,7 @@ class RFAScenarioManager:
             current_entity.face = entity_previous_list[k].face
             current_entity.planBool = entity_previous_list[k].planBool
             current_entity.state = entity_previous_list[k].state
+            current_entity.fireState = entity_previous_list[k].fireState
             current_entity.aim_list = entity_previous_list[k].aim_list
 
             #task statuses:

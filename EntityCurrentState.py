@@ -3,10 +3,11 @@ import CommunicatorInterface as CI
 
 class PositionType(Enum):
     AT_OP = 0,
-    AT_COVER = 1
-    MOVE_TO_OP = 2
-    MOVE_TO_COVER = 3
-    AT_SPAWN = 4
+    MOVE_TO_OP = 1
+
+class isFire(Enum):
+    yes = 1,
+    no = 0
 
 class EntityCurrentState:
 
@@ -41,5 +42,6 @@ class EntityCurrentState:
         self.face=None
         self.planBool=1
         self.state = PositionType.AT_OP
+        self.fireState = isFire.no
         self.aim_list=[]
 
