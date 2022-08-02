@@ -12,7 +12,7 @@ import time
 import copy
 import htnModel
 import pandas as pd
-
+import pymap3d as pm
 
 class RFAScenarioManager:
     def __init__(self):
@@ -108,50 +108,72 @@ class RFAScenarioManager:
                                                                            entity_next_state_and_action.position_location)
                                 current_entity.state = entity_next_state_and_action.position
                                 current_entity.target_location = entity_next_state_and_action.position_location
-                                current_entity.target_location_id = entity_next_state_and_action.position_location_id
                                 logging.debug("Squad started to move to Attack position: " + str(current_entity.face))
                             #Locate at position:
                             elif entity_next_state_and_action.nextPosture == 'get_in_position':
                                     for j in range(len(self.entity_list)):
                                         self.communicator.setEntityPosture(self.entity_list[j].unit_name,12)
                                         self.communicator.aim_weapon_at_target(self.entity_list[j].unit_name, self.BluePolygon[-1])
+
                                         #Heading command
+                                        #heading - az, el, my_range = pm.geodetic2aer(dst_lat, dst_lon, dst_alt, src_lat, src_lon, src_alt)
+
                                         logging.debug("Squad member " +  str(self.entity_list[j].unit_name) +"is locating in Attack position:  " + str(current_entity.face))
 
                             #LOS:
                             elif entity_next_state_and_action.scan_for_enemy == 1:
                                 #Basic functionality - next step is to use LOS between point and entity:
                                 logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face))
-                                detection=0
+                                detectionCount=0
                                 for enemy in (self.blue_entity_list):
                                      source=current_entity.current_location
                                      source['altitude']+=self.squadPosture['crouching_height']
                                      target = enemy.worldLocation['location']
-                                     target['altitude'] += self.enemyDimensions['eitan_cg_height']
+                                     if enemy.classification==EntityTypeEnum.EITAN:
+                                        target['altitude'] += self.enemyDimensions['eitan_cg_height']
                                      losRespose=(self.communicator.GetGeoQuery([source],[target],True,True))
                                      if losRespose['distance'][0][0]<self.basicRanges['squad_view_range']:
                                         if losRespose['los'][0][0]==True:
                                             enemy.last_seen_worldLocation=enemy.worldLocation
                                             logging.debug("Enemy: " + str(
                                                 enemy.unit_name)+ " has been detected")
-                                            detection+=1
-                                if detection == 0:
+                                            detectionCount+=1
+                                #updating HTN list which is used when shooting:
+                                self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+                                if detectionCount == 0:
                                     logging.debug("No enemy has been detected")
                             #Aim
                             elif entity_next_state_and_action.aim == True:
                                 aim_list=[]
                                 for enemy in self.blue_entity_list_HTN:
                                     if enemy['observed'] == True:
+                                        enemy['distFromSquad']=ext_funs.getMetriDistance(current_entity.current_location,enemy['location'])
                                         aim_list.append(enemy)
                                 # sort: observed list by classification when Eitan comes before Ohez
                                 if aim_list!=[]:
-                                    aim_list = sorted(aim_list, key=lambda x: x['val'], reverse=True)
+                                    #sort by value - next sort by value and then by distance
+                                    aim_list = sorted(aim_list, key=lambda x: (x['val'],-x['distFromSquad']), reverse=True)
                                     self.aim_list = aim_list
-                                    print("aim list is: " + str(aim_list))
+                                    aim_list_names=[]
+                                    for entity in aim_list:
+                                        name= entity['name']
+                                        aim_list_names.append(name)
+                                    logging.debug(("Target list is: " + str(aim_list_names)))
                                 if aim_list==[]:
                                     logging.debug("No enemy has been inserted to the aim list - emptying COA - planBool = 1")
                                     current_entity.COA=[]
                                     current_entity.planBool=1
+                            #Shoot at target
+                            elif entity_next_state_and_action.shoot==True:
+                                logging.debug(
+                                    "Try Shooting at target " + str(self.aim_list[0]['name']) )
+                                self.communicator.setEntityPosture(current_entity.unit_name, 13)
+                                logging.debug(
+                                    "P")
+                                self.communicator.FireCommand(str('at_1'),str(self.aim_list[0]['name']),"dif")
+                                logging.debug(
+                                    "P")
+                                self.communicator.setEntityPosture(current_entity.unit_name, 12)
                     # check if entity arrived to location:
                     if current_entity.state == PositionType.MOVE_TO_OP:
                         if entity_next_state_and_action.position == PositionType.AT_OP:
@@ -243,7 +265,19 @@ class RFAScenarioManager:
             current_entity.planBool = entity_previous_list[k].planBool
             current_entity.state = entity_previous_list[k].state
             current_entity.aim_list = entity_previous_list[k].aim_list
+
+            #task statuses:
+            current_entity.movement_task_completed = entity_previous_list[k].movement_task_completed
+            current_entity.movement_task_success   = entity_previous_list[k].movement_task_success
+            current_entity.posture_task_completed  = entity_previous_list[k].fire_task_success
+            current_entity.posture_task_success    = entity_previous_list[k].fire_task_success
+            current_entity.fire_task_completed     = entity_previous_list[k].fire_task_success
+            current_entity.fire_task_success       = entity_previous_list[k].fire_task_success
+
+
+
             self.entity_list.append(current_entity)
+
     def CreateEntityInfoFromVrf(self, entity_info_list: list) -> list:
         list_to_return = []
         for i in range(len(entity_info_list)):

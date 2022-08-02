@@ -6,9 +6,6 @@ class EntityNextStateAndAction:
         self.entity_id = entity_id
         self.position: PositionType = None
         self.position_location = {"latitude": -1, "longitude": -1, "altitude": -1}
-        self.position_location_id = -1
-        self.position_name = ""
-        self.to_fire = False
         self.entity_to_fire = ""
         self.move_pos = False
         self.takeAction = 0
@@ -17,6 +14,7 @@ class EntityNextStateAndAction:
         self.scan_for_enemy=None
         self.aim=False
         self.shoot=False
+        self.HTN_target=None
 
     def SetPosition(self, new_position: PositionType, location: dict):
         self.position = new_position

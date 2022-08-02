@@ -71,9 +71,10 @@ class HTNLogic:
                     logging.debug(
                         "Next Primitive Task: aim at most valuable enemy")
                 if entity_current_state.COA[0][0] == 'shoot_op':
+                    entity_next_state_and_action.HTN_target=entity_current_state.COA[0][1]
                     entity_next_state_and_action.shoot = True
                     logging.debug(
-                        "Next Primitive Task: shoot the first enemy in aim list")
+                        "Next Primitive Task: Fire the first enemy in the target list. According to HTN: " + str(entity_next_state_and_action.HTN_target))
                 entity_next_state_and_action.takeAction=1
 
         return entity_next_state_and_action

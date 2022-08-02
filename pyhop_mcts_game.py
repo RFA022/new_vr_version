@@ -457,8 +457,6 @@ def calValue(state,subtask):
                 elif enemy['classification']==EntityTypeEnum.EITAN:
                     ret_val += x * 2
         ret_val=state.weights['scan_for_enemy_op']*ret_val
-    elif subtask[0]=='null_op':
-        ret_val=100
     else:
         ret_val=0
     return ret_val

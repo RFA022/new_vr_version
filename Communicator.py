@@ -13,8 +13,8 @@ sys.path.append(file_path)
 
 
 class Communicator(CommunicatorInterface):
-    GetAreasListRequest_DW="GetAreasListRequest_DW"
-    GetAreasListResponse_DR="GetAreasListResponse_DR"
+    GetAreasListRequest_DW = "GetAreasListRequest_DW"
+    GetAreasListResponse_DR = "GetAreasListResponse_DR"
     LosQueryResponse_DR = "LosQueryResponse_DR"
     GeoQueryResponse_DR = "GeoQueryResponse_DR"
     EntityReport_DR = "EntityReport_DR"
@@ -30,8 +30,8 @@ class Communicator(CommunicatorInterface):
     CreateEntity_DW = "CreateEntity_DW"
     EntityMoveCommand_DW = "EntityMoveCommand_DW"
     SpawnSquadCommand_DW = "SpawnSquadCommand_DW"
-    EntityPosture_DW ="EntityPosture_DW"
-    AimWeaponCommand_DW="AimWeaponCommand_DW"
+    EntityPosture_DW = "EntityPosture_DW"
+    AimWeaponCommand_DW = "AimWeaponCommand_DW"
 
     def __init__(self):
         super().__init__()
@@ -208,13 +208,39 @@ class Communicator(CommunicatorInterface):
                 logging.error("reader " + self.LosQueryResponse_DR + " dont exist")
                 return los
 
-    # def getAreasQuery(self):
-    #     with self.lock_read_write:
-    #         try:
-    #             current_DW = self.RFSM_connector.getOutput(self.publisher + self.GetAreasListRequest_DW)
-    #         except:
-    #             logging.error("writer " + self.GetAreasListRequest_DW + " don't exist")
-    #             return ans
+    def getAreasQuery(self) -> list:
+        areaList = []
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.GetAreasListRequest_DW)
+            except:
+                logging.error("writer " + self.LosQueryRequest_DW + " dont exist")
+                return areaList
+
+            current_DW.instance.set_dictionary({
+                "requestId": 1,
+            })
+            current_DW.write()
+
+        with self.lock_read_write:
+            try:
+                current_DR = self.RFSM_connector.getInput(self.subscriber + self.GetAreasListResponse_DR)
+                # wait for messages for 2 sec
+                try:
+                    current_DR.wait(2000)
+                except:
+                    logging.debug("wait to los response timeout")
+                    return areaList
+
+                current_DR.read()
+                for sample in current_DR.samples:
+                    if sample.valid_data:
+                        areaList = sample.get_dictionary("areasList")
+                        # logging.debug(str(time.time_ns() - start_time))
+                return areaList
+            except:
+                logging.error("reader " + self.GetAreasListResponse_DR + " dont exist")
+                return areaList
 
     def GetGeoQuery(self, src_locations: dict, dest_locations: dict, calcLos: bool, calcDistance: bool) -> dict:
         """
@@ -379,7 +405,7 @@ class Communicator(CommunicatorInterface):
                 return
             current_DW.instance.set_dictionary({
                 "unit_name": entity_id,
-                "ordered_speed":4.5, #ConfigManager.GetMovingPosSpeed(),
+                "ordered_speed": 4.5,  # ConfigManager.GetMovingPosSpeed(),
                 "altitude_reference": 0,
                 "location": location
             })
@@ -403,9 +429,10 @@ class Communicator(CommunicatorInterface):
             current_DW.instance.set_dictionary({
                 "attacking_entity_name": attacking_entity_id,
                 "entity_to_attack_id": to_attack_id,
-                "weapon_name": weapon_type
+                "weapon_name": "ak"
             })
             current_DW.write()
+            # looks for "ak" and if it not find its fire with default weapon
 
     def CreateEntity(self, entity_to_create_list: list):
         """
@@ -452,7 +479,7 @@ class Communicator(CommunicatorInterface):
             current_DW.write()
             time.sleep(0.5)
 
-    def createSquad(self,squad_name,location):
+    def createSquad(self, squad_name, location):
         with self.lock_read_write:
             try:
                 current_DW = self.RFSM_connector.getOutput(self.publisher + self.SpawnSquadCommand_DW)
@@ -460,9 +487,9 @@ class Communicator(CommunicatorInterface):
                 logging.error("writer " + self.SpawnSquadCommand_DW + " dont exist")
                 return
             current_DW.instance.set_dictionary({
-                    "squad_name": squad_name,
-                    "location": location
-                })
+                "squad_name": squad_name,
+                "location": location
+            })
             current_DW.write()
             time.sleep(0.5)
 
@@ -474,9 +501,9 @@ class Communicator(CommunicatorInterface):
                 logging.error("writer " + self.EntityPosture_DW + " dont exist")
                 return
             current_DW.instance.set_dictionary({
-                    "entity_name": entity_name,
-                    "posture": posture
-                })
+                "entity_name": entity_name,
+                "posture": posture
+            })
             current_DW.write()
             time.sleep(0.5)
 
@@ -487,10 +514,12 @@ class Communicator(CommunicatorInterface):
             except:
                 logging.error("writer " + self.AimWeaponCommand_DW + " dont exist")
                 return
-            aiming_point['altitude']=str(float(aiming_point['altitude'])+1.5)
+            aiming_point['altitude'] = str(float(aiming_point['altitude']) + 1.5)
             current_DW.instance.set_dictionary({
-                    "entity_name": entity_name,
-                    "aiming_point": aiming_point
-                })
+                "entity_name": entity_name,
+                "aiming_point": aiming_point
+            })
             current_DW.write()
             time.sleep(0.5)
+
+
