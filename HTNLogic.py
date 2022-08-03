@@ -1,4 +1,5 @@
 import logging
+import time
 
 from EntityNextStateAndAction import *
 from EntityCurrentState import *
@@ -22,7 +23,7 @@ class HTNLogic:
 
         #Checking current moving or firing status
         moving_position = (entity_current_state.state == PositionType.MOVE_TO_OP)
-        firing = (entity_current_state.state == isFire.yes)
+        firing = (entity_current_state.fireState == isFire.yes)
         # case 2 check if entity is moving position (not in teleport mode)
 
         # check if we are still moving or arrived to location
@@ -33,29 +34,32 @@ class HTNLogic:
                     # At this case we arrived to location
                     if entity_current_state.state == PositionType.MOVE_TO_OP:
                         entity_next_state_and_action.position = PositionType.AT_OP
-                    else:
-                        entity_next_state_and_action.position = PositionType.AT_COVER
                     entity_next_state_and_action.move_pos = False
                     logging.debug(
-                        "case 2 " + entity_current_state.unit_name.strip() + " Entity arrived to locaion" + entity_next_state_and_action.position.name + " movement task completed")
+                        "case 1 " + entity_current_state.unit_name.strip() + " Entity arrived to locaion" + entity_next_state_and_action.position.name + " movement task completed")
                     return entity_next_state_and_action
                 else:
-                    logging.debug("Task completed, didn't arrive to location, unwanted situation")
+                    logging.debug("case 2 - Task completed, didn't arrive to location, unwanted situation")
 
         # check if still firing:
         if firing:
             # check task status
             if entity_current_state.fire_task_completed == 1:
-                if entity_current_state.fire_task_success:
-                    # At this case we tried to shoot at target
-                    if entity_current_state.fireStatestate == isFire.yes:
-                        entity_current_state.fireState = isFire.no
+                if entity_current_state.fire_task_success == True:
                     entity_next_state_and_action.shoot = False
                     logging.debug(
-                        "case 2 " + entity_current_state.unit_name.strip() + "shooting action completed")
+                        "case 1 " + entity_current_state.unit_name.strip() + "shooting action completed")
                     return entity_next_state_and_action
                 else:
                     logging.debug("Task completed, fire failed, unwanted situation")
+            #check if not able to initiate fire task:
+            if entity_current_state.fire_task_success==True:
+                if entity_current_state.fire_task_completed==0:
+                    curr_time=time.time()
+                    print(curr_time-entity_current_state.taskTime)
+                    if curr_time-entity_current_state.taskTime>6:
+                        logging.debug("case 1 - can't start firing after 4 seconds of trying. aborting task")
+                        entity_next_state_and_action.timeOutAbortCurrentTask=True
         #case 3:
         if entity_current_state.COA != []:
             if entity_current_state.state is PositionType.AT_OP:

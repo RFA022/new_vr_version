@@ -27,10 +27,10 @@ class EntityCurrentState:
         self.entity_damage_state = None
 
 
-        self.movement_task_completed = -1
+        self.movement_task_completed = 0
         self.movement_task_success = False
 
-        self.fire_task_completed = -1
+        self.fire_task_completed = 0
         self.fire_task_success = False
 
         self.target_location = {
@@ -44,4 +44,4 @@ class EntityCurrentState:
         self.state = PositionType.AT_OP
         self.fireState = isFire.no
         self.aim_list=[]
-
+        self.taskTime=None

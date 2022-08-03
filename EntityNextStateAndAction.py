@@ -13,8 +13,9 @@ class EntityNextStateAndAction:
         self.nextPosture = None
         self.scan_for_enemy=None
         self.aim=False
-        self.shoot=False
+        self.shoot=None #none is not shoot and not stop shoot. True is to shoot. False is to stop shooting
         self.HTN_target=None
+        self.timeOutAbortCurrentTask=False
 
     def SetPosition(self, new_position: PositionType, location: dict):
         self.position = new_position

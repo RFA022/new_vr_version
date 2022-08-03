@@ -58,12 +58,12 @@ class RFAScenarioManager:
     def Run(self):
         while True:
             if self.communicator.GetScenarioStatus() == ScenarioStatusEnum.RUNNING:
-                time.sleep(0.5) #sleep time between every iteration
+                time.sleep(1) #sleep time between every iteration
                 if self.start_scenario_time == 0:
                     self.start_scenario_time = time.time()
 
                 #update Red list from simulator and from last iteration
-                self.CreateAndUpdateEntityList(self.entity_list)
+                self.entity_list=self.CreateAndUpdateEntityList(self.entity_list)
                 #update Blue list from simulator and from last iteration (info about last seen location)
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
                 self.blue_entity_list_HTN=ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
@@ -84,14 +84,32 @@ class RFAScenarioManager:
                                             current_entity.movement_task_completed = task.get("currentStatus")
                                             current_entity.movement_task_success = task.get("taskSuccess")
 
+                       #check fire status
+                        if current_entity.fireState == isFire.yes:
+                                # Check task status for movement tasks
+                                for task in task_status_list:
+                                    if current_entity.unit_name == task.get("markingText"):
+                                        if task.get("taskName") == "fire-at-target":
+                                            current_entity.fire_task_completed = task.get("currentStatus")
+                                            current_entity.fire_task_success = task.get("taskSuccess")
 
                     #---#---get the next state and action---#---#
                     if current_entity.unit_name=="at_1":
+                        print(current_entity.fireState)
+                        print(current_entity.fire_task_completed)
+                        print(current_entity.fire_task_success)
+                        print('--------------------------------')
+                        print(current_entity.state)
+                        print(current_entity.movement_task_completed)
+                        print(current_entity.movement_task_success)
+                        print('--------------------------------')
+                        print('---------------------------------------------')
+
                         #planning:
                         if current_entity.planBool==1:
                             current_entity.planBool=0
                             self.entity_list[i].COA=htnModel.findplan(current_entity.current_location,self.blue_entity_list_HTN)
-                        #next state and action
+                        #next state and action- every iteration even tough COA is empty
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                             self.start_scenario_time,self.AttackPos)
                         #implementation of next state and action.
@@ -168,20 +186,30 @@ class RFAScenarioManager:
                             elif entity_next_state_and_action.shoot==True:
                                 logging.debug(
                                     "Try Shooting at target " + str(self.aim_list[0]['name']) )
+                                current_entity.fireState=isFire.yes
+                                current_entity.taskTime=time.time()
                                 self.communicator.setEntityPosture(current_entity.unit_name, 13)
-                                logging.debug(
-                                    "P")
+                                time.sleep(0.2) # open loop waiting
                                 self.communicator.FireCommand(str('at_1'),str(self.aim_list[0]['name']),"dif")
-                                logging.debug(
-                                    "P")
+                                time.sleep(0.2) # open loop waiting
                                 self.communicator.setEntityPosture(current_entity.unit_name, 12)
                     # check if entity arrived to location:
                     if current_entity.state == PositionType.MOVE_TO_OP:
                         if entity_next_state_and_action.position == PositionType.AT_OP:
                             #Change entity state to arrive at location:
                             current_entity.state = entity_next_state_and_action.position
+                            current_entity.movement_task_completed = 0
+                            current_entity.movement_task_success = False
                             logging.debug("entity: " + str(current_entity.unit_name) + " changed state to " + str(
                                 current_entity.state.name) + " arrived to location ")
+                    # check if firing ends:
+                    if current_entity.fireState == isFire.yes:
+                        if entity_next_state_and_action.shoot == False:
+                            #Change entity state to arrive at location:
+                            current_entity.fireState = isFire.no
+                            current_entity.fire_task_completed=0
+                            current_entity.fire_task_success= False
+                            logging.debug("entity: " + str(current_entity.unit_name) + " finished fire task")
                     ##############
 
                     # update the entity parameters that changed during this iteration
@@ -239,7 +267,7 @@ class RFAScenarioManager:
         return return_list
 
     def CreateAndUpdateEntityList(self,entity_previous_list):
-        self.entity_list=[] # creating new entity list from scratch
+        entity_list=[] # creating new entity list from scratch
         entity_info_list = self.communicator.GetScenarioEntitiesInfo()
         entity_info_list = self.CreateEntityInfoFromVrf(entity_info_list)
         for k in range(len(entity_previous_list)):
@@ -271,12 +299,12 @@ class RFAScenarioManager:
             #task statuses:
             current_entity.movement_task_completed = entity_previous_list[k].movement_task_completed
             current_entity.movement_task_success   = entity_previous_list[k].movement_task_success
-            current_entity.fire_task_completed     = entity_previous_list[k].fire_task_success
+            current_entity.fire_task_completed     = entity_previous_list[k].fire_task_completed
             current_entity.fire_task_success       = entity_previous_list[k].fire_task_success
+            current_entity.taskTime = entity_previous_list[k].taskTime
 
-
-
-            self.entity_list.append(current_entity)
+            entity_list.append(current_entity)
+        return entity_list
 
     def CreateEntityInfoFromVrf(self, entity_info_list: list) -> list:
         list_to_return = []
