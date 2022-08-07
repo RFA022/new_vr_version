@@ -5,12 +5,11 @@ import random
 from EntityCurrentState import *
 import numpy as np
 class SpawnManager_Nadav:
-    def __init__(self, communicator,spawnPos,AttackPos,BluePolygon):
+    def __init__(self, communicator,spawnPos,AttackPos):
         self.communicator = communicator
         self.spawn_entity_list = []
-        self.spawnPos=spawnPos
+        self.spawnPos = spawnPos
         self.AttackPos = AttackPos
-        self.BluePolygon=BluePolygon
         logging.debug(self.__class__.__name__ + " is initialized")
 
         ###_____not in use____###:
@@ -21,23 +20,20 @@ class SpawnManager_Nadav:
         LOC_index =random.randrange(len(self.spawnPos))
         #print(LOC_index)
         LOC=self.spawnPos[LOC_index]
-        self.createATSquad(LOC,'anti_tank',[EntityTypeEnum.SHORT_RANGE_ANTI_TANK,EntityTypeEnum.OBSERVER,EntityTypeEnum.SOLDIER,EntityTypeEnum.SOLDIER],['at_1','ob_1','so_1','so_2'])
+        self.createATSquad(LOC,'anti_tank',[EntityTypeEnum.SHORT_RANGE_ANTI_TANK,EntityTypeEnum.SOLDIER,EntityTypeEnum.SOLDIER,EntityTypeEnum.OBSERVER],['at_1','so_1','so_2','ob_1'])
         ###_______________old code that creates old single entity___________________###
         #self.createEntity(EntityTypeEnum.SOLDIER,LOC,Hostility.OPPOSING,'Agent')
         #self.communicator.CreateEntity(self.entity_to_create_list) #important line that creates for real the enteties
 
         ###_______________code that creates positions as way points___________________###
         ##---# create positions #---##
-        for i in range(len(self.AttackPos)):
-            pos = [self.AttackPos[i]['latitude'], self.AttackPos[i]['longitude'], self.AttackPos[i]['altitude']]
-            self.communicator.CreateEntitySimple('attack point' + str(i), pos, 3, '16:0:0:1:0:0:0')
+        # for i in range(len(self.AttackPos)):
+        #     pos = [self.AttackPos[i]['latitude'], self.AttackPos[i]['longitude'], self.AttackPos[i]['altitude']]
+        #     self.communicator.CreateEntitySimple('attack point' + str(i), pos, 3, '16:0:0:1:0:0:0')
         #
         # for i in range(len(self.spawnPos)):
         #     pos=[self.spawnPos[i]['latitude'],self.spawnPos[i]['longitude'],self.spawnPos[i]['altitude']]
         #     self.communicator.CreateEntitySimple('spawn point' + str(i),pos,2,'16:0:0:1:0:0:0')
-        # for i in range(len(self.BluePolygon)):
-        #     pos=[self.BluePolygon[i]['latitude'],self.BluePolygon[i]['longitude'],self.BluePolygon[i]['altitude']]
-        #     self.communicator.CreateEntitySimple('Poly' + str(i),pos,1,'17:1:0:0:5:1:0')
         #---# create positions #---##
 
     def createATSquad(self,LOC,squadName,classification_vec,names_vec):

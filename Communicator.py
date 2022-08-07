@@ -26,12 +26,14 @@ class Communicator(CommunicatorInterface):
     GeoQueryRequest_DW = "GeoQueryRequest_DW"
     InitialEntitySnapshot_DW = "InitialEntitySnapshot_DW"
     SetEntityLocation_DW = "SetEntityLocation_DW"
+    SetEntityHeading_DW  = "SetEntityHeading_DW"
     AttackEntityCommand_DW = "AttackEntityCommand_DW"
     CreateEntity_DW = "CreateEntity_DW"
     EntityMoveCommand_DW = "EntityMoveCommand_DW"
     SpawnSquadCommand_DW = "SpawnSquadCommand_DW"
     EntityPosture_DW = "EntityPosture_DW"
     AimWeaponCommand_DW = "AimWeaponCommand_DW"
+    StopTasksCommand_DW = "StopTasksCommand_DW"
 
     def __init__(self):
         super().__init__()
@@ -411,7 +413,7 @@ class Communicator(CommunicatorInterface):
             })
             current_DW.write()
 
-    def FireCommand(self, attacking_entity_id: str, to_attack_id: str, weapon_type: str = "") -> None:
+    def FireCommand(self, attacking_entity_id: str, to_attack_id: str, ammoNumber: int, weapon_type: str = "") -> None:
         """
         This function is responsible for make fire event
         :param attacking_entity_id: id of the entity to perform the fire
@@ -429,7 +431,8 @@ class Communicator(CommunicatorInterface):
             current_DW.instance.set_dictionary({
                 "attacking_entity_name": attacking_entity_id,
                 "entity_to_attack_id": to_attack_id,
-                "weapon_name": "ak"
+                "weapon_name": "ak",
+                "maxRoundsToFire": ammoNumber
             })
             current_DW.write()
             # looks for "ak" and if it not find its fire with default weapon
@@ -505,7 +508,21 @@ class Communicator(CommunicatorInterface):
                 "posture": posture
             })
             current_DW.write()
-            time.sleep(0.5)
+            time.sleep(0.3)
+
+    def setEntityHeading(self, entity_name, azimuth):
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.SetEntityHeading_DW)
+            except:
+                logging.error("writer " + self.SetEntityHeading_DW + " dont exist")
+                return
+            current_DW.instance.set_dictionary({
+                "entity_name": entity_name,
+                "azimuth": azimuth
+            })
+            current_DW.write()
+            time.sleep(0.3)
 
     def aim_weapon_at_target(self, entity_name, aiming_point):
         with self.lock_read_write:
@@ -523,3 +540,14 @@ class Communicator(CommunicatorInterface):
             time.sleep(0.5)
 
 
+    def stopCommand(self, entity_name):
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.StopTasksCommand_DW)
+            except:
+                logging.error("writer " + self.StopTasksCommand_DW + " dont exist")
+                return
+            current_DW.instance.set_dictionary({
+                "attacking_entity_name": entity_name
+            })
+            current_DW.write()

@@ -106,6 +106,7 @@
             <register_type name="gw_dds_types::TickCounter" type_ref="gw_dds_types::TickCounter"/>
             <register_type name="gw_dds_types::EntitySetLocationType" type_ref="gw_dds_types::EntitySetLocationType"/>
             <register_type name="gw_dds_types::AttackEntityCommand" type_ref="gw_dds_types::AttackEntityCommand"/>
+            <register_type name="gw_dds_types::StopTasksCommand" type_ref="gw_dds_types::StopTasksCommand"/>
             <register_type name="gw_dds_types::CreateEntityType" type_ref="gw_dds_types::CreateEntityType"/>
             <register_type name="gw_dds_types::AttackReportType" type_ref="gw_dds_types::AttackReportType"/>
             <register_type name="gw_dds_types::ScenarioStatusType" type_ref="gw_dds_types::ScenarioStatusType"/>
@@ -116,6 +117,7 @@
             <register_type name="gw_dds_types::AimWeaponCommand" type_ref="gw_dds_types::AimWeaponCommand"/>
             <register_type name="gw_dds_types::GetAreasListRequest" type_ref="gw_dds_types::GetAreasListRequest"/>
             <register_type name="gw_dds_types::GetAreasListResponse" type_ref="gw_dds_types::GetAreasListResponse"/>
+            <register_type name="gw_dds_types::SetEntityHeadingType" type_ref="gw_dds_types::SetEntityHeadingType"/>
 
 
             <topic name="LosQueryRequest" register_type_ref="gw_dds_types::LosQueryRequest"/>
@@ -125,8 +127,9 @@
             <topic name="InitialEntitySnapshot" register_type_ref="gw_dds_types::InitialEntitySnapshotType"/>
             <topic name="EntityReport" register_type_ref="gw_dds_types::EntityReportType"/>
             <topic name="TickCounterReport" register_type_ref="gw_dds_types::TickCounter"/>
-            <topic name="SetEntityLocation" register_type_ref="gw_dds_types::EntitySetLocationType"/>
+            <topic name="SetEntityHeadingCommand" register_type_ref="gw_dds_types::SetEntityHeadingType"/>
             <topic name="AttackEntityCommand" register_type_ref="gw_dds_types::AttackEntityCommand"/>
+            <topic name="StopTasksCommand" register_type_ref="gw_dds_types::StopTasksCommand"/>
             <topic name="CreateEntity" register_type_ref="gw_dds_types::CreateEntityType"/>
             <topic name="AttackReport" register_type_ref="gw_dds_types::AttackReportType"/>
             <topic name="ScenarioStatus" register_type_ref="gw_dds_types::ScenarioStatusType"/>
@@ -135,8 +138,8 @@
             <topic name="SpawnSquadCommand" register_type_ref="gw_dds_types::SpawnSquadCommandType"/>
             <topic name="EntityPosture" register_type_ref="gw_dds_types::PostureType"/>
             <topic name="AimWeaponCommand" register_type_ref="gw_dds_types::AimWeaponCommand"/>
-            <topic name="GetAreasListRequest" register_type_ref="gw_dds_types::GeoQuery"/>
-            <topic name="GetAreasListResponse" register_type_ref="gw_dds_types::GeoQueryResponse"/>
+            <topic name="GetAreasListRequest" register_type_ref="gw_dds_types::GetAreasListRequest"/>
+            <topic name="GetAreasListResponse" register_type_ref="gw_dds_types::GetAreasListResponse"/>
         </domain>
     </domain_library>
 
@@ -197,8 +200,9 @@
                         </reliability>
                     </datawriter_qos>
                 </data_writer>
-                <data_writer name="SetEntityLocation_DW" topic_ref="SetEntityLocation"/>
+                <data_writer name="SetEntityHeading_DW" topic_ref="SetEntityHeadingCommand"/>
                 <data_writer name="AttackEntityCommand_DW" topic_ref="AttackEntityCommand"/>
+                <data_writer name="StopTasksCommand_DW" topic_ref="StopTasksCommand"/>
                 <data_writer name="CreateEntity_DW" topic_ref="CreateEntity"/>
                 <data_writer name="EntityMoveCommand_DW" topic_ref="EntityMoveCommand"/>
                 <data_writer name="SpawnSquadCommand_DW" topic_ref="SpawnSquadCommand"/>

@@ -675,6 +675,7 @@
 			<member name="attack_location" type="nonBasic"  nonBasicTypeName= "gw_dds_types::LLAPointType"/>
 			<!--Weapon to use-->
 			<member name="weapon_name" stringMaxLength="-1" type="string"/>
+			<member name="maxRoundsToFire" type="long" default="1"/>
 		</struct>
 
 		<!--Order an entity to attack specific Entity   Trigger: Upon event -->
@@ -685,6 +686,7 @@
 			<member name="entity_to_attack_id" stringMaxLength="-1" type="string"/>
 			<!--Weapon to use-->
 			<member name="weapon_name" stringMaxLength="-1" type="string"/>
+			<member name="maxRoundsToFire" type="long" default="1"/>
 		</struct>
 
 		<!--Order to stop all tasks command  Trigger: Upon event -->

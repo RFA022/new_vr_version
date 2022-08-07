@@ -45,3 +45,4 @@ class EntityCurrentState:
         self.fireState = isFire.no
         self.aim_list=[]
         self.taskTime=None
+        self.preGameBool=True # boolean that active for first 10 seconds of the game. able to activate operations before first HTN search

@@ -36,7 +36,7 @@ class HTNLogic:
                         entity_next_state_and_action.position = PositionType.AT_OP
                     entity_next_state_and_action.move_pos = False
                     logging.debug(
-                        "case 1 " + entity_current_state.unit_name.strip() + " Entity arrived to locaion" + entity_next_state_and_action.position.name + " movement task completed")
+                        "case 1 " + entity_current_state.unit_name.strip() + " Entity arrived to location" + entity_next_state_and_action.position.name + " movement task completed")
                     return entity_next_state_and_action
                 else:
                     logging.debug("case 2 - Task completed, didn't arrive to location, unwanted situation")
@@ -52,14 +52,17 @@ class HTNLogic:
                     return entity_next_state_and_action
                 else:
                     logging.debug("Task completed, fire failed, unwanted situation")
+
             #check if not able to initiate fire task:
             if entity_current_state.fire_task_success==True:
                 if entity_current_state.fire_task_completed==0:
                     curr_time=time.time()
                     print(curr_time-entity_current_state.taskTime)
-                    if curr_time-entity_current_state.taskTime>6:
-                        logging.debug("case 1 - can't start firing after 4 seconds of trying. aborting task")
+                    waitingTime=8
+                    if curr_time-entity_current_state.taskTime>waitingTime:
+                        logging.debug("case 1 - can't start firing after " +str(waitingTime)+ " seconds of trying. aborting task")
                         entity_next_state_and_action.timeOutAbortCurrentTask=True
+                        entity_next_state_and_action.shoot=False
         #case 3:
         if entity_current_state.COA != []:
             if entity_current_state.state is PositionType.AT_OP:
