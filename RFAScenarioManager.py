@@ -168,13 +168,13 @@ class RFAScenarioManager:
                                 for enemy in (self.blue_entity_list):
                                      source=current_entity.current_location
                                      source['altitude']+=self.squadPosture['crouching_height']
-                                     target = enemy.worldLocation['location']
+                                     target = enemy.location
                                      if enemy.classification==EntityTypeEnum.EITAN:
                                         target['altitude'] += self.enemyDimensions['eitan_cg_height']
                                      losRespose=(self.communicator.GetGeoQuery([source],[target],True,True))
                                      if losRespose['distance'][0][0]<self.basicRanges['squad_view_range']:
                                         if losRespose['los'][0][0]==True:
-                                            enemy.last_seen_worldLocation=enemy.worldLocation
+                                            enemy.last_seen_worldLocation=enemy.location
                                             logging.debug("Enemy: " + str(
                                                 enemy.unit_name)+ " has been detected")
                                             detectionCount+=1
@@ -334,9 +334,9 @@ class RFAScenarioManager:
             alive_status = live_unit.is_alive
             current_entity.alive = alive_status
             current_entity.current_location = {
-                "latitude": live_unit.worldLocation["location"].get("latitude"),
-                "longitude":live_unit.worldLocation["location"].get("longitude"),
-                "altitude": live_unit.worldLocation["location"].get("altitude")
+                "latitude": live_unit.location.get("latitude"),
+                "longitude":live_unit.location.get("longitude"),
+                "altitude": live_unit.location.get("altitude")
             }
             current_entity.entity_damage_state = live_unit.entity_damage_state
 
@@ -376,7 +376,7 @@ class RFAScenarioManager:
             else:
                 current_entity.hostility = Hostility.UNKNOWN
 
-            current_entity.worldLocation = entity_info_list[i].get("worldLocation")
+            current_entity.location = entity_info_list[i].get("worldLocation")['location']
 
             curr_type = entity_info_list[i].get("classification")
             if curr_type == 1:

@@ -79,9 +79,9 @@ def getBluesDataFromCSV(filename):
 def getBluesDataFromVRFtoHTN(blueList):
     entities=[]
     for entity in blueList:
-        if entity.last_seen_worldLocation['location']['latitude']==None and\
-           entity.last_seen_worldLocation['location']['longitude'] == None and\
-           entity.last_seen_worldLocation['location']['altitude'] == None:
+        if entity.last_seen_worldLocation['latitude']==None and\
+           entity.last_seen_worldLocation['longitude'] == None and\
+           entity.last_seen_worldLocation['altitude'] == None:
                 obs=False
         else:
                 obs=True
@@ -90,7 +90,7 @@ def getBluesDataFromVRFtoHTN(blueList):
             val=1
         HTNentity = {'name': entity.unit_name,
                   'classification': entity.classification,
-                  'location': entity.last_seen_worldLocation['location'],
+                  'location': entity.last_seen_worldLocation,
                   'observed': obs,
                   'is_alive': entity.is_alive,
                   'val': val

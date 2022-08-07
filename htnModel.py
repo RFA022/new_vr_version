@@ -34,6 +34,7 @@ def scan_for_enemy_op(state,a):
             if r_n>num*state.weights['basic_detection_probability']:
                 enemy['observed']=True
         else:
+            print('sss')
             pass
     return state
 

@@ -35,20 +35,16 @@ class EntityInfo:
         self.classification = EntityTypeEnum.UNKNOWN
         self.global_id = None
         self.hostility = Hostility.UNKNOWN
-        self.worldLocation = {
-            "location":
-                {
+        self.location = {
                     "latitude": 0,
                     "longitude": 0,
                     "altitude": 0
-                }}
+                }
         self.last_seen_worldLocation = {
-            "location":
-                {
                     "latitude": None,
                     "longitude": None,
                     "altitude": None
-                }}
+                }
         # false not alive and true alive
         self.is_alive = True
         self.power = None
