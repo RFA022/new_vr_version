@@ -3,9 +3,9 @@ import pyhop_mcts_game as pyhop
 import numpy as np
 import matplotlib.pyplot as plt
 import ext_funs
+from ext_funs import *
 import scipy.stats
 import pandas as pd
-
 
 def locate_at_position_op(state,a):
     state.squad_state = 'at_position'
@@ -139,7 +139,7 @@ def findplan(communicator,squadPosture,enemyDimensions,loc,blueList):
     init_state = pyhop.State('init_state')
 
     #VRF configs:
-    init_state.communicator=communicator
+    #init_state.communicator=communicator
     init_state.squadPosture=squadPosture
     init_state.enemyDimensions=enemyDimensions
 

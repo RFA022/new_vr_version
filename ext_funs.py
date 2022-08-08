@@ -2,7 +2,13 @@ import numpy as np
 import csv
 import math
 from CommunicatorInterface import EntityTypeEnum
+from Communicator import *
 
+# communicator2=Communicator()
+
+# class Ext_funs:
+#     def __init__(self, communicator):
+#         self.communicator=communicator
 
 def simple_update_distance_from_positions(state):
     '''
