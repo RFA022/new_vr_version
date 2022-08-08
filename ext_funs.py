@@ -79,21 +79,24 @@ def getBluesDataFromCSV(filename):
 def getBluesDataFromVRFtoHTN(blueList):
     entities=[]
     for entity in blueList:
-        if entity.last_seen_worldLocation['latitude']==None and\
-           entity.last_seen_worldLocation['longitude'] == None and\
-           entity.last_seen_worldLocation['altitude'] == None:
-                obs=False
-        else:
-                obs=True
         val=0
         if entity.classification==EntityTypeEnum.EITAN:
             val=1
         HTNentity = {'name': entity.unit_name,
                   'classification': entity.classification,
                   'location': entity.last_seen_worldLocation,
-                  'observed': obs,
+                  'observed': False,
                   'is_alive': entity.is_alive,
                   'val': val
                   }
         entities.append(HTNentity)
     return entities
+
+#los Operator for 1 entity and 1 location to be used from HTN and ScenarioManager as well
+def losOperator(communicator,squadPosture,enemyDimensions,enemy,source_location):
+    source_location['altitude'] += squadPosture['crouching_height']
+    target = enemy.location
+    if enemy.classification == EntityTypeEnum.EITAN:
+        target['altitude'] += enemyDimensions['eitan_cg_height']
+    losRespose = (communicator.GetGeoQuery([source_location], [target], True, True))
+    return losRespose

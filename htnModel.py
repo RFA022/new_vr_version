@@ -34,8 +34,14 @@ def scan_for_enemy_op(state,a):
             if r_n>num*state.weights['basic_detection_probability']:
                 enemy['observed']=True
         else:
-            print('sss')
-            pass
+            enemy['observed'] = True
+            # losRespose = ext_funs.losOperator(communicator,squadPosture,enemyDimensions, enemy, state.loc)
+            # if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
+            #     if losRespose['los'][0][0] == True:
+            #         enemy.last_seen_worldLocation = enemy.location
+            #         logging.debug("Enemy: " + str(
+            #             enemy.unit_name) + " has been detected")
+            #         detectionCount += 1
     return state
 
 def null_op(state,a):
@@ -129,8 +135,15 @@ pyhop.update_method_list()
 #####----------------------------------------#####
 
 
-def findplan(loc,blueList):
+def findplan(communicator,squadPosture,enemyDimensions,loc,blueList):
     init_state = pyhop.State('init_state')
+
+    #VRF configs:
+    init_state.communicator=communicator
+    init_state.squadPosture=squadPosture
+    init_state.enemyDimensions=enemyDimensions
+
+    #HTN
     init_state.nextPositionIndex = []
     init_state.blues = []
     init_state.assesedBlues = []

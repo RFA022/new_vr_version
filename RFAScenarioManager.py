@@ -84,7 +84,7 @@ class RFAScenarioManager:
                     "Zeroing preGameBool for all entites after 10 seconds of game"
                     #Debug
                     # print(time.time()-self.start_scenario_time)
-                    if time.time()-self.start_scenario_time>10:
+                    if time.time()-self.start_scenario_time>1:
                         if current_entity.preGameBool==True:
                             current_entity.preGameBool=False
                     if current_entity.alive:
@@ -134,11 +134,16 @@ class RFAScenarioManager:
                         "planning able to plan only if COA is empty"
                         if current_entity.planBool==1 and current_entity.COA==[]:
                             current_entity.planBool=0
-                            self.entity_list[i].COA=htnModel.findplan(current_entity.current_location,self.blue_entity_list_HTN)
+                            self.entity_list[i].COA=htnModel.findplan(self.communicator,
+                                                                      self.squadPosture,
+                                                                      self.enemyDimensions,
+                                                                      current_entity.current_location,
+                                                                      self.blue_entity_list_HTN)
 
                         #implementation of next state and action.
                         #check if takeAction bool == 1:
                         if current_entity.alive and (entity_next_state_and_action.takeAction == 1 or current_entity.preGameBool==True):
+                            print(current_entity.face)
                             if current_entity.preGameBool==True:
                                 current_entity.preGameBool=False
                             current_entity.COA.pop(0)
@@ -166,18 +171,28 @@ class RFAScenarioManager:
                                 logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face))
                                 detectionCount=0
                                 for enemy in (self.blue_entity_list):
-                                     source=current_entity.current_location
-                                     source['altitude']+=self.squadPosture['crouching_height']
-                                     target = enemy.location
-                                     if enemy.classification==EntityTypeEnum.EITAN:
-                                        target['altitude'] += self.enemyDimensions['eitan_cg_height']
-                                     losRespose=(self.communicator.GetGeoQuery([source],[target],True,True))
-                                     if losRespose['distance'][0][0]<self.basicRanges['squad_view_range']:
+                                    losRespose=ext_funs.losOperator(self.communicator,self.squadPosture,self.enemyDimensions, enemy, current_entity.current_location)
+                                    if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
                                         if losRespose['los'][0][0]==True:
-                                            enemy.last_seen_worldLocation=enemy.location
-                                            logging.debug("Enemy: " + str(
-                                                enemy.unit_name)+ " has been detected")
-                                            detectionCount+=1
+                                             enemy.last_seen_worldLocation=enemy.location
+                                             logging.debug("Enemy: " + str(
+                                                 enemy.unit_name)+ " has been detected")
+                                             detectionCount+=1
+                                #ORIGINAL VERSION WILL BE HERE UNTILL COMEET
+                                # for enemy in (self.blue_entity_list):
+                                #      source=current_entity.current_location
+                                #      source['altitude']+=self.squadPosture['crouching_height']
+                                #      target = enemy.location
+                                #      if enemy.classification==EntityTypeEnum.EITAN:
+                                #         target['altitude'] += self.enemyDimensions['eitan_cg_height']
+                                #      losRespose=(self.communicator.GetGeoQuery([source],[target],True,True))
+                                #      if losRespose['distance'][0][0]<self.basicRanges['squad_view_range']:
+                                #         if losRespose['los'][0][0]==True:
+                                #             enemy.last_seen_worldLocation=enemy.location
+                                #             logging.debug("Enemy: " + str(
+                                #                 enemy.unit_name)+ " has been detected")
+                                #             detectionCount+=1
+
                                 #updating HTN list which is used when shooting:
                                 self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                                 if detectionCount == 0:
