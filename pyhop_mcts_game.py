@@ -452,12 +452,15 @@ def calValue(state,subtask):
         #evaluation:
         ret_val=0
         for enemy in state.assesedBlues:
-            if enemy.observed== True:
+            if enemy.observed == True:
                 if enemy.classification==EntityTypeEnum.EITAN:
                     ret_val += x * 7
-                elif enemy.classification==EntityTypeEnum.EITAN:
+                    print(str(enemy.unit_name) +" "+str(enemy.observed))
+                elif enemy.classification==EntityTypeEnum.OHEZ:
                     ret_val += x * 2
+                    print(str(enemy.unit_name) + " " + str(enemy.observed))
         ret_val=state.weights['scan_for_enemy_op']*ret_val
+        print(ret_val)
     else:
         ret_val=0
     return ret_val
