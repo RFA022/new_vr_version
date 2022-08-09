@@ -143,7 +143,7 @@ class RFAScenarioManager:
                         # print(current_entity.fire_task_success)
                         # print('--------------------------------')
                         # print(current_entity.state)
-                        # print(current_entity.movement_task_completed)
+                                # print(current_entity.movement_task_completed)
                         # print(current_entity.movement_task_success)
                         # print('--------------------------------')
                         "Replan"
@@ -162,7 +162,6 @@ class RFAScenarioManager:
                         #implementation of next state and action.
                         #check if takeAction bool == 1:
                         if current_entity.alive and (entity_next_state_and_action.takeAction == 1 or current_entity.preGameBool==True):
-                            print(current_entity.face)
                             if current_entity.preGameBool==True:
                                 current_entity.preGameBool=False
                             current_entity.COA.pop(0)
@@ -198,21 +197,6 @@ class RFAScenarioManager:
                                              logging.debug("Enemy: " + str(
                                                  enemy.unit_name)+ " has been detected")
                                              detectionCount+=1
-                                #ORIGINAL VERSION WILL BE HERE UNTILL COMEET
-                                # for enemy in (self.blue_entity_list):
-                                #      source=current_entity.current_location
-                                #      source['altitude']+=self.squadPosture['crouching_height']
-                                #      target = enemy.location
-                                #      if enemy.classification==EntityTypeEnum.EITAN:
-                                #         target['altitude'] += self.enemyDimensions['eitan_cg_height']
-                                #      losRespose=(self.communicator.GetGeoQuery([source],[target],True,True))
-                                #      if losRespose['distance'][0][0]<self.basicRanges['squad_view_range']:
-                                #         if losRespose['los'][0][0]==True:
-                                #             enemy.last_seen_worldLocation=enemy.location
-                                #             logging.debug("Enemy: " + str(
-                                #                 enemy.unit_name)+ " has been detected")
-                                #             detectionCount+=1
-
                                 #updating HTN list which is used when shooting:
                                 self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                                 if detectionCount == 0:

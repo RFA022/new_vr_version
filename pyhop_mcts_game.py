@@ -463,7 +463,7 @@ def calValue(state,subtask):
         #evaluation:
         ret_val=0
         for enemy in state.assesedBlues:
-            if enemy.observed == True:
+            if (enemy.observed == True) and (enemy.is_alive==True): #value only for alive observed entites of blue
                 if enemy.classification==EntityTypeEnum.EITAN:
                     ret_val += x * 7
                 elif enemy.classification==EntityTypeEnum.OHEZ:
@@ -472,7 +472,7 @@ def calValue(state,subtask):
     elif subtask[0] == 'null_op':
             ret_val=0.1 #epsilon for the value be positive
     else:
-        ret_val=0
+        ret_val=0.1 #active operators return positive value
     return ret_val
 
 

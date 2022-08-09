@@ -109,20 +109,20 @@ pyhop.declare_original_methods('scan_for_enemy', scan_for_enemy_m)
 
 def attack_from_another_position_m(state,a):
     #agent still did not reach the target
-    observed_count=0
+    observedAndalive_count=0
     for enemy in state.assesedBlues:
-        if enemy.observed==True:
-            observed_count+=1
+        if (enemy.observed == True) and (enemy.is_alive == True):
+            observedAndalive_count+=1
     if (state.enemy_number == 0):
             return False
-    if (observed_count!=0):
+    if (observedAndalive_count!=0):
             return False
     return [('null_op',a)]
 
 def aim_and_shoot_m(state,a):
     observedAndalive_count = 0
     for enemy in state.assesedBlues:
-        if enemy.observed == True and enemy.is_alive == True:
+        if (enemy.observed == True) and (enemy.is_alive == True):
             observedAndalive_count += 1
     if (observedAndalive_count==0):
             return False

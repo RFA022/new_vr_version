@@ -57,7 +57,8 @@ class HTNLogic:
             if entity_current_state.fire_task_success==True:
                 if entity_current_state.fire_task_completed==0:
                     curr_time=time.time()
-                    print(curr_time-entity_current_state.taskTime)
+                    #Debug
+                    #print(curr_time-entity_current_state.taskTime)
                     waitingTime=8
                     if curr_time-entity_current_state.taskTime>waitingTime:
                         logging.debug("case 1 - can't start firing after " +str(waitingTime)+ " seconds of trying. aborting task")

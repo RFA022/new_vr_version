@@ -6,4 +6,4 @@ scan_for_enemy_op,0.2
 bda_op,0
 shoot_enemy_op,0.3
 sum_ops,0
-basic_detection_probability,0.15
+basic_detection_probability,0.3
