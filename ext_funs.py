@@ -106,7 +106,7 @@ def getBluesDataFromVRFtoHTN(blueList):
 def losOperator(squadPosture,enemyDimensions,enemy,source_location):
     communicator = CommunicatorSingleton().obj
     source=copy.deepcopy(source_location)
-    source['altitude'] = str(float(source['altitude']) +float(squadPosture['crouching_height']))
+    source['altitude'] = str(float(source['altitude']) +float(squadPosture['standing_height']))
     target = enemy.location
     if enemy.classification == EntityTypeEnum.EITAN:
         target['altitude'] += enemyDimensions['eitan_cg_height']

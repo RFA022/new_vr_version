@@ -139,10 +139,21 @@ def print_state_simple(state, indent=4):
         for (name, val) in vars(state).items():
             if name != '__name__' and \
                     name!= 'htnConfig' and \
-                    name!='weights':
+                    name!='weights' and\
+                    name!='squadPosture' and\
+                    name!='enemyDimensions' and\
+                    name!='basicRanges' and\
+                    name!='positions' and\
+                    name!='init_state.distance_from_positions':
+
                 for x in range(indent): sys.stdout.write(' ')
                 sys.stdout.write(state.__name__ + '.' + name)
                 print(' =', val)
+                if name== 'assesedBlues':
+                    for blue in val:
+                        attrs = vars(blue)
+                        print(', '.join("     %s: %s" % item for item in attrs.items()))
+
     else:
         print('False')
 
@@ -455,12 +466,11 @@ def calValue(state,subtask):
             if enemy.observed == True:
                 if enemy.classification==EntityTypeEnum.EITAN:
                     ret_val += x * 7
-                    print(str(enemy.unit_name) +" "+str(enemy.observed))
                 elif enemy.classification==EntityTypeEnum.OHEZ:
                     ret_val += x * 2
-                    print(str(enemy.unit_name) + " " + str(enemy.observed))
         ret_val=state.weights['scan_for_enemy_op']*ret_val
-        print(ret_val)
+    elif subtask[0] == 'null_op':
+            ret_val=0.1 #epsilon for the value be positive
     else:
         ret_val=0
     return ret_val

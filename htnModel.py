@@ -34,9 +34,8 @@ def scan_for_enemy_op(state,a):
             #simple example: detected or not detected 50% ro be detected:
             num=1000
             r_n = scipy.stats.randint.rvs(0, num)
-            if r_n>num*state.weights['basic_detection_probability']:
+            if state.weights['basic_detection_probability']>r_n/num:
                 enemy.observed = True
-                print("enemy has been observed in imagination")
         else:
             losRespose = ext_funs.losOperator(state.squadPosture,state.enemyDimensions,enemy,state.loc)
             #print(losRespose)
@@ -44,12 +43,12 @@ def scan_for_enemy_op(state,a):
                  if losRespose['los'][0][0] == True:
                     enemy.observed = True
                  #Debug
-                    try:
-                        print("enemy"+ str(enemy.unit_name) +"has been observed from position " +str(state.positions.index(state.loc)))
-                    except:
-                        pass
-                 else:
-                    print("enemy"+ str(enemy.unit_name) +"has not been observed from position " +str(state.positions.index(state.loc)))
+                 #    try:
+                 #        print("enemy"+ str(enemy.unit_name) +"has been observed from position " +str(state.positions.index(state.loc)))
+                 #    except:
+                 #        pass
+                 # else:
+                 #    print("enemy"+ str(enemy.unit_name) +"has not been observed from position " +str(state.positions.index(state.loc)))
 
     return state
 
@@ -152,7 +151,6 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList):
     init_state.basicRanges=basicRanges
     #HTN
     init_state.nextPositionIndex = []
-    init_state.blues = []
     init_state.assesedBlues = []
     init_state.enemy_number = None
     init_state.positions = []
