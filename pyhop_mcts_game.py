@@ -302,6 +302,7 @@ def seek_mcts_plan(state, tasks, plan, depth):
             newstate = operator(copy.deepcopy(state), *task1[1:])
             ###print('depth {} new state:'.format(depth))
             print("real state")
+            print(str(task1[0]))
             print_state_simple(newstate)
             if newstate:
                 solution = seek_mcts_plan(newstate, tasks[1:], plan + [task1], depth + 1)
@@ -442,19 +443,19 @@ def calValue(state,subtask):
         Eitan_number=0
         Ohez_number=0
         for enemy in state.assesedBlues:
-            if enemy['classification']== EntityTypeEnum.EITAN:
+            if enemy.classification == EntityTypeEnum.EITAN:
                 Eitan_number+=1
-            elif enemy['classification']== EntityTypeEnum.OHEZ:
+            elif enemy.classification == EntityTypeEnum.OHEZ:
                 Ohez_number+=1
         sum=2*Ohez_number+7*Eitan_number
         x=100/sum #value for each evaluation unit
         #evaluation:
         ret_val=0
         for enemy in state.assesedBlues:
-            if enemy['observed']== True:
-                if enemy['classification']==EntityTypeEnum.EITAN:
+            if enemy.observed== True:
+                if enemy.classification==EntityTypeEnum.EITAN:
                     ret_val += x * 7
-                elif enemy['classification']==EntityTypeEnum.EITAN:
+                elif enemy.classification==EntityTypeEnum.EITAN:
                     ret_val += x * 2
         ret_val=state.weights['scan_for_enemy_op']*ret_val
     else:

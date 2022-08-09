@@ -9,7 +9,7 @@ class isFire(Enum):
     yes = 1,
     no = 0
 
-class EntityCurrentState:
+class EntityCurrentState: #red entities
 
     def __init__(self, entity_id: str):
         self.unit_name = entity_id
@@ -57,5 +57,5 @@ class HTNentity:
             "altitude": None
         }
         self.observed=False
-        self.is_alive = True
+        self.is_alive = None
         self.val=None

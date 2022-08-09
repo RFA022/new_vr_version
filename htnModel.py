@@ -7,7 +7,7 @@ import ext_funs
 from ext_funs import *
 import scipy.stats
 import pandas as pd
-from Communicator import CommunicatorSingleton
+import logging
 
 
 def locate_at_position_op(state,a):
@@ -28,26 +28,29 @@ def move_to_position_op(state,a):
 def scan_for_enemy_op(state,a):
     for enemy in state.assesedBlues:
         #if location is not known:
-        if  (enemy['location']['latitude'] ==  None and
-            enemy['location']['longitude'] ==  None and
-            enemy['location']['altitude']  ==  None):
+        if(enemy.location['latitude'] ==  None and
+            enemy.location['longitude'] ==  None and
+            enemy.location['altitude']  ==  None):
             #simple example: detected or not detected 50% ro be detected:
             num=1000
             r_n = scipy.stats.randint.rvs(0, num)
             if r_n>num*state.weights['basic_detection_probability']:
-                enemy['observed']=True
+                enemy.observed = True
+                print("enemy has been observed in imagination")
         else:
-
-            enemy['observed'] = True
             losRespose = ext_funs.losOperator(state.squadPosture,state.enemyDimensions,enemy,state.loc)
-            print(losRespose)
-            # losRespose = ext_funs.losOperator(communicator,squadPosture,enemyDimensions, enemy, state.loc)
-            # if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
-            #     if losRespose['los'][0][0] == True:
-            #         enemy.last_seen_worldLocation = enemy.location
-            #         logging.debug("Enemy: " + str(
-            #             enemy.unit_name) + " has been detected")
-            #         detectionCount += 1
+            #print(losRespose)
+            if losRespose['distance'][0][0] < state.basicRanges['squad_view_range']:
+                 if losRespose['los'][0][0] == True:
+                    enemy.observed = True
+                 #Debug
+                    try:
+                        print("enemy"+ str(enemy.unit_name) +"has been observed from position " +str(state.positions.index(state.loc)))
+                    except:
+                        pass
+                 else:
+                    print("enemy"+ str(enemy.unit_name) +"has not been observed from position " +str(state.positions.index(state.loc)))
+
     return state
 
 def null_op(state,a):
@@ -60,10 +63,10 @@ def shoot_op(state,a):
 def aim_op(state,a):
     aim_list=[]
     for enemy in state.assesedBlues:
-        if enemy['observed']==True:
+        if enemy.observed==True:
             aim_list.append(enemy)
     #sort: observed list by classification when Eitan comes before Ohez
-    aim_list=sorted(aim_list,key=lambda x:x['val'], reverse=True)
+    aim_list=sorted(aim_list,key=lambda x:x.val, reverse=True)
     state.aim_list=aim_list
     return state
 pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_op,null_op,aim_op,shoot_op)
@@ -109,7 +112,7 @@ def attack_from_another_position_m(state,a):
     #agent still did not reach the target
     observed_count=0
     for enemy in state.assesedBlues:
-        if enemy['observed']==True:
+        if enemy.observed==True:
             observed_count+=1
     if (state.enemy_number == 0):
             return False
@@ -120,7 +123,7 @@ def attack_from_another_position_m(state,a):
 def aim_and_shoot_m(state,a):
     observed_count = 0
     for enemy in state.assesedBlues:
-        if enemy['observed'] == True:
+        if enemy.observed == True:
             observed_count += 1
     if (observed_count==0):
             return False
@@ -130,7 +133,7 @@ pyhop.declare_methods('continue_task',aim_and_shoot_m, attack_from_another_posit
 pyhop.declare_original_methods('continue_task',aim_and_shoot_m, attack_from_another_position_m)
 
 def shoot_m(state,a):
-    return [('shoot_op',str(state.aim_list[0]['name']))]
+    return [('shoot_op',str(state.aim_list[0].unit_name))]
 
 pyhop.declare_methods('shoot',shoot_m)
 pyhop.declare_original_methods('shoot',shoot_m)
@@ -141,13 +144,12 @@ pyhop.update_method_list()
 #####----------------------------------------#####
 
 
-def findplan(communicator,squadPosture,enemyDimensions,loc,blueList):
+def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList):
     init_state = pyhop.State('init_state')
     #VRF configs:
-    #init_state.communicator=communicator
     init_state.squadPosture=squadPosture
     init_state.enemyDimensions=enemyDimensions
-
+    init_state.basicRanges=basicRanges
     #HTN
     init_state.nextPositionIndex = []
     init_state.blues = []
@@ -159,7 +161,7 @@ def findplan(communicator,squadPosture,enemyDimensions,loc,blueList):
     init_state.debug_task = 0
     init_state.debug_method = 0
     init_state.debug_ope = 0
-    init_state.aim_list = 0
+    init_state.aim_list = []
 
     # Update distances from positions
     init_state.positions = ext_funs.get_positions_fromCSV('RedAttackPos.csv')
@@ -181,7 +183,7 @@ def findplan(communicator,squadPosture,enemyDimensions,loc,blueList):
     init_state.weights['bda_op'] = float(init_state.htnConfig.at['bda_op', 'value'])
     init_state.weights['shoot_enemy_op'] = float(init_state.htnConfig.at['shoot_enemy_op', 'value'])
     init_state.weights['basic_detection_probability'] = float(
-        init_state.htnConfig.at['basic_detection_probability', 'value'])
+    init_state.htnConfig.at['basic_detection_probability', 'value'])
 
     pyhop.print_state_simple(init_state)
 

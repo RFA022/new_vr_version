@@ -135,10 +135,14 @@ class RFAScenarioManager:
                         # print(current_entity.movement_task_completed)
                         # print(current_entity.movement_task_success)
                         # print('--------------------------------')
+                        "Replan"
+                        if current_entity.COA==[]:
+                            current_entity.planBool=1
+
                         "planning able to plan only if COA is empty"
                         if current_entity.planBool==1 and current_entity.COA==[]:
                             current_entity.planBool=0
-                            self.entity_list[i].COA=htnModel.findplan(self.communicator,
+                            self.entity_list[i].COA=htnModel.findplan(self.basicRanges,
                                                                       self.squadPosture,
                                                                       self.enemyDimensions,
                                                                       current_entity.current_location,
@@ -178,6 +182,7 @@ class RFAScenarioManager:
                                     losRespose=ext_funs.losOperator(self.squadPosture,self.enemyDimensions, enemy, current_entity.current_location)
                                     if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
                                         if losRespose['los'][0][0]==True:
+                                             enemy.observed=True
                                              enemy.last_seen_worldLocation=enemy.location
                                              logging.debug("Enemy: " + str(
                                                  enemy.unit_name)+ " has been detected")
@@ -202,20 +207,24 @@ class RFAScenarioManager:
                                 if detectionCount == 0:
                                     logging.debug("No enemy has been detected")
                             #Aim
+                            #Atribute distFromSquad is local atribute for blue enemy only for Aim operator
                             elif entity_next_state_and_action.aim == True:
                                 aim_list=[]
-                                for enemy in self.blue_entity_list_HTN:
-                                    if enemy['observed'] == True:
-                                        enemy['distFromSquad']=ext_funs.getMetriDistance(current_entity.current_location,enemy['location'])
+                                for enemy in self.blue_entity_list:
+                                    if enemy.observed == True:
+                                        #new atribute:
+                                        enemy.distFromSquad=ext_funs.getMetriDistance(current_entity.current_location,enemy.location)
                                         aim_list.append(enemy)
+                                    else:
+                                        enemy.distFromSquad=None
                                 # sort: observed list by classification when Eitan comes before Ohez
                                 if aim_list!=[]:
                                     #sort by value - next sort by value and then by distance
-                                    aim_list = sorted(aim_list, key=lambda x: (x['val'],-x['distFromSquad']), reverse=True)
+                                    aim_list = sorted(aim_list, key=lambda x: (x.val,-x.distFromSquad), reverse=True)
                                     self.aim_list = aim_list
                                     aim_list_names=[]
                                     for entity in aim_list:
-                                        name= entity['name']
+                                        name= entity.unit_name
                                         aim_list_names.append(name)
                                     logging.debug(("Target list is: " + str(aim_list_names)))
                                 if aim_list==[]:
@@ -227,19 +236,19 @@ class RFAScenarioManager:
                             elif entity_next_state_and_action.shoot==True:
                                 #NO CHECK FOR LOS and RANGE for each shooting unit.
                                 logging.debug(
-                                    "Try Shooting at target " + str(self.aim_list[0]['name']))
+                                    "Try Shooting at target " + str(self.aim_list[0].unit_name))
                                 target=self.aim_list[0]
-                                if target['classification']==EntityTypeEnum.EITAN:
+                                if target.classification==EntityTypeEnum.EITAN:
                                     lat_0=current_entity.current_location['latitude'];lon_0=current_entity.current_location['longitude'];alt_0=current_entity.current_location['altitude']
-                                    lat_1=target['location']['latitude'];lon_1=target['location']['longitude'];alt_1=target['location']['altitude']
+                                    lat_1=target.location['latitude'];lon_1=target.location['longitude']; alt_1=target.location['altitude']
                                     azi, elev, geo_range = pm.geodetic2aer(lat_1,lon_1,alt_1,lat_0,lon_0,alt_0)
                                     self.communicator.setEntityHeading(current_entity.unit_name,azi)
                                     current_entity.taskTime = time.time()
                                     current_entity.fireState = isFire.yes
                                     amoNumber = 1
                                     self.communicator.setEntityPosture(current_entity.unit_name, 13)
-                                    self.communicator.FireCommand(str('at_1'),str(target['name']),amoNumber,"dif")
-                                elif target['classification']==EntityTypeEnum.OHEZ:
+                                    self.communicator.FireCommand(str('at_1'),str(target.unit_name),amoNumber,"dif")
+                                elif target.classification==EntityTypeEnum.OHEZ:
                                     so_1 = (next(x for x in self.entity_list if x.unit_name == 'so_1'))
                                     so_2 = (next(x for x in self.entity_list if x.unit_name == 'so_2'))
                                     so_1.taskTime = time.time()
@@ -249,8 +258,8 @@ class RFAScenarioManager:
                                     amoNumber=10
                                     self.communicator.setEntityPosture(so_1.unit_name, 13)
                                     self.communicator.setEntityPosture(so_2.unit_name, 13)
-                                    self.communicator.FireCommand(str(so_1.unit_name),str(target['name']),amoNumber,"dif")
-                                    self.communicator.FireCommand(str(so_2.unit_name), str(target['name']), amoNumber, "dif")
+                                    self.communicator.FireCommand(str(so_1.unit_name),str(target.unit_name),amoNumber,"dif")
+                                    self.communicator.FireCommand(str(so_2.unit_name), str(target.unit_name), amoNumber,"dif")
 
 
                     # check if entity arrived to location:
@@ -333,7 +342,15 @@ class RFAScenarioManager:
                 for i in range(len(entity_previous_list)):
                     if return_list[k].unit_name==entity_previous_list[i].unit_name:
                         live_unit=entity_previous_list[i]
+                        break
                 current_entity.last_seen_worldLocation=live_unit.last_seen_worldLocation
+                current_entity.observed=live_unit.observed
+                if current_entity.classification == EntityTypeEnum.EITAN:
+                    current_entity.val = 1
+                else:
+                    current_entity.val = 0
+
+
 
         return return_list
 

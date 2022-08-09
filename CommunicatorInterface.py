@@ -28,7 +28,7 @@ class Hostility(Enum):
     NEUTRAL = 3
 
 
-class EntityInfo:
+class EntityInfo: #Blue entites data structure
     def __init__(self, entity_id: str):
         self.unit_name = entity_id
         # EntityTypeEnum
@@ -50,6 +50,8 @@ class EntityInfo:
         self.power = None
         self.health = None
         self.entity_damage_state = None
+        self.observed=False
+        self.val=None
 
 class ScenarioStatusEnum(Enum):
     NA = 0,

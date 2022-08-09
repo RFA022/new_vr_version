@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 import csv
 import math
@@ -39,7 +41,9 @@ def simple_getLocation(state,index):
 
 def getLocation(state,index):
     #float casting of location because altitude somehow automated casted to be str
-    loc={'latitude':float(state.positions[index]['latitude']),'longitude':float(state.positions[index]['longitude']),'altitude':float(state.positions[index]['altitude'])}
+    loc={'latitude':(state.positions[index]['latitude']),
+         'longitude':(state.positions[index]['longitude']),
+         'altitude':(state.positions[index]['altitude'])}
     return loc
 
 def getMetriDistance(loc1,loc2):
@@ -90,24 +94,21 @@ def getBluesDataFromVRFtoHTN(blueList):
         val=0
         if entity.classification==EntityTypeEnum.EITAN:
             val=1
-        entit=HTNentity(entity.unit_name)
-
-        HTNentitya = {'name': entity.unit_name,
-                  'classification': entity.classification,
-                  'location': entity.last_seen_worldLocation,
-                  'observed': False,
-                  'is_alive': entity.is_alive,
-                  'val': val
-                  }
-        entities.append(HTNentitya)
+        Newentity=HTNentity(entity.unit_name)
+        Newentity.classification=entity.classification
+        Newentity.location=entity.last_seen_worldLocation
+        Newentity.is_alive = entity.is_alive
+        Newentity.val=val
+        entities.append(Newentity)
     return entities
 
 #los Operator for 1 entity and 1 location to be used from HTN and ScenarioManager as well
 def losOperator(squadPosture,enemyDimensions,enemy,source_location):
     communicator = CommunicatorSingleton().obj
-    source_location['altitude'] += squadPosture['crouching_height']
+    source=copy.deepcopy(source_location)
+    source['altitude'] = str(float(source['altitude']) +float(squadPosture['crouching_height']))
     target = enemy.location
     if enemy.classification == EntityTypeEnum.EITAN:
         target['altitude'] += enemyDimensions['eitan_cg_height']
-    losRespose = (communicator.GetGeoQuery([source_location], [target], True, True))
+    losRespose = (communicator.GetGeoQuery([source], [target], True, True))
     return losRespose
