@@ -1,3 +1,4 @@
+import random
 import sys
 import pyhop_mcts_game as pyhop
 import numpy as np
@@ -6,6 +7,8 @@ import ext_funs
 from ext_funs import *
 import scipy.stats
 import pandas as pd
+from Communicator import CommunicatorSingleton
+
 
 def locate_at_position_op(state,a):
     state.squad_state = 'at_position'
@@ -34,7 +37,12 @@ def scan_for_enemy_op(state,a):
             if r_n>num*state.weights['basic_detection_probability']:
                 enemy['observed']=True
         else:
+
+            communicator = CommunicatorSingleton().obj
             enemy['observed'] = True
+            num=random.randint(1,100)
+            losRespose = communicator.GetGeoQuery([state.positions[0]], [enemy['location']], True, True)
+            print(losRespose)
             # losRespose = ext_funs.losOperator(communicator,squadPosture,enemyDimensions, enemy, state.loc)
             # if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
             #     if losRespose['los'][0][0] == True:
@@ -137,7 +145,6 @@ pyhop.update_method_list()
 
 def findplan(communicator,squadPosture,enemyDimensions,loc,blueList):
     init_state = pyhop.State('init_state')
-
     #VRF configs:
     #init_state.communicator=communicator
     init_state.squadPosture=squadPosture

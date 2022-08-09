@@ -1,9 +1,0 @@
-2022-07-14 14:01:36,212 [INFO] Initializing RFSM 
-2022-07-14 14:01:36,620 [DEBUG] Communicator is initialized
-2022-07-14 14:01:36,620 [DEBUG] running in vrf mode
-2022-07-14 14:01:36,620 [DEBUG] RFAScenarioManager is initialized
-2022-07-14 14:01:36,620 [INFO] RFSM initialized
-2022-07-14 14:01:36,621 [DEBUG] SpawnManager_Nadav is initialized
-2022-07-14 14:01:37,621 [DEBUG] Get Forces local 
-2022-07-14 14:01:41,612 [DEBUG] case 3 need to choose position (from op to op position) Agent
-2022-07-14 14:01:41,713 [DEBUG] case 3 need to move location (from op to op position) 11

@@ -1,6 +1,0 @@
-2022-07-21 11:42:43,733 [INFO] Initializing RFSM 
-2022-07-21 11:42:44,147 [DEBUG] Communicator is initialized
-2022-07-21 11:42:44,147 [DEBUG] running in vrf mode
-2022-07-21 11:42:44,147 [DEBUG] RFAScenarioManager is initialized
-2022-07-21 11:42:44,148 [INFO] RFSM initialized
-2022-07-21 11:42:44,149 [DEBUG] SpawnManager_Nadav is initialized

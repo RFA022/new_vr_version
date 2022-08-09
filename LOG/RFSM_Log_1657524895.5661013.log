@@ -1,8 +1,0 @@
-2022-07-11 10:34:55,566 [INFO] Initializing RFSM 
-2022-07-11 10:34:55,744 [DEBUG] Communicator is initialized
-2022-07-11 10:34:55,744 [DEBUG] running in vrf mode
-2022-07-11 10:34:55,744 [DEBUG] RFSMManager is initialized
-2022-07-11 10:34:55,744 [INFO] RFSM initialized
-2022-07-11 10:34:55,745 [DEBUG] SpawnManager_Nadav is initialized
-2022-07-11 10:34:55,745 [ERROR] writer StopTasksCommand dont exist
-2022-07-11 10:34:55,745 [DEBUG] Get Forces local 

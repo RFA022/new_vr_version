@@ -1,5 +1,4 @@
 import logging
-
 import sys
 import time
 from os import path as os_path
@@ -7,6 +6,7 @@ import rticonnextdds_connector as rti
 import threading
 from CommunicatorInterface import *
 from ConfigManager import ConfigManager
+from singleton import Singleton
 
 file_path = os_path.dirname(os_path.realpath(__file__))
 sys.path.append(file_path)
@@ -551,3 +551,8 @@ class Communicator(CommunicatorInterface):
                 "attacking_entity_name": entity_name
             })
             current_DW.write()
+
+
+class CommunicatorSingleton(metaclass=Singleton):
+    def __init__(self):
+        self.obj = Communicator()

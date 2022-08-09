@@ -1,5 +1,6 @@
 #from PlacementManager import *
-from Communicator import *
+#from Communicator import *
+from CommunicatorInterface import *
 from ConfigManager import *
 import random
 from EntityCurrentState import *

@@ -1,8 +1,0 @@
-2022-07-11 10:34:30,214 [INFO] Initializing RFSM 
-2022-07-11 10:34:30,394 [DEBUG] Communicator is initialized
-2022-07-11 10:34:30,394 [DEBUG] running in vrf mode
-2022-07-11 10:34:30,394 [DEBUG] RFSMManager is initialized
-2022-07-11 10:34:30,394 [INFO] RFSM initialized
-2022-07-11 10:34:30,394 [DEBUG] SpawnManager_Nadav is initialized
-2022-07-11 10:34:30,395 [ERROR] writer SpawnSquadCommand_DW dont exist
-2022-07-11 10:34:30,395 [DEBUG] Get Forces local 

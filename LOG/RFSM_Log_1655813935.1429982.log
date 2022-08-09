@@ -1,7 +1,0 @@
-2022-06-21 15:18:55,143 [INFO] Initializing RFSM 
-2022-06-21 15:18:55,448 [DEBUG] Communicator is initialized
-2022-06-21 15:18:55,448 [DEBUG] running in vrf mode
-2022-06-21 15:18:55,448 [DEBUG] RFSMManager is initialized
-2022-06-21 15:18:55,448 [INFO] RFSM initialized
-2022-06-21 15:18:55,449 [DEBUG] SpawnManager is initialized
-2022-06-21 15:18:55,453 [DEBUG] area compound CD area of interest X

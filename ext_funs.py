@@ -4,11 +4,11 @@ import math
 from CommunicatorInterface import EntityTypeEnum
 from Communicator import *
 
-# communicator2=Communicator()
 
-# class Ext_funs:
-#     def __init__(self, communicator):
-#         self.communicator=communicator
+def comm():
+    if 'communicator' not in globals():
+        communicator=Communicator()
+        return communicator
 
 def simple_update_distance_from_positions(state):
     '''
@@ -61,8 +61,7 @@ def get_positions_fromCSV(filename):
             loaction = {
                 "latitude": row[6],
                 "longitude": row[7],
-                "altitude": row[8],
-                "id": row[3]
+                "altitude": row[8]
             }
 
             locations.append(loaction)

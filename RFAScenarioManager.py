@@ -12,7 +12,9 @@ import copy
 import htnModel
 import pandas as pd
 import pymap3d as pm
-from external_funs import *
+from ext_funs import *
+import ext_funs
+from Communicator import CommunicatorSingleton
 
 
 
@@ -21,8 +23,7 @@ class RFAScenarioManager:
 
         #Running and Configs:
         if ConfigManager.GetMode() == "VRF":
-            self.communicator = Communicator()
-            self.ext_funs= Ext_funs(self.communicator)
+            self.communicator = CommunicatorSingleton().obj
             logging.debug("Running in vrf mode")
         else:
             logging.error("None valid mode")
@@ -73,7 +74,7 @@ class RFAScenarioManager:
                 self.entity_list=self.CreateAndUpdateEntityList(self.entity_list)
                 #update Blue list from simulator and from last iteration (info about last seen location)
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
-                self.blue_entity_list_HTN=self.ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+                self.blue_entity_list_HTN=ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
 
                 fire_list = self.communicator.GetFireEvent()
                 task_status_list = self.communicator.GetTaskStatusEvent()
@@ -174,7 +175,7 @@ class RFAScenarioManager:
                                 logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face))
                                 detectionCount=0
                                 for enemy in (self.blue_entity_list):
-                                    losRespose=self.ext_funs.losOperator(self.communicator,self.squadPosture,self.enemyDimensions, enemy, current_entity.current_location)
+                                    losRespose=ext_funs.losOperator(self.communicator,self.squadPosture,self.enemyDimensions, enemy, current_entity.current_location)
                                     if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
                                         if losRespose['los'][0][0]==True:
                                              enemy.last_seen_worldLocation=enemy.location
@@ -197,7 +198,7 @@ class RFAScenarioManager:
                                 #             detectionCount+=1
 
                                 #updating HTN list which is used when shooting:
-                                self.blue_entity_list_HTN = self.ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+                                self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                                 if detectionCount == 0:
                                     logging.debug("No enemy has been detected")
                             #Aim
@@ -205,7 +206,7 @@ class RFAScenarioManager:
                                 aim_list=[]
                                 for enemy in self.blue_entity_list_HTN:
                                     if enemy['observed'] == True:
-                                        enemy['distFromSquad']=self.ext_funs.getMetriDistance(current_entity.current_location,enemy['location'])
+                                        enemy['distFromSquad']=ext_funs.getMetriDistance(current_entity.current_location,enemy['location'])
                                         aim_list.append(enemy)
                                 # sort: observed list by classification when Eitan comes before Ohez
                                 if aim_list!=[]:
@@ -289,8 +290,7 @@ class RFAScenarioManager:
                             spawnManager.Run()
                             self.entity_list = spawnManager.spawn_entity_list
                             self.blue_entity_list = self.getBlueEntityList()
-                            self.blue_entity_list_HTN = self.ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
-
+                            self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                             # Squad commander COA push scanning operation before the game starts
                             for i in range(len(self.entity_list)):
                                 current_entity = self.entity_list[i]

@@ -1,8 +1,0 @@
-2022-06-27 10:18:26,152 [INFO] Initializing RFSM 
-2022-06-27 10:18:26,455 [DEBUG] Communicator is initialized
-2022-06-27 10:18:26,456 [DEBUG] running in vrf mode
-2022-06-27 10:18:26,456 [DEBUG] RFSMManager is initialized
-2022-06-27 10:18:26,456 [INFO] RFSM initialized
-2022-06-27 10:18:26,459 [DEBUG] SpawnManager_Nadav is initialized
-2022-06-27 10:18:28,460 [DEBUG] Get Forces local 
-2022-06-27 10:18:52,854 [DEBUG] case 4 need to change face to West Agent
