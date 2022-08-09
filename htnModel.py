@@ -38,10 +38,8 @@ def scan_for_enemy_op(state,a):
                 enemy['observed']=True
         else:
 
-            communicator = CommunicatorSingleton().obj
             enemy['observed'] = True
-            num=random.randint(1,100)
-            losRespose = communicator.GetGeoQuery([state.positions[0]], [enemy['location']], True, True)
+            losRespose = ext_funs.losOperator(state.squadPosture,state.enemyDimensions,enemy,state.loc)
             print(losRespose)
             # losRespose = ext_funs.losOperator(communicator,squadPosture,enemyDimensions, enemy, state.loc)
             # if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:

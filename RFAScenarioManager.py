@@ -175,7 +175,7 @@ class RFAScenarioManager:
                                 logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face))
                                 detectionCount=0
                                 for enemy in (self.blue_entity_list):
-                                    losRespose=ext_funs.losOperator(self.communicator,self.squadPosture,self.enemyDimensions, enemy, current_entity.current_location)
+                                    losRespose=ext_funs.losOperator(self.squadPosture,self.enemyDimensions, enemy, current_entity.current_location)
                                     if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
                                         if losRespose['los'][0][0]==True:
                                              enemy.last_seen_worldLocation=enemy.location

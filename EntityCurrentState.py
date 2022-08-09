@@ -46,3 +46,16 @@ class EntityCurrentState:
         self.aim_list=[]
         self.taskTime=None
         self.preGameBool=True # boolean that active for first 10 seconds of the game. able to activate operations before first HTN search
+
+class HTNentity:
+    def __init__(self, entity_id: str):
+        self.unit_name=entity_id
+        self.classification = CI.EntityTypeEnum.UNKNOWN
+        self.location = {
+            "latitude": None,
+            "longitude": None,
+            "altitude": None
+        }
+        self.observed=False
+        self.is_alive = True
+        self.val=None
