@@ -2,8 +2,8 @@ Name,value
 choose_position_op,0.1
 move_to_position_op,0
 locate_at_position_op,0.4
-scan_for_enemy_op,0.1
+scan_for_enemy_op,0.2
 bda_op,0
-shoot_enemy_op,0.4
+shoot_enemy_op,0.3
 sum_ops,0
-basic_detection_probability,0.0
+basic_detection_probability,0.15

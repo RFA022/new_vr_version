@@ -62,7 +62,7 @@ def shoot_op(state,a):
 def aim_op(state,a):
     aim_list=[]
     for enemy in state.assesedBlues:
-        if enemy.observed==True:
+        if enemy.observed==True and enemy.is_alive==True:
             aim_list.append(enemy)
     #sort: observed list by classification when Eitan comes before Ohez
     aim_list=sorted(aim_list,key=lambda x:x.val, reverse=True)
@@ -74,7 +74,7 @@ pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_positio
 def end_mission_m(state,a):
     # agent reach goal
     if (state.enemy_number == 0):
-        #print("Mission accomplished")
+        print("Mission accomplished - no need to plan")
         return []
     return False
 
@@ -120,11 +120,11 @@ def attack_from_another_position_m(state,a):
     return [('null_op',a)]
 
 def aim_and_shoot_m(state,a):
-    observed_count = 0
+    observedAndalive_count = 0
     for enemy in state.assesedBlues:
-        if enemy.observed == True:
-            observed_count += 1
-    if (observed_count==0):
+        if enemy.observed == True and enemy.is_alive == True:
+            observedAndalive_count += 1
+    if (observedAndalive_count==0):
             return False
     return [('aim_op', a),('shoot',a)]
 
@@ -166,7 +166,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList):
     init_state.loc = loc
     init_state.distance_from_positions = ext_funs.update_distance_from_positions(init_state)
     init_state.assesedBlues = blueList
-    init_state.enemy_number = len(init_state.assesedBlues)
+    init_state.enemy_number = ext_funs.getNumberofAliveEnemies(init_state.assesedBlues)
     print('initial state is:')
 
     init_state.htnConfig = pd.read_csv('htnConfig.csv',

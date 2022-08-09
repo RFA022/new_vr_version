@@ -76,6 +76,17 @@ class RFAScenarioManager:
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
                 self.blue_entity_list_HTN=ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
 
+                numberOfAliveBlues=getNumberofAliveEnemies(self.blue_entity_list)
+                if numberOfAliveBlues == 0:
+                    logging.debug("Red as won the game")
+                    break
+
+                #Debug
+                # for blue in self.blue_entity_list:
+                #     print('alive status for blue list entity '+ str(blue.unit_name + "is: "+ str(blue.is_alive)))
+                # for blue in self.blue_entity_list_HTN:
+                #     print('alive status for HTN blue list entity ' + str(blue.unit_name + "is: " + str(blue.is_alive)))
+
                 fire_list = self.communicator.GetFireEvent()
                 task_status_list = self.communicator.GetTaskStatusEvent()
 
@@ -211,7 +222,7 @@ class RFAScenarioManager:
                             elif entity_next_state_and_action.aim == True:
                                 aim_list=[]
                                 for enemy in self.blue_entity_list:
-                                    if enemy.observed == True:
+                                    if enemy.observed == True and enemy.is_alive==True:
                                         #new atribute:
                                         enemy.distFromSquad=ext_funs.getMetriDistance(current_entity.current_location,enemy.location)
                                         aim_list.append(enemy)

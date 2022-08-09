@@ -112,3 +112,10 @@ def losOperator(squadPosture,enemyDimensions,enemy,source_location):
         target['altitude'] += enemyDimensions['eitan_cg_height']
     losRespose = (communicator.GetGeoQuery([source], [target], True, True))
     return losRespose
+
+def getNumberofAliveEnemies(blues):
+    aliveBluesNumber=0
+    for blue in blues:
+        if blue.is_alive==True:
+            aliveBluesNumber+=1
+    return aliveBluesNumber
