@@ -456,7 +456,7 @@ def calValue(state,subtask):
         for enemy in state.assesedBlues:
             if enemy.classification == EntityTypeEnum.EITAN:
                 Eitan_number+=1
-            elif enemy.classification == EntityTypeEnum.OHEZ:
+            elif (enemy.classification == EntityTypeEnum.OHEZ) or (enemy.classification==EntityTypeEnum.UNKNOWN):
                 Ohez_number+=1
         sum=2*Ohez_number+7*Eitan_number
         x=100/sum #value for each evaluation unit
@@ -466,7 +466,7 @@ def calValue(state,subtask):
             if (enemy.observed == True) and (enemy.is_alive==True): #value only for alive observed entites of blue
                 if enemy.classification==EntityTypeEnum.EITAN:
                     ret_val += x * 7
-                elif enemy.classification==EntityTypeEnum.OHEZ:
+                elif (enemy.classification == EntityTypeEnum.OHEZ) or (enemy.classification==EntityTypeEnum.UNKNOWN):
                     ret_val += x * 2
         ret_val=state.weights['scan_for_enemy_op']*ret_val
     elif subtask[0] == 'null_op':

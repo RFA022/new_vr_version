@@ -26,8 +26,8 @@ class SpawnManager_Nadav:
         #self.createEntity(EntityTypeEnum.SOLDIER,LOC,Hostility.OPPOSING,'Agent')
         #self.communicator.CreateEntity(self.entity_to_create_list) #important line that creates for real the enteties
 
-        ###_______________code that creates positions as way points___________________###
-        ##---# create positions #---##
+        # ##_______________code that creates positions as way points___________________###
+        #---# create positions #---##
         # for i in range(len(self.AttackPos)):
         #     pos = [self.AttackPos[i]['latitude'], self.AttackPos[i]['longitude'], self.AttackPos[i]['altitude']]
         #     self.communicator.CreateEntitySimple('attack point' + str(i), pos, 3, '16:0:0:1:0:0:0')
@@ -35,7 +35,7 @@ class SpawnManager_Nadav:
         # for i in range(len(self.spawnPos)):
         #     pos=[self.spawnPos[i]['latitude'],self.spawnPos[i]['longitude'],self.spawnPos[i]['altitude']]
         #     self.communicator.CreateEntitySimple('spawn point' + str(i),pos,2,'16:0:0:1:0:0:0')
-        #---# create positions #---##
+        # #---# create positions #---##
 
     def createATSquad(self,LOC,squadName,classification_vec,names_vec):
         LOC = {

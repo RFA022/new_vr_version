@@ -80,7 +80,6 @@ class RFAScenarioManager:
                 if numberOfAliveBlues == 0:
                     logging.debug("Red as won the game")
                     break
-
                 #Debug
                 # for blue in self.blue_entity_list:
                 #     print('alive status for blue list entity '+ str(blue.unit_name + "is: "+ str(blue.is_alive)))
@@ -148,7 +147,12 @@ class RFAScenarioManager:
                         # print('--------------------------------')
                         "Replan"
                         if current_entity.COA==[]:
-                            current_entity.planBool=1
+                            fire_bool=0
+                            for testEntity in self.entity_list:
+                                if testEntity.fireState == isFire.yes:
+                                    fire_bool = 1
+                            if fire_bool==0:
+                                current_entity.planBool=1
 
                         "planning able to plan only if COA is empty"
                         if current_entity.planBool==1 and current_entity.COA==[]:
@@ -243,7 +247,7 @@ class RFAScenarioManager:
                                     amoNumber = 1
                                     self.communicator.setEntityPosture(current_entity.unit_name, 13)
                                     self.communicator.FireCommand(str('at_1'),str(target.unit_name),amoNumber,"dif")
-                                elif target.classification==EntityTypeEnum.OHEZ:
+                                elif (target.classification==EntityTypeEnum.OHEZ) or (target.classification==EntityTypeEnum.UNKNOWN):
                                     so_1 = (next(x for x in self.entity_list if x.unit_name == 'so_1'))
                                     so_2 = (next(x for x in self.entity_list if x.unit_name == 'so_2'))
                                     so_1.taskTime = time.time()
@@ -456,160 +460,3 @@ class RFAScenarioManager:
             list_to_return.append(current_entity)
 
         return list_to_return
-
-    def GetTimeDiff(self, tick_counter: int, curr_tick: float) -> float:
-        current = time.time()
-        if ConfigManager.GetTimeOrTickMode() == "TIME":
-            # delta time from start of the running
-            return current - self.start_scenario_time
-        else:
-            logging.error("not valid time or tick mode")
-            sys.exit(1)
-
-    # def DetectedEnemy(self, current_entity: EntityCurrentState) -> dict:
-    #
-    #     entity_config = ConfigManager.getEntityConfig(str(current_entity.entity_type).strip())
-    #     if entity_config.weapon_range is None:
-    #         entity_config = ConfigManager.getEntityConfig(str(current_entity.entity_type.name).strip())
-    #
-    #     detected_range = 0
-    #     if entity_config.detection_range is not None:
-    #         detected_range = float(entity_config.detection_range)
-    #     lat1 = current_entity.current_location.get("latitude")
-    #     lon1 = current_entity.current_location.get("longitude")
-    #     if lat1 is None or lon1 is None:
-    #         lat1 = current_entity.current_location["location"].get("latitude")
-    #         lon1 = current_entity.current_location["location"].get("longitude")
-    #
-    #     detected_entity = {
-    #         "enemy_is_detected": False,
-    #         "detected_entity_id": "",
-    #         "general_classification": 0
-    #     }
-    #
-    #     for i in range(len(self.blue_entity_list)):
-    #         if self.blue_entity_list[i].alive:
-    #             new_red_location = {}
-    #             red_location = {}
-    #             blue_location = {}
-    #
-    #             if ConfigManager.GetMode() == "GODOT" or ConfigManager.GetMode() == "VRF":
-    #                 if self.blue_entity_list[i].current_location.get("latitude") is None or self.blue_entity_list[
-    #                     i].current_location.get("longitude") == None:
-    #                     logging.warning("Error in location of blue entity " + str(self.blue_entity_list[i].unit_name))
-    #                     continue
-    #                 lat2 = float(self.blue_entity_list[i].current_location.get("latitude"))
-    #                 lon2 = float(self.blue_entity_list[i].current_location.get("longitude"))
-    #                 blue_range = abs(PlacementManager.Range(lat1, lon1, lat2, lon2))
-    #                 if detected_range < blue_range:
-    #                     continue
-    #                 blue_location = self.blue_entity_list[i].current_location
-    #                 # [:15] to get only the number location without the prefix name
-    #                 blue_location["latitude"] = float(str(blue_location.get("latitude"))[:15])
-    #                 blue_location["longitude"] = float(str(blue_location.get("longitude"))[:15])
-    #                 blue_location["altitude"] = float(
-    #                     str(blue_location.get("altitude"))[:15]) + RFSMManager.los_blue_alt
-    #                 red_location = copy.deepcopy(current_entity.current_location)
-    #                 try:
-    #                     # dont get "location" prefix
-    #                     new_red_location["latitude"] = float(str(red_location.get("latitude"))[:15])
-    #                     new_red_location["longitude"] = float(str(red_location.get("longitude"))[:15])
-    #                     new_red_location["altitude"] = float(str(red_location.get("altitude"))[:15])
-    #                     new_red_location["altitude"] = red_location["altitude"] + RFSMManager.los_red_alt
-    #                 except:
-    #                     # get "location" prefix
-    #                     new_red_location["latitude"] = float(str(red_location["location"].get("latitude"))[:15])
-    #                     new_red_location["longitude"] = float(str(red_location["location"].get("longitude"))[:15])
-    #                     new_red_location["altitude"] = float(str(red_location["location"].get("altitude"))[:15])
-    #                     new_red_location["altitude"] = new_red_location["altitude"] + RFSMManager.los_red_alt
-    #
-    #             if self.communicator.CheckLos(new_red_location, blue_location):
-    #                 detected_entity["enemy_is_detected"] = True
-    #                 detected_entity["detected_entity_id"] = self.blue_entity_list[i].entity_id
-    #                 detected_entity["general_classification"] = self.blue_entity_list[i].general_classification
-    #                 # logging.debug("LOS return TRUE entity1 = " + str(current_entity.entity_id) + " entity2 = " + str(
-    #                 #     self.blue_entity_list[i].entity_id))
-    #                 break
-    #             # else:
-    #             #     logging.debug("LOS return False entity1 = " + str(current_entity.entity_id) + " entity2 = " + str(
-    #             #         self.blue_entity_list[i].entity_id))
-    #
-    #     return detected_entity
-
-    # def GetBluesRelativeInformation(self, current_entity: EntityCurrentState) -> dict:
-    #
-    #     blues_relative_information_dict = {}
-    #
-    #     entity_config = ConfigManager.getEntityConfig(str(current_entity.entity_type).strip())
-    #     if entity_config.weapon_range is None:
-    #         entity_config = ConfigManager.getEntityConfig(str(current_entity.entity_type.name).strip())
-    #
-    #     detected_range = 0
-    #     if entity_config.detection_range is not None:
-    #         detected_range = float(entity_config.detection_range)
-    #     lat1 = current_entity.current_location.get("latitude")
-    #     lon1 = current_entity.current_location.get("longitude")
-    #     if lat1 is None or lon1 is None:
-    #         lat1 = current_entity.current_location["location"].get("latitude")
-    #         lon1 = current_entity.current_location["location"].get("longitude")
-    #
-    #     my_los_location = copy.deepcopy(current_entity.current_location)
-    #     try:
-    #         # dont get "location" prefix
-    #         my_los_location["latitude"] = float(str(my_los_location.get("latitude"))[:15])
-    #         my_los_location["longitude"] = float(str(my_los_location.get("longitude"))[:15])
-    #         my_los_location["altitude"] = float(str(my_los_location.get("altitude"))[:15]) + RFSMManager.los_red_alt
-    #     except:
-    #         # get "location" prefix
-    #         my_los_location["latitude"] = float(str(my_los_location["location"].get("latitude"))[:15])
-    #         my_los_location["longitude"] = float(str(my_los_location["location"].get("longitude"))[:15])
-    #         my_los_location["altitude"] = float(str(my_los_location["location"].get("altitude"))[:15]) + RFSMManager.los_red_alt
-    #
-    #     for i in range(len(self.blue_entity_list)):
-    #         if self.blue_entity_list[i].alive:
-    #             blue_entity_information = {
-    #                 "enemy_is_detected": False,
-    #                 "detected_entity_general_classification": 0,
-    #                 "latitude": 0,
-    #                 "longitude": 0,
-    #                 "altitude": 0,
-    #                 "relative_distance": 0,
-    #                 "blue_los_location": "",
-    #                 "my_los_location": my_los_location
-    #             }
-    #             blue_entity_id = self.blue_entity_list[i].entity_id
-    #             if self.blue_entity_list[i].current_location.get("latitude") is None or self.blue_entity_list[i].current_location.get("longitude") == None:
-    #                 logging.warning("Error in location of blue entity " + str(self.blue_entity_list[i].unit_name))
-    #                 continue
-    #
-    #             blue_entity_information["latitude"] = float(self.blue_entity_list[i].current_location.get("latitude"))
-    #             blue_entity_information["longitude"] = float(self.blue_entity_list[i].current_location.get("longitude"))
-    #             blue_entity_information["altitude"] = float(self.blue_entity_list[i].current_location.get("altitude"))
-    #             blue_entity_information["relative_distance"] = abs(PlacementManager.Range(lat1, lon1, blue_entity_information.get("latitude"), blue_entity_information.get("longitude")))
-    #
-    #             blue_entity_information["blue_los_location"] = copy.deepcopy(self.blue_entity_list[i].current_location)
-    #             blue_entity_information["blue_los_location"]["latitude"] = float(str(blue_entity_information["blue_los_location"].get("latitude"))[:15])
-    #             blue_entity_information["blue_los_location"]["longitude"] = float(str( blue_entity_information["blue_los_location"].get("longitude"))[:15])
-    #             blue_entity_information["blue_los_location"]["altitude"] = float(str( blue_entity_information["blue_los_location"].get("altitude"))[:15]) + RFSMManager.los_blue_alt
-    #
-    #
-    #             blue_entity_information["detected_entity_general_classification"] = self.blue_entity_list[i].general_classification
-    #
-    #             blues_relative_information_dict[blue_entity_id] = blue_entity_information
-    #
-    #     src_los_vector = [my_los_location]
-    #     dest_los_vector = []
-    #     for blue_id in blues_relative_information_dict:
-    #         if detected_range >= blues_relative_information_dict[blue_id].get("relative_distance"):
-    #             dest_los_vector.append(blues_relative_information_dict[blue_id].get("blue_los_location"))
-    #
-    #     if len(dest_los_vector) > 0:
-    #         ans = self.communicator.GetGeoQuery(src_los_vector, dest_los_vector, True, False)
-    #         los_index = 0
-    #         for blue_id in blues_relative_information_dict:
-    #             if detected_range >= blues_relative_information_dict[blue_id].get("relative_distance"):
-    #                 if ans["los"][0][los_index]:
-    #                     blues_relative_information_dict[blue_id]["enemy_is_detected"] = True
-    #                 los_index += 1
-    #
-    #     return blues_relative_information_dict
