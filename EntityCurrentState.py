@@ -44,7 +44,7 @@ class EntityCurrentState: #red entities
         self.state = PositionType.AT_OP
         self.fireState = isFire.no
         self.aim_list=[]
-        self.taskTime=None
+        self.taskTime=9223372036854775807 #maxint python 2
         self.preGameBool=True # boolean that active for first 10 seconds of the game. able to activate operations before first HTN search
 
 class HTNentity:
