@@ -58,7 +58,10 @@ class RFAScenarioManager:
         self.basicRanges['javelin_range'] = float(self.configuration.at['javelin_range', 'value'])
         self.basicRanges['ak47_range'] = float(self.configuration.at['ak47_range', 'value'])
 
-
+        self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
+        self.squadsData = pd.read_csv(self.squadsDatalocation,
+                            header=[0],
+                            index_col=[6]) #Squad name column
 
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
 
@@ -66,7 +69,7 @@ class RFAScenarioManager:
 
         while True:
             if self.communicator.GetScenarioStatus() == ScenarioStatusEnum.RUNNING:
-                time.sleep(0.5) #sleep time between every iteration
+                time.sleep(0.5) #sleep time between every iteration - CPU time
                 if self.start_scenario_time == 0:
                     self.start_scenario_time = time.time()
 
@@ -93,6 +96,9 @@ class RFAScenarioManager:
                 # print(task_status_list)
                 # print(fire_list)
                 # Run over all entity
+                print("---Debug Seasson---")  #
+                print(fire_list)
+                print(task_status_list)
                 for i in range(len(self.entity_list)):
                     current_entity = self.entity_list[i]
                     "Zeroing preGameBool for all entites after 10 seconds of game"
@@ -112,27 +118,31 @@ class RFAScenarioManager:
                                             current_entity.movement_task_success = task.get("taskSuccess")
 
                        #check fire status if unit is shooting
-                        if current_entity.fireState == isFire.yes:
+                        if 1:#current_entity.fireState == isFire.yes:
                                 # Check task status for movement tasks
                                 for task in task_status_list:
                                     if current_entity.unit_name == task.get("markingText"):
                                         if task.get("taskName") == "fire-at-target":
                                             current_entity.fire_task_completed = task.get("currentStatus")
                                             current_entity.fire_task_success = task.get("taskSuccess")
+                                            if current_entity.fire_task_success == task.get("taskSuccess"):
+                                                current_entity.fireState=isFire.yes
+
                                 # Updating  Tasktime for fire if unit is shooting
                                 for fire_event in fire_list:
                                     if fire_event['attacking_entity_name']== current_entity.unit_name:
                                         current_entity.taskTime=time.time()
                         # Debug:
                         # print("---Debug Seasson---")#
-                        # print(str(current_entity.unit_name))
-                        # print(current_entity.fireState)
-                        # print(current_entity.fire_task_completed)
-                        # print(current_entity.fire_task_success)
-                        # print('--------------------------------')
+                        print(str(current_entity.unit_name))
+                        print(current_entity.fireState)
+                        print(current_entity.fire_task_completed)
+                        print(current_entity.fire_task_success)
+                        print('--------------------------------')
                         # next state and action- every iteration even tough COA is empty
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos)
+
                     #---#---get the next state and action---#---#
                     if current_entity.unit_name=="at_1":
                         # Debug:
@@ -142,7 +152,7 @@ class RFAScenarioManager:
                         # print(current_entity.fire_task_success)
                         # print('--------------------------------')
                         # print(current_entity.state)
-                                # print(current_entity.movement_task_completed)
+                        # print(current_entity.movement_task_completed)
                         # print(current_entity.movement_task_success)
                         # print('--------------------------------')
                         "Replan"
@@ -243,7 +253,7 @@ class RFAScenarioManager:
                                     azi, elev, geo_range = pm.geodetic2aer(lat_1,lon_1,alt_1,lat_0,lon_0,alt_0)
                                     self.communicator.setEntityHeading(current_entity.unit_name,azi)
                                     current_entity.taskTime = time.time()
-                                    current_entity.fireState = isFire.yes
+                                    #current_entity.fireState = isFire.yes
                                     amoNumber = 1
                                     self.communicator.setEntityPosture(current_entity.unit_name, 13)
                                     self.communicator.FireCommand(str('at_1'),str(target.unit_name),amoNumber,"dif")
@@ -252,8 +262,8 @@ class RFAScenarioManager:
                                     so_2 = (next(x for x in self.entity_list if x.unit_name == 'so_2'))
                                     so_1.taskTime = time.time()
                                     so_2.taskTime = time.time()
-                                    so_1.fireState = isFire.yes
-                                    so_2.fireState = isFire.yes
+                                    #so_1.fireState = isFire.yes
+                                    #so_2.fireState = isFire.yes
                                     amoNumber=10
                                     self.communicator.setEntityPosture(so_1.unit_name, 13)
                                     self.communicator.setEntityPosture(so_2.unit_name, 13)
@@ -294,7 +304,7 @@ class RFAScenarioManager:
                     if self.first_enter:
                         self.first_enter = False
                         if ConfigManager.GetForceRemote() == "FALSE":
-                            spawnManager = SpawnManager_Nadav(self.communicator,self.spawnPos,self.AttackPos)
+                            spawnManager = SpawnManager_Nadav(self.communicator,self.spawnPos,self.AttackPos,self.squadsData)
                             spawnManager.Run()
                             self.entity_list = spawnManager.spawn_entity_list
                             self.blue_entity_list = self.getBlueEntityList()

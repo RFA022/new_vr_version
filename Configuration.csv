@@ -6,3 +6,4 @@ rpg_range,300,meter
 javelin_range,1200,meter
 ak47_range,100,meter
 eitan_cg_height,1.2,meter
+squadsDataLocation,C:\\MAK\\vrforces4.7\\bin64\\Config_Files\\Sherlock\\unit.csv,directory
