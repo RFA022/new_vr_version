@@ -29,8 +29,8 @@ class RFAScenarioManager:
             logging.error("None valid mode")
             raise Exception("None valid mode")
 
-        self.spawnPos = self.get_positions_fromCSV('RedSpawnPos.csv')
-        self.AttackPos = self.get_positions_fromCSV('RedAttackPos.csv')
+        self.spawnPos =  ext_funs.get_positions_fromCSV('RedSpawnPos.csv')
+        self.AttackPos = ext_funs.get_positions_fromCSV('RedAttackPos.csv')
         self.Polygons = self.communicator.getAreasQuery()
         self.start_scenario_time = 0
         self.first_enter = True
@@ -91,14 +91,14 @@ class RFAScenarioManager:
 
                 fire_list = self.communicator.GetFireEvent()
                 task_status_list = self.communicator.GetTaskStatusEvent()
-
                 #Debug
                 # print(task_status_list)
                 # print(fire_list)
                 # Run over all entity
-                print("---Debug Seasson---")  #
-                print(fire_list)
-                print(task_status_list)
+                # print("---Debug Seasson---")  #
+                # print(fire_list)
+                # print(task_status_list)
+
                 for i in range(len(self.entity_list)):
                     current_entity = self.entity_list[i]
                     "Zeroing preGameBool for all entites after 10 seconds of game"
@@ -107,7 +107,10 @@ class RFAScenarioManager:
                     if time.time()-self.start_scenario_time>1:
                         if current_entity.preGameBool==True:
                             current_entity.preGameBool=False
+
                     if current_entity.alive:
+                        move_and_fire_state=copy.deepcopy(current_entity)
+                        current_entity=self.handle_move_and_fire(move_and_fire_state)
                         #check movement status if unit is moving
                         if current_entity.state == PositionType.MOVE_TO_OP:
                                 # Check task status for movement tasks
@@ -116,33 +119,83 @@ class RFAScenarioManager:
                                         if task.get("taskName") == "vrf-move-to-location-task":
                                             current_entity.movement_task_completed = task.get("currentStatus")
                                             current_entity.movement_task_success = task.get("taskSuccess")
+                                # check task status
+                                if current_entity.movement_task_completed == 1:
+                                    if current_entity.movement_task_success:
+                                        # At this case we arrived to location
+                                        if current_entity.state == PositionType.MOVE_TO_OP:
+                                            current_entity.state = PositionType.AT_OP
+                                        current_entity.movement_task_completed = 0
+                                        current_entity.movement_task_success = False
+                                        logging.debug(
+                                            "entity: " + str(
+                                                current_entity.unit_name) + " changed state to " + str(
+                                                current_entity.state.name) + " arrived to location ")
+                                        logging.debug(
+                                            "case 1 " + current_entity.unit_name.strip() + " Entity arrived to location " +str(current_entity.face)+ " movement task completed")
+                                    else:
+                                        logging.debug(
+                                            "case 2 - Task completed, didn't arrive to location, unwanted situation")
 
                        #check fire status if unit is shooting
                         if current_entity.fireState == isFire.yes:
-                                # Check task status for movement tasks
+                                # Check task status for fire tasks
                                 for task in task_status_list:
                                     if current_entity.unit_name == task.get("markingText"):
                                         if task.get("taskName") == "fire-at-target":
                                             current_entity.fire_task_completed = task.get("currentStatus")
                                             current_entity.fire_task_success = task.get("taskSuccess")
-
-
-
                                 # Updating  Tasktime for fire if unit is shooting
                                 for fire_event in fire_list:
                                     if fire_event['attacking_entity_name']== current_entity.unit_name:
                                         current_entity.taskTime=time.time()
-                        # Debug:
-                        print("---Debug Seasson---")#
-                        print(str(current_entity.unit_name))
-                        print(current_entity.fireState)
-                        print(current_entity.fire_task_completed)
-                        print(current_entity.fire_task_success)
-                        print('--------------------------------')
+                                # check task status
+                                if current_entity.fire_task_completed == 1:
+                                    if current_entity.fire_task_success:
+                                        # check if firing ends:
+                                            current_entity.fireState = isFire.no
+                                            current_entity.fire_task_completed = 0
+                                            current_entity.fire_task_success = False
+                                            logging.debug(
+                                                    "entity: " + str(current_entity.unit_name) + " finished fire task")
+                                    else:
+                                        logging.debug("Task completed, fire failed, unwanted situation")
+                                # check if not able to initiate fire task:
+                                if current_entity.fire_task_success == True:
+                                    if current_entity.fire_task_completed == 0:
+                                        curr_time = time.time()
+                                        # Debug
+                                        # print(curr_time-entity_current_state.taskTime)
+                                        waitingTime = 8
+                                        if curr_time - current_entity.taskTime > waitingTime:
+                                            logging.debug("case 1.1 - can't start firing after " + str(
+                                                waitingTime) + " seconds of trying. aborting task")
+                                            current_entity.fireState = isFire.no
+                                            current_entity.fire_task_completed = 0
+                                            current_entity.fire_task_success = False
+                                if current_entity.fire_task_success == False:
+                                    curr_time = time.time()
+                                    waitingTime = 8
+                                    if curr_time - current_entity.taskTime > waitingTime:
+                                        logging.debug(
+                                            "case 1.2 - firing command has not been sent to " + str(
+                                                waitingTime) + "aborting task")
+                                        current_entity.fireState = isFire.no
+                                        current_entity.fire_task_completed = 0
+                                        current_entity.fire_task_success = False
 
-                        if self.entity_list[1].fireState== isFire.yes and self.entity_list[2].fireState== isFire.no:
-                            print('ss')
-                        # next state and action- every iteration even tough COA is empty
+                        # # Debug:
+                        # print("---Debug Seasson---")#
+                        # print(str(current_entity.unit_name))
+                        # print(current_entity.fireState)
+                        # print(current_entity.fire_task_completed)
+                        # print(current_entity.fire_task_success)
+                        # print('--------------------------------')
+
+                        # #Debug:
+                        # if self.entity_list[1].fireState== isFire.yes and self.entity_list[2].fireState== isFire.no:
+                        #     print('ss')
+                        # next state and action - every iteration even tough COA is empty
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos)
 
@@ -276,33 +329,8 @@ class RFAScenarioManager:
 
 
 
-                    # check if entity arrived to location:
-                    if current_entity.state == PositionType.MOVE_TO_OP:
-                        if entity_next_state_and_action.position == PositionType.AT_OP:
-                            #Change entity state to arrive at location:
-                            current_entity.state = entity_next_state_and_action.position
-                            current_entity.movement_task_completed = 0
-                            current_entity.movement_task_success = False
-                            logging.debug("entity: " + str(current_entity.unit_name) + " changed state to " + str(
-                                current_entity.state.name) + " arrived to location ")
-                    # check if firing ends:
-                    if current_entity.fireState == isFire.yes:
-                        if entity_next_state_and_action.timeOutAbortCurrentTask==True:
-                            self.communicator.stopCommand(current_entity.unit_name)
-                            logging.debug("entity: " + str(current_entity.unit_name) + " has aborted firing task")
-                        if entity_next_state_and_action.shoot == False:
-                            #Change entity state to arrive at location:
-                            current_entity.fireState = isFire.no
-                            current_entity.fire_task_completed=0
-                            current_entity.fire_task_success= False
-                            logging.debug("entity: " + str(current_entity.unit_name) + " finished fire task")
-
-                    ##############
-
                     # update the entity parameters that changed during this iteration
                     self.entity_list[i] = current_entity
-
-
             elif self.communicator.GetScenarioStatus() == ScenarioStatusEnum.RESTART:
                 self.first_enter = True
                 while self.communicator.GetScenarioStatus() is ScenarioStatusEnum.RESTART or self.first_enter is True:
@@ -323,24 +351,14 @@ class RFAScenarioManager:
                             logging.debug("Get Forces local ")
                         else:
                             logging.debug("Get Forces remotely ")
+                self.start_scenario_time = time.time()
 
-                self.start_scenario_time = time.time() #efshar limjok
+    def handle_move_and_fire(self,state):
+        return state
 
-    def get_positions_fromCSV(self,filename):
-        with open(filename) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            header = next(csv_reader)
-            locations = []
-            for row in csv_reader:
-                loaction = {
-                    "latitude": row[6],
-                    "longitude": row[7],
-                    "altitude": row[8],
-                }
 
-                locations.append(loaction)
-            return locations
-
+    #Creates Blue list
+    # Uses EntityInfo class to describe an entity
     def getBlueEntityList(self,entity_previous_list=[]):
         entity_info_list = self.communicator.GetScenarioEntitiesInfo()
         return_list=[]
@@ -363,11 +381,12 @@ class RFAScenarioManager:
                     current_entity.val = 1
                 else:
                     current_entity.val = 0
-
-
-
         return return_list
 
+    #Creates Red list
+    # Creates Blue list
+    # Creates general list from VRF format to known format - uses EntityInfo class to describe an entity
+    # then, translates to format of EntityCurrentState class to describe an entity
     def CreateAndUpdateEntityList(self,entity_previous_list):
         entity_list=[] # creating new entity list from scratch
         entity_info_list = self.communicator.GetScenarioEntitiesInfo()
@@ -409,6 +428,7 @@ class RFAScenarioManager:
             entity_list.append(current_entity)
         return entity_list
 
+    # Creates general list from VRF format to known format - uses EntityInfo class to describe an entity
     def CreateEntityInfoFromVrf(self, entity_info_list: list) -> list:
         list_to_return = []
         for i in range(len(entity_info_list)):

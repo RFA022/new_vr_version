@@ -54,7 +54,6 @@ class SpawnManager_Nadav:
             current_entity.hostility = Hostility.OPPOSING
             current_entity.unit_name = self.squadsData.at[str(squadName),'unit_name'][k]
             self.spawn_entity_list.append(current_entity)
-            print('s')
         self.communicator.createSquad(str(squadName), LOC)
 
     ###_______________single entity creation- not in use___________________###
