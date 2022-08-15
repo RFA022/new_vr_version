@@ -2,6 +2,7 @@ Name,value,unit
 standing_height,1.7,meter
 crouching_height,1.3,meter
 squad_view_range,2500,meter
+squad_eyes_range,400,meter
 rpg_range,300,meter
 javelin_range,1200,meter
 ak47_range,100,meter

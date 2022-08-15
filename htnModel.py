@@ -143,7 +143,7 @@ pyhop.update_method_list()
 #####----------------------------------------#####
 
 
-def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList):
+def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid):
     init_state = pyhop.State('init_state')
     #VRF configs:
     init_state.squadPosture=squadPosture
@@ -167,6 +167,9 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList):
     init_state.distance_from_positions = ext_funs.update_distance_from_positions(init_state)
     init_state.assesedBlues = blueList
     init_state.enemy_number = ext_funs.getNumberofAliveEnemies(init_state.assesedBlues)
+
+    #Scenario Data:
+    init_state.BluePolygonCentroid=BluePolygonCentroid
     print('initial state is:')
 
     init_state.htnConfig = pd.read_csv('htnConfig.csv',
@@ -180,8 +183,10 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList):
     init_state.weights['scan_for_enemy_op'] = float(init_state.htnConfig.at['scan_for_enemy_op', 'value'])
     init_state.weights['bda_op'] = float(init_state.htnConfig.at['bda_op', 'value'])
     init_state.weights['shoot_enemy_op'] = float(init_state.htnConfig.at['shoot_enemy_op', 'value'])
-    init_state.weights['basic_detection_probability'] = float(
-    init_state.htnConfig.at['basic_detection_probability', 'value'])
+    init_state.weights['basic_detection_probability'] = float(init_state.htnConfig.at['basic_detection_probability', 'value'])
+    init_state.weights['choose_position_op_dist_from_position'] = float(init_state.htnConfig.at['choose_position_op_dist_from_position', 'value'])
+    init_state.weights['choose_position_op_dist_from_polygon'] = float(init_state.htnConfig.at['choose_position_op_dist_from_polygon', 'value'])
+    init_state.weights['choose_position_op_percent_exposure'] = float(init_state.htnConfig.at['choose_position_op_percent_exposure', 'value'])
 
     pyhop.print_state_simple(init_state)
 

@@ -103,6 +103,7 @@ import math
 import numpy as np
 import methods_config as mc
 from CommunicatorInterface import EntityTypeEnum
+import ext_funs
 ############################################################
 # States and goals
 
@@ -442,12 +443,28 @@ def MCTS_OperatorEvlt(S_c, subtask, node, d, sender):
 
 def calValue(state,subtask):
     if subtask[0]=='choose_position_op':
-        #protection in case devision by 0
+        ret_val=0
+        val_squad_to_PolygonCenter=0
+        val_squad_to_Position=0
+        percent_exposure_polygon=0
+        "value relative to distance to position"
         if state.distance_from_positions[subtask[1]]<1:
-            ret_val=100
+            val_squad_to_Position=100
         else:
-            ret_val= 100/state.distance_from_positions[subtask[1]]
+            val_squad_to_Position= 100/state.distance_from_positions[subtask[1]]
+
+        "value relative to distance to BluePolygon center"
+        distanceFromBluePolygonCenter=ext_funs.getMetriDistance(state.loc,state.BluePolygonCentroid)
+        if distanceFromBluePolygonCenter<1:
+            val_squad_to_PolygonCenter=100
+        else:
+            val_squad_to_PolygonCenter= 100/state.distance_from_positions[subtask[1]]
+
+        ret_val=state.weights['choose_position_op_dist_from_position']*val_squad_to_Position +\
+                state.weights['choose_position_op_dist_from_polygon']*val_squad_to_PolygonCenter+\
+                state.weights['choose_position_op_percent_exposure']*percent_exposure_polygon
         ret_val=state.weights['choose_position_op']*ret_val
+        print(ret_val)
     elif subtask[0]=='scan_for_enemy_op':
         #-value of unit of evaluation-#
         #-supports only in Eitan and Ohez-#

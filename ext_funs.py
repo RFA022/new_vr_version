@@ -6,7 +6,7 @@ import math
 from CommunicatorInterface import EntityTypeEnum
 from Communicator import *
 from EntityCurrentState import  *
-
+import utm
 
 def comm():
     if 'communicator' not in globals():
@@ -88,6 +88,7 @@ def getBluesDataFromCSV(filename):
             entities.append(entity)
         return entities
 
+#creates HTN entity list using HTNentity class
 def getBluesDataFromVRFtoHTN(blueList):
     entities=[]
     for entity in blueList:
@@ -119,3 +120,31 @@ def getNumberofAliveEnemies(blues):
         if blue.is_alive==True:
             aliveBluesNumber+=1
     return aliveBluesNumber
+
+def getPolygonCentroid(polygon) -> float:
+        list=[]
+        for vertex in  polygon:
+            list.append (utm.from_latlon(vertex['latitude'],vertex['longitude']))
+        Cx=0
+        Cy=0
+        A=0
+        alt=0
+        list.append(list[0])
+        for k in reversed(range(len(list)-1)):
+            Cx+= (list[k][0]+list[k+1][0])*(list[k][0]*list[k+1][1] - list[k+1][0]*list[k][1])
+            Cy+= (list[k][1]+list[k+1][1])*(list[k][0]*list[k+1][1] - list[k+1][0]*list[k][1])
+            A+=  (list[k][0]*list[k+1][1] -list[k+1][0]*list[k][1])
+
+        for vertex in polygon:
+            alt+=vertex['altitude']/len(polygon)
+        A=A/2
+        Cx=Cx/(6*A)
+        Cy=Cy/(6*A)
+        centroidLatLong=utm.to_latlon(Cx, Cy, list[0][2],str(list[0][3]))
+
+        centroid={
+           'latitude': centroidLatLong[0],
+            'longitude': centroidLatLong[1],
+            'altitude':alt
+        }
+        return centroid

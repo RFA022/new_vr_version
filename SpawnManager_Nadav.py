@@ -21,10 +21,13 @@ class SpawnManager_Nadav:
         #agent creation:
         LOC_index =random.randrange(len(self.spawnPos))
         LOC=self.spawnPos[LOC_index]
-        self.createRedSquad(LOC,'anti_tank')
-        ###_______________old code that creates old single entity___________________###
-        #self.createEntity(EntityTypeEnum.SOLDIER,LOC,Hostility.OPPOSING,'Agent')
-        #self.communicator.CreateEntity(self.entity_to_create_list) #important line that creates for real the enteties
+        self.createRedSquad(LOC,'anti_tank_1')
+
+        # LOC_index = random.randrange(len(self.spawnPos))
+        # LOC = self.spawnPos[LOC_index]
+        # self.createRedSquad(LOC, 'anti_tank_2')
+
+
         "Spawn and attack points"
         # ##_______________code that creates positions as way points___________________###
         #---# create positions #---##
@@ -43,7 +46,8 @@ class SpawnManager_Nadav:
             "longitude": LOC['longitude'],
             "altitude": LOC['altitude']
         }
-        for k in range(4):
+        squadSize=len(self.squadsData.at[str(squadName),'unit_name'])
+        for k in range(squadSize):
             current_entity = EntityCurrentState("")
             current_entity.worldLocation = {"location": {
                 "latitude": LOC['latitude'],
@@ -53,34 +57,7 @@ class SpawnManager_Nadav:
             }
             current_entity.hostility = Hostility.OPPOSING
             current_entity.unit_name = self.squadsData.at[str(squadName),'unit_name'][k]
+            current_entity.role = self.squadsData.at[str(squadName), 'unit_type'][k]
+            current_entity.squad = squadName
             self.spawn_entity_list.append(current_entity)
         self.communicator.createSquad(str(squadName), LOC)
-
-    ###_______________single entity creation- not in use___________________###
-    #not supported function
-    # def createEntity(self, entity_to_create: EntityTypeEnum,LOC,hostility,NAME):
-    #     current_entity = EntityInfo("")
-    #     current_entity.worldLocation = {"location": {
-    #         "latitude":  LOC['latitude'],
-    #         "longitude": LOC['longitude'],
-    #         "altitude": LOC['altitude']
-    #     }
-    #     }
-    #     current_entity.hostility = hostility
-    #     current_entity.classification = entity_to_create
-    #     current_entity.unit_name = NAME
-    #     self.entity_to_create_list.append(current_entity)
-    #
-    #     entityData = EntityCurrentState(current_entity.unit_name)
-    #
-    #     entityData.current_location = {
-    #         "latitude":  LOC['latitude'],
-    #         "longitude": LOC['longitude'],
-    #         "altitude": LOC['altitude']
-    #     }
-    #     entityData.entity_type = str.upper(entity_to_create.name).strip()
-    #     entityData.general_classification = entity_to_create
-    #     entityData.alive = True
-    # self.spawn_entity_list.append(entityData)
-
-

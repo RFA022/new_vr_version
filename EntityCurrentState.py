@@ -14,38 +14,41 @@ class EntityCurrentState: #red entities
     def __init__(self, entity_id: str):
         self.unit_name = entity_id
         self.classification = CI.EntityTypeEnum.UNKNOWN
-        self.global_id = None
         self.hostility = CI.Hostility.UNKNOWN
-        self.worldLocation = {
+        self.location = {
             "latitude": 0,
             "longitude": 0,
             "altitude": 0
         }
-        self.is_alive = True
-        self.power = None
-        self.health = None
-        self.entity_damage_state = None
-
-
-        self.movement_task_completed = 0
-        self.movement_task_success = False
-
-        self.fire_task_completed = 0
-        self.fire_task_success = False
-
         self.target_location = {
             "latitude": 0,
             "longitude": 0,
             "altitude": 0
         }
+
+        self.is_alive = True
+        self.power = None
+        self.health = None
+        self.entity_damage_state = None
+        self.global_id = None
+
+        self.state = PositionType.AT_OP
+        self.movement_task_completed = 0
+        self.movement_task_success = False
+
+        self.fireState = isFire.no
+        self.fire_task_completed = 0
+        self.fire_task_success = False
+
+
         self.COA=[]
         self.face=None
         self.planBool=1
-        self.state = PositionType.AT_OP
-        self.fireState = isFire.no
         self.aim_list=[]
         self.taskTime=9223372036854775807 #maxint python 2
         self.preGameBool=True # boolean that active for first 10 seconds of the game. able to activate operations before first HTN search
+        self.squad = None
+        self.role = None
 
 class HTNentity:
     def __init__(self, entity_id: str):
