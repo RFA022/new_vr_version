@@ -25,13 +25,28 @@ def simple_update_distance_from_positions(state):
         list_of_distances.append(dist)
     return list_of_distances
 
-def update_distance_from_positions(state):
+def update_distance_from_positions(loc,list):
     '''
-    function that update Aget distance from each operational position
+    function that returns list of distances from one location to multiple locations
     '''
     list_of_distances=[]
-    for i in range(len(state.positions)):
-        dist=getMetriDistance(state.loc,state.positions[i])
+    for i in range(len(list)):
+        dist=getMetriDistance(loc,list[i])
+        list_of_distances.append(dist)
+    return list_of_distances
+
+def update_distance_from_blues(loc,enemies):
+    '''
+        function that returns list of distances from one location to multiple blues locations
+    '''
+    list_of_distances=[]
+    for enemy in enemies:
+        if (enemy.location['latitude'] == None and
+                enemy.location['longitude'] == None and
+                enemy.location['altitude'] == None):
+            dist=None
+        else:
+            dist=getMetriDistance(loc,enemy.location)
         list_of_distances.append(dist)
     return list_of_distances
 

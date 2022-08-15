@@ -69,6 +69,9 @@ class RFAScenarioManager:
         self.squadsData = pd.read_csv(self.squadsDatalocation,
                             header=[0],
                             index_col=[6]) #Squad name column
+        self.AccuracyConfiguration = pd.read_csv('AccuracyConfiguration.csv',
+                                                 header=[0],
+                                                 index_col=[0])  # WeaponName column
 
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
 
@@ -113,8 +116,8 @@ class RFAScenarioManager:
                     current_entity = self.entity_list[i]
                     #Debug
                     # print(time.time()-self.start_scenario_time)
-                    "Zeroing preGameBool for all entites after 10 seconds of game"
-                    if time.time()-self.start_scenario_time>1:
+                    "Zeroing preGameBool for all entites after 5 seconds of game"
+                    if time.time()-self.start_scenario_time>0.5:
                         if current_entity.preGameBool==True:
                             current_entity.preGameBool=False
                     if current_entity.alive:
@@ -174,12 +177,15 @@ class RFAScenarioManager:
                                                                       self.enemyDimensions,
                                                                       current_entity.current_location,
                                                                       self.blue_entity_list_HTN,
-                                                                      self.BluePolygonCentroid)
+                                                                      self.BluePolygonCentroid,
+                                                                      self.AccuracyConfiguration)
                         "Generates next state and action for Squad commander"
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos)
+
                         "next task implementation"
-                        if current_entity.alive and (entity_next_state_and_action.takeAction == 1 or current_entity.preGameBool==True):
+                        if current_entity.alive and (((entity_next_state_and_action.takeAction == 1) and (current_entity.preGameBool==False)) or \
+                                                     ((current_entity.preGameBool==True) and (entity_next_state_and_action.takeAction == 0))):
                             if current_entity.preGameBool==True:
                                 current_entity.preGameBool=False
                             current_entity.COA.pop(0)
@@ -299,9 +305,11 @@ class RFAScenarioManager:
                 amoNumber = 1
                 self.communicator.setEntityPosture(shooting_entity.unit_name, 13)
                 self.communicator.FireCommand(shooting_entity.unit_name, str(target.unit_name), amoNumber, "dif")
-            elif (target.classification == EntityTypeEnum.OHEZ) or (target.classification == EntityTypeEnum.UNKNOWN):
-                shotting_entities=[x for x in self.entity_list if x.squad == squad_name and x.classification == EntityTypeEnum.SOLDIER]  # based on uniqeness of at unit in a squad
-                for entity in shotting_entities:
+            elif    (target.classification == EntityTypeEnum.OHEZ) or \
+                    (target.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                    (target.classification == EntityTypeEnum.UNKNOWN):
+                shooting_entities=[x for x in self.entity_list if x.squad == squad_name and x.classification == EntityTypeEnum.SOLDIER]  # based on uniqeness of at unit in a squad
+                for entity in shooting_entities:
                     entity.taskTime = time.time()
                     entity.fireState=isFire.yes
                     amoNumber = 10

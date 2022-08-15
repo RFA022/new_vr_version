@@ -22,7 +22,9 @@ def move_to_position_op(state,a):
     state.squad_state = 'move'
     state.loc = ext_funs.getLocation(state, state.nextPositionIndex)
     state.nextPositionIndex = []
-    state.distance_from_positions = ext_funs.update_distance_from_positions(state)
+    #Updateting dynamic distances list:
+    state.distance_from_positions = ext_funs.update_distance_from_positions(state.loc,state.positions)
+    state.distance_from_assesedBlues = ext_funs.update_distance_from_blues(state.loc, state.assesedBlues)
     return state
 
 def scan_for_enemy_op(state,a):
@@ -42,14 +44,6 @@ def scan_for_enemy_op(state,a):
             if losRespose['distance'][0][0] < state.basicRanges['squad_view_range']:
                  if losRespose['los'][0][0] == True:
                     enemy.observed = True
-                 #Debug
-                 #    try:
-                 #        print("enemy"+ str(enemy.unit_name) +"has been observed from position " +str(state.positions.index(state.loc)))
-                 #    except:
-                 #        pass
-                 # else:
-                 #    print("enemy"+ str(enemy.unit_name) +"has not been observed from position " +str(state.positions.index(state.loc)))
-
     return state
 
 def null_op(state,a):
@@ -64,7 +58,7 @@ def aim_op(state,a):
     for enemy in state.assesedBlues:
         if enemy.observed==True and enemy.is_alive==True:
             aim_list.append(enemy)
-    #sort: observed list by classification when Eitan comes before Ohez
+    #sort: observed list by classification when Eitan comes before Ohez needed to add distance classification.
     aim_list=sorted(aim_list,key=lambda x:x.val, reverse=True)
     state.aim_list=aim_list
     return state
@@ -143,7 +137,7 @@ pyhop.update_method_list()
 #####----------------------------------------#####
 
 
-def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid):
+def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration):
     init_state = pyhop.State('init_state')
     #VRF configs:
     init_state.squadPosture=squadPosture
@@ -164,12 +158,15 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     # Update distances from positions
     init_state.positions = ext_funs.get_positions_fromCSV('RedAttackPos.csv')
     init_state.loc = loc
-    init_state.distance_from_positions = ext_funs.update_distance_from_positions(init_state)
+    init_state.distance_from_positions = ext_funs.update_distance_from_positions(init_state.loc,init_state.positions)
     init_state.assesedBlues = blueList
+    init_state.distance_from_assesedBlues=ext_funs.update_distance_from_blues(init_state.loc,init_state.assesedBlues)
     init_state.enemy_number = ext_funs.getNumberofAliveEnemies(init_state.assesedBlues)
 
     #Scenario Data:
     init_state.BluePolygonCentroid=BluePolygonCentroid
+    #stays constant throught the whole scenario:
+    init_state.distance_positions_from_BluePolygonCentroid=ext_funs.update_distance_from_positions(init_state.BluePolygonCentroid,init_state.positions)
     print('initial state is:')
 
     init_state.htnConfig = pd.read_csv('htnConfig.csv',
@@ -187,6 +184,8 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.weights['choose_position_op_dist_from_position'] = float(init_state.htnConfig.at['choose_position_op_dist_from_position', 'value'])
     init_state.weights['choose_position_op_dist_from_polygon'] = float(init_state.htnConfig.at['choose_position_op_dist_from_polygon', 'value'])
     init_state.weights['choose_position_op_percent_exposure'] = float(init_state.htnConfig.at['choose_position_op_percent_exposure', 'value'])
+    # Weapons Accuracy Data:
+    init_state.AccuracyConfiguration=AccuracyConfiguration
 
     pyhop.print_state_simple(init_state)
 

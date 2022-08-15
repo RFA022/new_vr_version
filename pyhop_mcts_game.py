@@ -145,7 +145,10 @@ def print_state_simple(state, indent=4):
                     name!='enemyDimensions' and\
                     name!='basicRanges' and\
                     name!='positions' and\
-                    name!='init_state.distance_from_positions':
+                    name!='distance_from_positions' and \
+                    name !='BluePolygonCentroid' and \
+                    name !='distance_positions_from_BluePolygonCentroid' and \
+                    name!='AccuracyConfiguration':
 
                 for x in range(indent): sys.stdout.write(' ')
                 sys.stdout.write(state.__name__ + '.' + name)
@@ -448,32 +451,28 @@ def calValue(state,subtask):
         val_squad_to_Position=0
         percent_exposure_polygon=0
         "value relative to distance to position"
-        if state.distance_from_positions[subtask[1]]<1:
-            val_squad_to_Position=100
-        else:
-            val_squad_to_Position= 100/state.distance_from_positions[subtask[1]]
+        relation=((state.distance_from_positions[subtask[1]])/min(state.distance_from_positions))
+        val_squad_to_Position= 100/relation
 
         "value relative to distance to BluePolygon center"
-        distanceFromBluePolygonCenter=ext_funs.getMetriDistance(state.loc,state.BluePolygonCentroid)
-        if distanceFromBluePolygonCenter<1:
-            val_squad_to_PolygonCenter=100
-        else:
-            val_squad_to_PolygonCenter= 100/state.distance_from_positions[subtask[1]]
+        relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / min(state.distance_positions_from_BluePolygonCentroid))
+        val_squad_to_PolygonCenter = 100 / relation
 
         ret_val=state.weights['choose_position_op_dist_from_position']*val_squad_to_Position +\
                 state.weights['choose_position_op_dist_from_polygon']*val_squad_to_PolygonCenter+\
                 state.weights['choose_position_op_percent_exposure']*percent_exposure_polygon
         ret_val=state.weights['choose_position_op']*ret_val
-        print(ret_val)
     elif subtask[0]=='scan_for_enemy_op':
         #-value of unit of evaluation-#
-        #-supports only in Eitan and Ohez-#
+        #-supports only in Eitan , Ohez, SUECIDE_DRONE and UNknown-#
         Eitan_number=0
         Ohez_number=0
         for enemy in state.assesedBlues:
             if enemy.classification == EntityTypeEnum.EITAN:
                 Eitan_number+=1
-            elif (enemy.classification == EntityTypeEnum.OHEZ) or (enemy.classification==EntityTypeEnum.UNKNOWN):
+            elif (enemy.classification == EntityTypeEnum.OHEZ) or \
+                 (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or\
+                 (enemy.classification==EntityTypeEnum.UNKNOWN):
                 Ohez_number+=1
         sum=2*Ohez_number+7*Eitan_number
         x=100/sum #value for each evaluation unit
@@ -483,11 +482,41 @@ def calValue(state,subtask):
             if (enemy.observed == True) and (enemy.is_alive==True): #value only for alive observed entites of blue
                 if enemy.classification==EntityTypeEnum.EITAN:
                     ret_val += x * 7
-                elif (enemy.classification == EntityTypeEnum.OHEZ) or (enemy.classification==EntityTypeEnum.UNKNOWN):
+                elif (enemy.classification == EntityTypeEnum.OHEZ) or \
+                     (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                     (enemy.classification==EntityTypeEnum.UNKNOWN):
                     ret_val += x * 2
         ret_val=state.weights['scan_for_enemy_op']*ret_val
-    elif subtask[0] == 'null_op':
-            ret_val=0.1 #epsilon for the value be positive
+    elif subtask[0] == 'locate_at_position_op':
+        totalAccuracy=0
+        for k, enemy in enumerate(state.assesedBlues):
+            classification=enemy.classification.name
+            maxRange=float(state.AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
+            blueDistance=state.distance_from_assesedBlues[k]
+            rangeString=None
+            if blueDistance!=None:
+                if blueDistance<50:
+                    rangeString="TO_50"
+                if blueDistance>50 and blueDistance<100:
+                    rangeString = "TO_100"
+                elif blueDistance > 100 and blueDistance < 500:
+                    rangeString = "TO_500"
+                elif blueDistance > 500:
+                    if blueDistance < maxRange:
+                        rangeString = "TO_MAX_RANGE"
+                    if blueDistance > maxRange:
+                        rangeString= "AFTER_MAX_RANGE"
+                blueAccuracy=float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])
+                print(str(rangeString))
+                print(str(classification))
+                print(blueAccuracy)
+                print("-----")
+                totalAccuracy+=blueAccuracy
+        ret_val=state.weights['locate_at_position_op']*100*(1-totalAccuracy)
+
+        print(totalAccuracy)
+        print(ret_val)
+        print("----------")
     else:
         ret_val=0.1 #active operators return positive value
     return ret_val
