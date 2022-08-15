@@ -510,12 +510,13 @@ def calValue(state,subtask):
                 print(str(rangeString))
                 print(str(classification))
                 print(blueAccuracy)
+                print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)))
                 print("-----")
                 totalAccuracy+=blueAccuracy
         ret_val=state.weights['locate_at_position_op']*100*(1-totalAccuracy)
 
         print(totalAccuracy)
-        print(ret_val)
+        print("SCORE IS:" + str(ret_val))
         print("----------")
     else:
         ret_val=0.1 #active operators return positive value
