@@ -287,16 +287,22 @@ def shop_m(state, tasks):
 #Non recursive function
 def seek_mcts_plan(state, tasks, plan, depth):
     if tasks == []:
-        print("final step")
+        #print("final step")
         ###print('depth {} returns plan {}'.format(depth, plan))
         return plan
     task1 = tasks[0] #current task goes to task1
     #case that current task is compound:
+    print("_______________________")
+    print("Planning step")
+    print(str(task1[0]))
     if task1[0] in methods:
         ###print('depth {} method instance {}'.format(depth, task1))
         S_c = state #local copy of state
         relevant_methods = methods[task1[0]] # return relevant method list after grouding.
-        index = MCTS_HTN(S_c, tasks,relevant_methods)
+        if len(relevant_methods)==1:
+            index=0
+        else:
+            index = MCTS_HTN(S_c, tasks,relevant_methods)
         # 2 cases- 1 case is that the next method is grounded. 2 case is that the next method is lifted.
         if len(original_methods[task1[0]])==len(relevant_methods): #grounded method case
             method = methods[task1[0]][index]
@@ -316,9 +322,7 @@ def seek_mcts_plan(state, tasks, plan, depth):
             operator = operators[task1[0]]
             newstate = operator(copy.deepcopy(state), *task1[1:])
             ###print('depth {} new state:'.format(depth))
-            print("real state")
-            print(str(task1[0]))
-            print_state_simple(newstate)
+            #print_state_simple(newstate)
             if newstate:
                 solution = seek_mcts_plan(newstate, tasks[1:], plan + [task1], depth + 1)
                 if solution != False:
@@ -352,7 +356,9 @@ def MCTS_HTN(initial_state, tasks,relevant_methods):
                 N[index] += 1
     # sort Q and N in descending order
     index = best_med(Q, N)
-
+    print(Q)
+    print(N)
+    print(index)
     return index
 
 def MCTS_Task(S_c, task, node, d, indicator,NumSim):
@@ -451,17 +457,32 @@ def calValue(state,subtask):
         val_squad_to_Position=0
         percent_exposure_polygon=0
         "value relative to distance to position"
-        relation=((state.distance_from_positions[subtask[1]])/min(state.distance_from_positions))
+        if state.distance_from_positions[subtask[1]] == min(state.distance_from_positions): #suppose catch when both zero or equal
+            relation=1
+        else:
+             if min(state.distance_from_positions)<0.001:
+                 minDistanceFromPositions = 0.001
+             else:
+                 minDistanceFromPositions = min(state.distance_from_positions)
+             relation=((state.distance_from_positions[subtask[1]])/minDistanceFromPositions)
+
         val_squad_to_Position= 100/relation
 
         "value relative to distance to BluePolygon center"
-        relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / min(state.distance_positions_from_BluePolygonCentroid))
-        val_squad_to_PolygonCenter = 100 / relation
+        relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / max(state.distance_positions_from_BluePolygonCentroid))
+        val_squad_to_PolygonCenter = 100*relation
 
         ret_val=state.weights['choose_position_op_dist_from_position']*val_squad_to_Position +\
                 state.weights['choose_position_op_dist_from_polygon']*val_squad_to_PolygonCenter+\
                 state.weights['choose_position_op_percent_exposure']*percent_exposure_polygon
         ret_val=state.weights['choose_position_op']*ret_val
+
+        # print("choose_position_op")
+        # try:
+        #     # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)) + "ret value is: " + str(ret_val))
+        # except:
+            # print("POSITION NUMBER IS Unknown: " + "ret value is: " + str(ret_val))
+
     elif subtask[0]=='scan_for_enemy_op':
         #-value of unit of evaluation-#
         #-supports only in Eitan , Ohez, SUECIDE_DRONE and UNknown-#
@@ -487,39 +508,54 @@ def calValue(state,subtask):
                      (enemy.classification==EntityTypeEnum.UNKNOWN):
                     ret_val += x * 2
         ret_val=state.weights['scan_for_enemy_op']*ret_val
+
+        # print("scan_for_enemy_op")
+        # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)) + "ret value is: " + str(ret_val))
+
     elif subtask[0] == 'locate_at_position_op':
         totalAccuracy=0
+        knownEnemies = 0
         for k, enemy in enumerate(state.assesedBlues):
-            classification=enemy.classification.name
-            maxRange=float(state.AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
-            blueDistance=state.distance_from_assesedBlues[k]
-            rangeString=None
-            if blueDistance!=None:
-                if blueDistance<50:
-                    rangeString="TO_50"
-                if blueDistance>50 and blueDistance<100:
-                    rangeString = "TO_100"
-                elif blueDistance > 100 and blueDistance < 500:
-                    rangeString = "TO_500"
-                elif blueDistance > 500:
-                    if blueDistance < maxRange:
+            if enemy.is_alive==True:
+                classification=enemy.classification.name
+                maxRange=float(state.AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
+                blueDistance=state.distance_from_assesedBlues[k]
+                rangeString=None
+                if blueDistance!= None:
+
+                    if blueDistance<=50:
+                        rangeString="TO_50"
+                    elif blueDistance>50 and blueDistance<=100:
+                        rangeString = "TO_100"
+                    elif blueDistance > 100 and blueDistance <=500:
+                        rangeString = "TO_500"
+                    elif blueDistance > 500:
                         rangeString = "TO_MAX_RANGE"
                     if blueDistance > maxRange:
                         rangeString= "AFTER_MAX_RANGE"
-                blueAccuracy=float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])
-                print(str(rangeString))
-                print(str(classification))
-                print(blueAccuracy)
-                print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)))
-                print("-----")
-                totalAccuracy+=blueAccuracy
-        ret_val=state.weights['locate_at_position_op']*100*(1-totalAccuracy)
+                    blueAccuracy=float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])
+                    # print(str(rangeString))
+                    # print(str(classification))
+                    # print(blueAccuracy)
+                    # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)))
+                    # print("-----")
+                    totalAccuracy+=blueAccuracy
+                    knownEnemies += 1
+        # print(totalAccuracy)
+        # print(knownEnemies)
+        ret_val=state.weights['locate_at_position_op']*(100/knownEnemies)*(knownEnemies-totalAccuracy)
 
-        print(totalAccuracy)
-        print("SCORE IS:" + str(ret_val))
-        print("----------")
+        # print("locate_at_position_op")
+        # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc))+ "ret calue is: " + str(ret_val))
+
+
+        # print(totalAccuracy)
+        # print("SCORE IS:" + str(ret_val))
+        # print("----------")
     else:
-        ret_val=0.1 #active operators return positive value
+        ret_val=0.00001 #active operators return non zero value
+    if ret_val==0:
+        ret_val=0.00001
     return ret_val
 
 

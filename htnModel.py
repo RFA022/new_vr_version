@@ -29,6 +29,7 @@ def move_to_position_op(state,a):
 
 def scan_for_enemy_op(state,a):
     for enemy in state.assesedBlues:
+
         #if location is not known:
         if(enemy.location['latitude'] ==  None and
             enemy.location['longitude'] ==  None and
@@ -167,7 +168,8 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.BluePolygonCentroid=BluePolygonCentroid
     #stays constant throught the whole scenario:
     init_state.distance_positions_from_BluePolygonCentroid=ext_funs.update_distance_from_positions(init_state.BluePolygonCentroid,init_state.positions)
-    print('initial state is:')
+    print("Begin Planning:")
+    #print('initial state is:')
 
     init_state.htnConfig = pd.read_csv('htnConfig.csv',
                                        header=[0],
@@ -187,7 +189,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     # Weapons Accuracy Data:
     init_state.AccuracyConfiguration=AccuracyConfiguration
 
-    pyhop.print_state_simple(init_state)
+    #pyhop.print_state_simple(init_state)
 
     plan = pyhop.shop_m(init_state, [('attack', 'me')])
     print(plan)

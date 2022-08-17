@@ -166,7 +166,7 @@ class RFAScenarioManager:
                             for testEntity in self.entity_list:
                                 if testEntity.fireState == isFire.yes:
                                     fire_bool = 1
-                            print("fire bool is" + str(fire_bool))
+                            # print("fire bool is" + str(fire_bool))
                             if fire_bool==0:
                                 current_entity.planBool=1
                         "Plan new plan if COA is empty and planbool =1"
@@ -179,6 +179,8 @@ class RFAScenarioManager:
                                                                       self.blue_entity_list_HTN,
                                                                       self.BluePolygonCentroid,
                                                                       self.AccuracyConfiguration)
+                            logging.debug("New Plan has been given to Squad")
+
                         "Generates next state and action for Squad commander"
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos)
