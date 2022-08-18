@@ -118,8 +118,12 @@
             <register_type name="gw_dds_types::GetAreasListRequest" type_ref="gw_dds_types::GetAreasListRequest"/>
             <register_type name="gw_dds_types::GetAreasListResponse" type_ref="gw_dds_types::GetAreasListResponse"/>
             <register_type name="gw_dds_types::SetEntityHeadingType" type_ref="gw_dds_types::SetEntityHeadingType"/>
+            <register_type name="gw_dds_types::LosToPolygonResponse" type_ref="gw_dds_types::LosToPolygonResponse"/>
+			<register_type name="gw_dds_types::LosToPolygonRequest" type_ref="gw_dds_types::LosToPolygonRequest"/>
+			<register_type name="gw_dds_types::CreateTacticalGraphicCommandType" type_ref="gw_dds_types::CreateTacticalGraphicCommandType"/>
 
-
+            <topic name="LosToPolygonResponse" register_type_ref="gw_dds_types::LosToPolygonResponse"/>
+			<topic name="LosToPolygonRequest" register_type_ref="gw_dds_types::LosToPolygonRequest"/>
             <topic name="LosQueryRequest" register_type_ref="gw_dds_types::LosQueryRequest"/>
             <topic name="LosQueryResponse" register_type_ref="gw_dds_types::LosQueryResponse"/>
             <topic name="GeoQueryRequest" register_type_ref="gw_dds_types::GeoQuery"/>
@@ -140,6 +144,8 @@
             <topic name="AimWeaponCommand" register_type_ref="gw_dds_types::AimWeaponCommand"/>
             <topic name="GetAreasListRequest" register_type_ref="gw_dds_types::GetAreasListRequest"/>
             <topic name="GetAreasListResponse" register_type_ref="gw_dds_types::GetAreasListResponse"/>
+            <topic name="CreateTacticalGraphicCommand" register_type_ref="gw_dds_types::CreateTacticalGraphicCommandType"/>
+
         </domain>
     </domain_library>
 
@@ -148,6 +154,7 @@
             <participant_qos name="RFSM_Participant_Qos" base_name="QOSLibrary::DefaultProfile"/>
             <subscriber name="Subscriber">
                 <subscriber_qos/>
+                <data_reader name="LosToPolygonResponse_DR" topic_ref="LosToPolygonResponse"/>
                 <data_reader name="GetAreasListResponse_DR" topic_ref="GetAreasListResponse"/>
                 <data_reader name="LosQueryResponse_DR" topic_ref="LosQueryResponse"/>
                 <data_reader name="GeoQueryResponse_DR" topic_ref="GeoQueryResponse"/>
@@ -184,6 +191,7 @@
 
             <publisher name="Publisher">
                 <publisher_qos/>
+                <data_writer name="LosToPolygonRequest_DW" topic_ref="LosToPolygonRequest"/>
                 <data_writer name="GetAreasListRequest_DW" topic_ref="GetAreasListRequest"/>
                 <data_writer name="LosQueryRequest_DW" topic_ref="LosQueryRequest"/>
                 <data_writer name="GeoQueryRequest_DW" topic_ref="GeoQueryRequest"/>
@@ -208,6 +216,7 @@
                 <data_writer name="SpawnSquadCommand_DW" topic_ref="SpawnSquadCommand"/>
                 <data_writer name="EntityPosture_DW" topic_ref="EntityPosture"/>
                 <data_writer name="AimWeaponCommand_DW" topic_ref="AimWeaponCommand"/>
+				<data_writer name="CreateTacticalGraphicCommand_DW" topic_ref="CreateTacticalGraphicCommand"/>
 
             </publisher>
         </domain_participant>

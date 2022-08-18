@@ -22,6 +22,7 @@ class Communicator(CommunicatorInterface):
     AttackReport_DR = "AttackReport_DR"
     ScenarioStatus_DR = "ScenarioStatus_DR"
     TaskStatus_DR = "TaskStatus_DR"
+    LosToPolygonResponse_DR = "LosToPolygonResponse_DR"
     LosQueryRequest_DW = "LosQueryRequest_DW"
     GeoQueryRequest_DW = "GeoQueryRequest_DW"
     InitialEntitySnapshot_DW = "InitialEntitySnapshot_DW"
@@ -34,6 +35,10 @@ class Communicator(CommunicatorInterface):
     EntityPosture_DW = "EntityPosture_DW"
     AimWeaponCommand_DW = "AimWeaponCommand_DW"
     StopTasksCommand_DW = "StopTasksCommand_DW"
+    LosToPolygonRequest_DW="LosToPolygonRequest_DW"
+    CreateTacticalGraphicCommand_DW="CreateTacticalGraphicCommand_DW"
+
+
 
     def __init__(self):
         super().__init__()
@@ -464,7 +469,7 @@ class Communicator(CommunicatorInterface):
                     "enumeration": entity_config.vrf_or_godot_id
                 })
                 current_DW.write()
-                time.sleep(1)
+                time.sleep(0.3)
 
     def CreateEntitySimple(self, name, location, hostility, code):
         with self.lock_read_write:
@@ -480,7 +485,7 @@ class Communicator(CommunicatorInterface):
                 "enumeration": code
             })
             current_DW.write()
-            time.sleep(0.5)
+            time.sleep(0.3)
 
     def createSquad(self, squad_name, location):
         with self.lock_read_write:
@@ -494,7 +499,7 @@ class Communicator(CommunicatorInterface):
                 "location": location
             })
             current_DW.write()
-            time.sleep(0.5)
+            time.sleep(0.3)
 
     def setEntityPosture(self, entity_name, posture):
         with self.lock_read_write:
@@ -537,7 +542,7 @@ class Communicator(CommunicatorInterface):
                 "aiming_point": aiming_point
             })
             current_DW.write()
-            time.sleep(0.5)
+            time.sleep(0.3)
 
 
     def stopCommand(self, entity_name):
@@ -552,6 +557,107 @@ class Communicator(CommunicatorInterface):
             })
             current_DW.write()
 
+
+    def getLosToPolygonQuery(self,sorce,polygon) -> list:
+        responseList = []
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.LosToPolygonRequest_DW)
+            except:
+                logging.error("writer " + self.LosToPolygonRequest_DW + " dont exist")
+
+
+            current_DW.instance.set_dictionary(
+                {
+                    "requestId": 1,
+                    "losSrc": {
+                        "latitude": 33.3734721999,
+                        "longitude": 35.4975533000,
+                        "altitude": 464,
+                    },
+                    "polygon": [
+                        {
+                            "latitude": 33.37620109973125,
+                            "longitude": 35.50051540016324,
+                            "altitude": 460.4002380378222,
+                        },
+                        {
+                            "latitude": 33.37118400000062,
+                            "longitude": 35.50028600015566,
+                            "altitude": 451.8746337918372,
+                        },
+                        {
+                            "latitude": 33.37001540003767,
+                            "longitude": 35.504608300030874,
+                            "altitude": 478.7797851588288,
+                        },
+                        {
+                            "latitude": 33.37179400002874,
+                            "longitude": 35.506619900111026,
+                            "altitude": 527.9084472644333,
+                        },
+                        {
+                            "latitude": 33.37586519984546,
+                            "longitude": 35.50642319986251,
+                            "altitude": 506.5012207035625,
+                        },
+                        {
+                            "latitude": 33.37627650001028,
+                            "longitude": 35.50516959998257,
+                            "altitude": 491.4216308570265,
+                        },
+                        {
+                            "latitude": 33.37626270008884,
+                            "longitude": 35.503112899956584,
+                            "altitude": 477.1141967770779,
+                        },
+                    ],
+                },
+            )
+            current_DW.write()
+            print("Sent LosToPolygonRequest")
+
+        print("Waiting for Los To Polygon response:")
+        with self.lock_read_write:
+            try:
+                current_DR = self.RFSM_connector.getInput(self.subscriber + self.LosToPolygonResponse_DR)
+                # wait for messages for 2 sec
+                try:
+                    current_DR.wait(20000)
+                except:
+                    logging.debug("wait to los response timeout")
+                    return responseList
+                current_DR.take()
+                for sample in current_DR.samples:
+                    if sample.valid_data:
+                        # first - print the sample.
+                        #print(current_DR.name)
+                        #print(sample.get_dictionary())
+                        responseList.append(sample.get_dictionary())
+
+                    else:
+                        print("Received non-valid message (Dispose)")
+                return responseList
+            except:
+                logging.error("reader " + self.GetAreasListResponse_DR + " dont exist")
+                return responseList
+
+    def CreateTacticalGraphicCommand(self, TacticalGraphicName: str,tacticalGraphicKind: int, path) -> None:
+
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.CreateTacticalGraphicCommand_DW)
+            except:
+                logging.error("writer " + self.CreateTacticalGraphicCommand_DW + " dont exist")
+                return
+
+            current_DW.instance.set_dictionary({
+                    "TacticalGraphicName": TacticalGraphicName,
+                    "tacticalGraphicKind": tacticalGraphicKind,
+                    "path": path,
+            })
+            current_DW.write()
+            # looks for "ak" and if it not find its fire with default weapon
 
 class CommunicatorSingleton(metaclass=Singleton):
     def __init__(self):
