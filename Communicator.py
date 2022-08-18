@@ -567,53 +567,11 @@ class Communicator(CommunicatorInterface):
                 logging.error("writer " + self.LosToPolygonRequest_DW + " dont exist")
 
 
-            current_DW.instance.set_dictionary(
-                {
+            current_DW.instance.set_dictionary({
                     "requestId": 1,
-                    "losSrc": {
-                        "latitude": 33.3734721999,
-                        "longitude": 35.4975533000,
-                        "altitude": 464,
-                    },
-                    "polygon": [
-                        {
-                            "latitude": 33.37620109973125,
-                            "longitude": 35.50051540016324,
-                            "altitude": 460.4002380378222,
-                        },
-                        {
-                            "latitude": 33.37118400000062,
-                            "longitude": 35.50028600015566,
-                            "altitude": 451.8746337918372,
-                        },
-                        {
-                            "latitude": 33.37001540003767,
-                            "longitude": 35.504608300030874,
-                            "altitude": 478.7797851588288,
-                        },
-                        {
-                            "latitude": 33.37179400002874,
-                            "longitude": 35.506619900111026,
-                            "altitude": 527.9084472644333,
-                        },
-                        {
-                            "latitude": 33.37586519984546,
-                            "longitude": 35.50642319986251,
-                            "altitude": 506.5012207035625,
-                        },
-                        {
-                            "latitude": 33.37627650001028,
-                            "longitude": 35.50516959998257,
-                            "altitude": 491.4216308570265,
-                        },
-                        {
-                            "latitude": 33.37626270008884,
-                            "longitude": 35.503112899956584,
-                            "altitude": 477.1141967770779,
-                        },
-                    ],
-                },
-            )
+                    "losSrc": sorce,
+                    "polygon": polygon
+                },)
             current_DW.write()
             print("Sent LosToPolygonRequest")
 
@@ -631,8 +589,8 @@ class Communicator(CommunicatorInterface):
                 for sample in current_DR.samples:
                     if sample.valid_data:
                         # first - print the sample.
-                        #print(current_DR.name)
-                        #print(sample.get_dictionary())
+                        print(current_DR.name)
+                        print(sample.get_dictionary())
                         responseList.append(sample.get_dictionary())
 
                     else:
