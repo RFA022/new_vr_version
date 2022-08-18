@@ -7,13 +7,13 @@ Polygons = communicator.getAreasQuery()
 BluePolygon = next(x for x in Polygons if x['areaName'] == 'BluePolygon')['polygon']
 responsevec=[]
 
-AttackPos=[
-{
-                    "latitude": 33.371803,
-                    "longitude":35.497934,
-                    "altitude":457
-                }
-]
+# AttackPos=[
+# {
+#                     "latitude": 33.371803,
+#                     "longitude":35.497934,
+#                     "altitude":457
+#                 }
+# ]
 for k in range (len(AttackPos)):
     inloc={
                     "latitude": AttackPos[k]['latitude'],

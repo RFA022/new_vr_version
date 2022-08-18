@@ -83,7 +83,9 @@ def get_positions_fromCSV(filename):
             loaction = {
                 "latitude": row[6],
                 "longitude": row[7],
-                "altitude": row[8]
+                "altitude": row[8],
+                "id":row[5],
+                "exposure":row[9]
             }
 
             locations.append(loaction)

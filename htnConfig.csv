@@ -2,11 +2,11 @@ Name,value
 choose_position_op,0.1
 move_to_position_op,0
 locate_at_position_op,0.1
-scan_for_enemy_op,0.2
+scan_for_enemy_op,0.1
 bda_op,0
 shoot_enemy_op,0
 sum_ops,0
-basic_detection_probability,0
-choose_position_op_dist_from_position,0.5
-choose_position_op_dist_from_polygon,0.5
-choose_position_op_percent_exposure,0
+basic_detection_probability,0.05
+choose_position_op_dist_from_position,0.4
+choose_position_op_dist_from_polygon,0.3
+choose_position_op_percent_exposure,0.3

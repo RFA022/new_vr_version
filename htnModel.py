@@ -163,7 +163,10 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.assesedBlues = blueList
     init_state.distance_from_assesedBlues=ext_funs.update_distance_from_blues(init_state.loc,init_state.assesedBlues)
     init_state.enemy_number = ext_funs.getNumberofAliveEnemies(init_state.assesedBlues)
-
+    exposure_list=[]
+    for position in init_state.positions:
+        exposure_list.append(float(position['exposure']))
+    init_state.position_exposure_level=exposure_list
     #Scenario Data:
     init_state.BluePolygonCentroid=BluePolygonCentroid
     #stays constant throught the whole scenario:

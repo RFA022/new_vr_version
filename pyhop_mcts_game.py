@@ -455,7 +455,7 @@ def calValue(state,subtask):
         ret_val=0
         val_squad_to_PolygonCenter=0
         val_squad_to_Position=0
-        percent_exposure_polygon=0
+        val_percent_exposure_polygon=0
         "value relative to distance to position"
         if state.distance_from_positions[subtask[1]] == min(state.distance_from_positions): #suppose catch when both zero or equal
             relation=1
@@ -472,9 +472,14 @@ def calValue(state,subtask):
         relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / max(state.distance_positions_from_BluePolygonCentroid))
         val_squad_to_PolygonCenter = 100*relation
 
+        "value relative to distance to BluePolygon center"
+        relation = ((state.position_exposure_level[subtask[1]]) / max(state.position_exposure_level))
+        val_percent_exposure_polygon = 100 * relation
+
+
         ret_val=state.weights['choose_position_op_dist_from_position']*val_squad_to_Position +\
                 state.weights['choose_position_op_dist_from_polygon']*val_squad_to_PolygonCenter+\
-                state.weights['choose_position_op_percent_exposure']*percent_exposure_polygon
+                state.weights['choose_position_op_percent_exposure']*val_percent_exposure_polygon
         ret_val=state.weights['choose_position_op']*ret_val
 
         # print("choose_position_op")
@@ -543,8 +548,10 @@ def calValue(state,subtask):
                     knownEnemies += 1
         # print(totalAccuracy)
         # print(knownEnemies)
-        ret_val=state.weights['locate_at_position_op']*(100/knownEnemies)*(knownEnemies-totalAccuracy)
-
+        if knownEnemies>0:
+            ret_val=state.weights['locate_at_position_op']*(100/knownEnemies)*(knownEnemies-totalAccuracy)
+        else:
+            ret_val=0.00001
         # print("locate_at_position_op")
         # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc))+ "ret calue is: " + str(ret_val))
 
