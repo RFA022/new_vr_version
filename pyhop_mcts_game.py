@@ -322,7 +322,7 @@ def seek_mcts_plan(state, tasks, plan, depth):
             operator = operators[task1[0]]
             newstate = operator(copy.deepcopy(state), *task1[1:])
             ###print('depth {} new state:'.format(depth))
-            #print_state_simple(newstate)
+            print_state_simple(newstate)
             if newstate:
                 solution = seek_mcts_plan(newstate, tasks[1:], plan + [task1], depth + 1)
                 if solution != False:

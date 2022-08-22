@@ -62,12 +62,10 @@ def aim_op(state,a):
             if (enemy.location['latitude'] == None and
                     enemy.location['longitude'] == None and
                     enemy.location['altitude'] == None):
-                #If enemy location is not known we consider a NONE distance meaning -> last at aim list
-                #enemy.distFromSquad=None
-                pass
+                #If enemy location is not known we consider that its located in the centroid of the blue polygon
+                enemy.distFromSquad=ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
             else:
-                pass
-                #enemy.distFromSquad = ext_funs.getMetriDistance(state.loc, enemy.location)
+                enemy.distFromSquad = ext_funs.getMetriDistance(state.loc, enemy.location)
             aim_list.append(enemy)
         else:
             enemy.distFromSquad = None
@@ -77,6 +75,9 @@ def aim_op(state,a):
         # sort by value - next sort by value and then by distance
         aim_list = sorted(aim_list, key=lambda x: (x.val, -x.distFromSquad), reverse=True)
         state.aim_list = aim_list
+        for entity in aim_list:
+            name = entity.unit_name
+            state.aim_list_names.append(name)
     return state
 pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_op,null_op,aim_op,shoot_op)
 
@@ -170,6 +171,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.debug_method = 0
     init_state.debug_ope = 0
     init_state.aim_list = []
+    init_state.aim_list_names=[]
 
     # Update distances from positions
     init_state.positions = ext_funs.get_positions_fromCSV('RedAttackPos.csv')
