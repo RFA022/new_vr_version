@@ -518,34 +518,8 @@ def calValue(state,subtask):
         # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)) + "ret value is: " + str(ret_val))
 
     elif subtask[0] == 'locate_at_position_op':
-        totalAccuracy=0
-        knownEnemies = 0
-        for k, enemy in enumerate(state.assesedBlues):
-            if enemy.is_alive==True:
-                classification=enemy.classification.name
-                maxRange=float(state.AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
-                blueDistance=state.distance_from_assesedBlues[k]
-                rangeString=None
-                if blueDistance!= None:
-
-                    if blueDistance<=50:
-                        rangeString="TO_50"
-                    elif blueDistance>50 and blueDistance<=100:
-                        rangeString = "TO_100"
-                    elif blueDistance > 100 and blueDistance <=500:
-                        rangeString = "TO_500"
-                    elif blueDistance > 500:
-                        rangeString = "TO_MAX_RANGE"
-                    if blueDistance > maxRange:
-                        rangeString= "AFTER_MAX_RANGE"
-                    blueAccuracy=float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])
-                    # print(str(rangeString))
-                    # print(str(classification))
-                    # print(blueAccuracy)
-                    # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)))
-                    # print("-----")
-                    totalAccuracy+=blueAccuracy
-                    knownEnemies += 1
+        state_copy=deepcopy(state)
+        knownEnemies,totalAccuracy,accuracyVec=ext_funs.getAccumulatedHitProbability(state_copy)
         # print(totalAccuracy)
         # print(knownEnemies)
         if knownEnemies>0:

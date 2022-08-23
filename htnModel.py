@@ -8,10 +8,20 @@ from ext_funs import *
 import scipy.stats
 import pandas as pd
 import logging
+from copy import deepcopy
 
 
 def locate_at_position_op(state,a):
     state.squad_state = 'at_position'
+    #for each position we toss if NONE enemies habe been observed or not
+    state_copy=deepcopy(state)
+    knownEnemies, totalAccuracy,accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy)
+    if knownEnemies > 0:
+        totalprobability=1
+        for accuracy in accuracyVec:
+            totalprobability=totalprobability*(1-accuracy)
+        probabilityToGetHit = 1-totalprobability
+    state.negativeHitsProbability.append(probabilityToGetHit)
     return state
 
 def choose_position_op(state,nextPosition):
@@ -29,7 +39,6 @@ def move_to_position_op(state,a):
 
 def scan_for_enemy_op(state,a):
     for enemy in state.assesedBlues:
-
         #if location is not known:
         if(enemy.location['latitude'] ==  None and
             enemy.location['longitude'] ==  None and
@@ -172,6 +181,8 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.debug_ope = 0
     init_state.aim_list = []
     init_state.aim_list_names=[]
+    init_state.positiveHits=[]
+    init_state.negativeHitsProbability=[]
 
     # Update distances from positions
     init_state.positions = ext_funs.get_positions_fromCSV('RedAttackPos.csv')
