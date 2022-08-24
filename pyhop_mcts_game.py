@@ -322,7 +322,7 @@ def seek_mcts_plan(state, tasks, plan, depth):
             operator = operators[task1[0]]
             newstate = operator(copy.deepcopy(state), *task1[1:])
             ###print('depth {} new state:'.format(depth))
-            print_state_simple(newstate)
+            #print_state_simple(newstate)
             if newstate:
                 solution = seek_mcts_plan(newstate, tasks[1:], plan + [task1], depth + 1)
                 if solution != False:
@@ -494,7 +494,7 @@ def calValue(state,subtask):
                  (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or\
                  (enemy.classification==EntityTypeEnum.UNKNOWN):
                 Ohez_number+=1
-        sum=2*Ohez_number+7*Eitan_number
+        sum=(state.weights['ohez_val'])*Ohez_number+(state.weights['eitan_val'])*Eitan_number
         x=100/sum #value for each evaluation unit
 
         #evaluation:
@@ -502,11 +502,11 @@ def calValue(state,subtask):
         for enemy in state.assesedBlues:
             if (enemy.observed == True) and (enemy.is_alive==True): #value only for alive observed entites of blue
                 if enemy.classification==EntityTypeEnum.EITAN:
-                    ret_val_scan += x * 7
+                    ret_val_scan += x * (state.weights['eitan_val'])
                 elif (enemy.classification == EntityTypeEnum.OHEZ) or \
                      (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                      (enemy.classification==EntityTypeEnum.UNKNOWN):
-                    ret_val_scan += x * 2
+                    ret_val_scan += x * (state.weights['ohez_val'])
         ret_val_scan=state.weights['scan_for_enemy_op']*ret_val_scan
 
         "Value relative to Exposure"
@@ -526,11 +526,25 @@ def calValue(state,subtask):
         ret_val=ret_val_scan+ret_val_exposure
 
     elif subtask[0] == 'shoot_op':
-        # enemy=state.aim_list[0]
-        # blueDistance=ext_funs.getMetriDistance(state.loc,enemy.location)
-        # if blueDistance == None:
-        #     blueDistance = ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
-        ret_val = 0.00001
+        enemy=state.aim_list[0]
+        blueDistance=ext_funs.calculate_blue_distance(state.loc,enemy)
+        if blueDistance == None:
+             blueDistance = ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
+        if enemy.classification==EntityTypeEnum.EITAN:
+             shooterClassification="LONG_RANGE_ANTI_TANK"
+             ratio=1
+        elif (enemy.classification == EntityTypeEnum.OHEZ) or \
+             (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+             (enemy.classification == EntityTypeEnum.UNKNOWN):
+             shooterClassification = "SOLDIER"
+             ratio=(state.weights['ohez_val'])/(state.weights['ohez_val']+state.weights['eitan_val'])
+        maxRange = float(state.AccuracyConfiguration.at[str(shooterClassification), 'MAX_RANGE'])
+        accuracy = ext_funs.getAccuracy(state, blueDistance, maxRange, shooterClassification)
+        ret_val = state.weights['shoot_enemy_op']*100*accuracy*ratio
+        print("position is: " + str(state.currentPositionIndex) + " " + "operator is " + str(
+            subtask[0]) + " " + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
+
+
     if ret_val==0:
         ret_val=0.00001
 

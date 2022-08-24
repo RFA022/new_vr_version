@@ -226,6 +226,9 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.weights['choose_position_op_dist_from_position'] = float(init_state.htnConfig.at['choose_position_op_dist_from_position', 'value'])
     init_state.weights['choose_position_op_dist_from_polygon'] = float(init_state.htnConfig.at['choose_position_op_dist_from_polygon', 'value'])
     init_state.weights['choose_position_op_percent_exposure'] = float(init_state.htnConfig.at['choose_position_op_percent_exposure', 'value'])
+    init_state.weights['eitan_val'] = float(init_state.htnConfig.at['eitan_val', 'value'])
+    init_state.weights['ohez_val'] = float(init_state.htnConfig.at['ohez_val', 'value'])
+
     # Weapons Accuracy Data:
     init_state.AccuracyConfiguration=AccuracyConfiguration
 

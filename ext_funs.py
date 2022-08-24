@@ -41,15 +41,18 @@ def update_distance_from_blues(loc,enemies):
     '''
     list_of_distances=[]
     for enemy in enemies:
-        if (enemy.location['latitude'] == None and
-                enemy.location['longitude'] == None and
-                enemy.location['altitude'] == None):
-            dist=None
-        else:
-            dist=getMetriDistance(loc,enemy.location)
+        dist=calculate_blue_distance(loc,enemy)
         list_of_distances.append(dist)
     return list_of_distances
 
+def calculate_blue_distance(loc,enemy):
+    if (enemy.location['latitude'] == None and
+            enemy.location['longitude'] == None and
+            enemy.location['altitude'] == None):
+        dist = None
+    else:
+        dist = getMetriDistance(loc, enemy.location)
+    return dist
 #helper functions
 def simple_getLocation(state,index):
     return [state.positions[index][0],state.positions[index][1]]

@@ -18,10 +18,11 @@ for k in range (len(AttackPos)):
     inloc={
                     "latitude": AttackPos[k]['latitude'],
                     "longitude": AttackPos[k]['longitude'],
-                    "altitude": str(float(AttackPos[k]['altitude']))
+                    "altitude": str(float(AttackPos[k]['altitude'])+ 1.5)
                 }
     print("position: " + str(k) + "height is: " + inloc["altitude"])
     response=communicator.getLosToPolygonQuery(inloc,BluePolygon)
+    print(response)
     responsevec.append(response)
 
 with open('polygonresponse.txt', 'w') as f:
