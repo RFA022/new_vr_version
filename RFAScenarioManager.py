@@ -209,7 +209,7 @@ class RFAScenarioManager:
                             for i in range(len(self.entity_list)):
                                 current_entity = self.entity_list[i]
                                 if current_entity.role == "co":
-                                    self.entity_list[i].COA.append(['scan_for_enemy_op','me'])
+                                    self.entity_list[i].COA.append(['scan_for_enemy_and_assess_exposure_op','me'])
                                     logging.debug("scan_for_enemy_op has been added to Squad Commander")
                             logging.debug("Get Forces local ")
                         else:

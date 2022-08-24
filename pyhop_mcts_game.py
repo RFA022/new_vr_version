@@ -451,11 +451,9 @@ def MCTS_OperatorEvlt(S_c, subtask, node, d, sender):
 
 
 def calValue(state,subtask):
+    ret_val = 0
     if subtask[0]=='choose_position_op':
-        ret_val=0
-        val_squad_to_PolygonCenter=0
-        val_squad_to_Position=0
-        val_percent_exposure_polygon=0
+
         "value relative to distance to position"
         if state.distance_from_positions[subtask[1]] == min(state.distance_from_positions): #suppose catch when both zero or equal
             relation=1
@@ -482,15 +480,11 @@ def calValue(state,subtask):
                 state.weights['choose_position_op_percent_exposure']*val_percent_exposure_polygon
         ret_val=state.weights['choose_position_op']*ret_val
 
-        # print("choose_position_op")
-        # try:
-        #     # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)) + "ret value is: " + str(ret_val))
-        # except:
-            # print("POSITION NUMBER IS Unknown: " + "ret value is: " + str(ret_val))
 
-    elif subtask[0]=='scan_for_enemy_op':
-        #-value of unit of evaluation-#
-        #-supports only in Eitan , Ohez, SUECIDE_DRONE and UNknown-#
+    elif subtask[0]=='scan_for_enemy_and_assess_exposure_op':
+        "Value relative to scanning"
+        "value of unit of evaluation"
+        "supports only in Eitan , Ohez, SUECIDE_DRONE and UNknown"
         Eitan_number=0
         Ohez_number=0
         for enemy in state.assesedBlues:
@@ -502,41 +496,44 @@ def calValue(state,subtask):
                 Ohez_number+=1
         sum=2*Ohez_number+7*Eitan_number
         x=100/sum #value for each evaluation unit
+
         #evaluation:
-        ret_val=0
+        ret_val_scan=0
         for enemy in state.assesedBlues:
             if (enemy.observed == True) and (enemy.is_alive==True): #value only for alive observed entites of blue
                 if enemy.classification==EntityTypeEnum.EITAN:
-                    ret_val += x * 7
+                    ret_val_scan += x * 7
                 elif (enemy.classification == EntityTypeEnum.OHEZ) or \
                      (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                      (enemy.classification==EntityTypeEnum.UNKNOWN):
-                    ret_val += x * 2
-        ret_val=state.weights['scan_for_enemy_op']*ret_val
+                    ret_val_scan += x * 2
+        ret_val_scan=state.weights['scan_for_enemy_op']*ret_val_scan
 
-        # print("scan_for_enemy_op")
-        # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)) + "ret value is: " + str(ret_val))
-
-    elif subtask[0] == 'locate_at_position_op':
+        "Value relative to Exposure"
         state_copy=deepcopy(state)
-        knownEnemies,totalAccuracy,accuracyVec=ext_funs.getAccumulatedHitProbability(state_copy)
-        # print(totalAccuracy)
-        # print(knownEnemies)
-        if knownEnemies>0:
-            ret_val=state.weights['locate_at_position_op']*(100/knownEnemies)*(knownEnemies-totalAccuracy)
-        else:
-            ret_val=0.00001
-        # print("locate_at_position_op")
-        # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc))+ "ret calue is: " + str(ret_val))
+        knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy)
+        if knownEnemies > 0:
+            totalprobability = 1
+            for accuracy in accuracyVec:
+                totalprobability = totalprobability * (1 - accuracy)
+            probabilityToGetHit = (1 - totalprobability)
+            ret_val_exposure=state.weights['locate_at_position_op']*100*(1-probabilityToGetHit)
+            #OLD-ret_val=state.weights['locate_at_position_op']*(100/knownEnemies)*(knownEnemies-totalAccuracy)
 
+            "If we dont know any of the enemies location we return exposure scan 100"
+        elif knownEnemies==0:
+            ret_val_exposure = state.weights['locate_at_position_op']*100 #means that Agent dont know about any enemies
+        ret_val=ret_val_scan+ret_val_exposure
 
-        # print(totalAccuracy)
-        # print("SCORE IS:" + str(ret_val))
-        # print("----------")
-    else:
-        ret_val=0.00001 #active operators return non zero value
+    elif subtask[0] == 'shoot_op':
+        # enemy=state.aim_list[0]
+        # blueDistance=ext_funs.getMetriDistance(state.loc,enemy.location)
+        # if blueDistance == None:
+        #     blueDistance = ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
+        ret_val = 0.00001
     if ret_val==0:
         ret_val=0.00001
+
     return ret_val
 
 

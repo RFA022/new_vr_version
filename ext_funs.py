@@ -171,29 +171,29 @@ def getAccumulatedHitProbability(state):
     knownEnemies = 0
     accuracyVec=[]
     for k, enemy in enumerate(state.assesedBlues):
-        if enemy.is_alive == True:
+        if enemy.is_alive == True and enemy.observed == True:
             classification = enemy.classification.name
             maxRange = float(state.AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
             blueDistance = state.distance_from_assesedBlues[k]
-            rangeString = None
-            if blueDistance != None:
-                if blueDistance <= 50:
-                    rangeString = "TO_50"
-                elif blueDistance > 50 and blueDistance <= 100:
-                    rangeString = "TO_100"
-                elif blueDistance > 100 and blueDistance <= 500:
-                    rangeString = "TO_500"
-                elif blueDistance > 500:
-                    rangeString = "TO_MAX_RANGE"
-                if blueDistance > maxRange:
-                    rangeString = "AFTER_MAX_RANGE"
-                blueAccuracy = float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])
-                # print(str(rangeString))
-                # print(str(classification))
-                # print(blueAccuracy)
-                # print("POSITION NUMBER IS: " + str(state.positions.index(state.loc)))
-                # print("-----")
-                totalAccuracy += blueAccuracy
-                knownEnemies += 1
-                accuracyVec.append(blueAccuracy)
+            if blueDistance==None:
+                #if enemy has been observed statistically we assume its in the middle of the polygon
+                blueDistance=getMetriDistance(state.loc, state.BluePolygonCentroid)
+            blueAccuracy = getAccuracy(state,blueDistance,maxRange,classification)
+            totalAccuracy += blueAccuracy
+            knownEnemies += 1
+            accuracyVec.append(blueAccuracy)
     return (knownEnemies,totalAccuracy,accuracyVec)
+
+def getAccuracy(state,distance,maxRange,classification):
+    rangeString = None
+    if distance <= 50:
+        rangeString = "TO_50"
+    elif distance > 50 and distance <= 100:
+        rangeString = "TO_100"
+    elif distance > 100 and distance <= 500:
+        rangeString = "TO_500"
+    elif distance > 500:
+        rangeString = "TO_MAX_RANGE"
+    if distance > maxRange:
+        rangeString = "AFTER_MAX_RANGE"
+    return float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])

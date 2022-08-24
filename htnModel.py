@@ -13,15 +13,13 @@ from copy import deepcopy
 
 def locate_at_position_op(state,a):
     state.squad_state = 'at_position'
-    #for each position we toss if NONE enemies habe been observed or not
-    state_copy=deepcopy(state)
-    knownEnemies, totalAccuracy,accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy)
-    if knownEnemies > 0:
-        totalprobability=1
-        for accuracy in accuracyVec:
-            totalprobability=totalprobability*(1-accuracy)
-        probabilityToGetHit = 1-totalprobability
-    state.negativeHitsProbability.append(probabilityToGetHit)
+    state.loc = ext_funs.getLocation(state, state.nextPositionIndex)
+    # Index exchange:
+    state.currentPositionIndex = state.nextPositionIndex
+    state.nextPositionIndex = []
+    # Updateting dynamic distances list:
+    state.distance_from_positions = ext_funs.update_distance_from_positions(state.loc, state.positions)
+    state.distance_from_assesedBlues = ext_funs.update_distance_from_blues(state.loc, state.assesedBlues)
     return state
 
 def choose_position_op(state,nextPosition):
@@ -30,14 +28,10 @@ def choose_position_op(state,nextPosition):
 
 def move_to_position_op(state,a):
     state.squad_state = 'move'
-    state.loc = ext_funs.getLocation(state, state.nextPositionIndex)
-    state.nextPositionIndex = []
-    #Updateting dynamic distances list:
-    state.distance_from_positions = ext_funs.update_distance_from_positions(state.loc,state.positions)
-    state.distance_from_assesedBlues = ext_funs.update_distance_from_blues(state.loc, state.assesedBlues)
     return state
 
-def scan_for_enemy_op(state,a):
+def scan_for_enemy_and_assess_exposure_op(state,a):
+    #Scan part:
     for enemy in state.assesedBlues:
         #if location is not known:
         if(enemy.location['latitude'] ==  None and
@@ -54,27 +48,31 @@ def scan_for_enemy_op(state,a):
             if losRespose['distance'][0][0] < state.basicRanges['squad_view_range']:
                  if losRespose['los'][0][0] == True:
                     enemy.observed = True
+
+    # Exposure Assesment part:
+    state_copy = deepcopy(state)
+    knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy)
+    if knownEnemies > 0:
+        totalprobability = 1
+        for accuracy in accuracyVec:
+            totalprobability = totalprobability * (1 - accuracy)
+        probabilityToGetHit = (1 - totalprobability)
+        state.negativeHitsProbability.append(probabilityToGetHit)
     return state
 
-def null_op(state,a):
-    return state
-
-def shoot_op(state,a):
-    state.shoot=1
-    return state
 
 def aim_op(state,a):
     aim_list=[]
-    for enemy in state.assesedBlues:
+    for k, enemy in enumerate(state.assesedBlues):
         if enemy.observed==True and enemy.is_alive==True:
             #Atribute distFromSquad is local atribute for blue enemy only for Aim operator
             if (enemy.location['latitude'] == None and
                     enemy.location['longitude'] == None and
                     enemy.location['altitude'] == None):
-                #If enemy location is not known we consider that its located in the centroid of the blue polygon
+                #if enemy has been observed statistically we assume its in the middle of the polygon
                 enemy.distFromSquad=ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
             else:
-                enemy.distFromSquad = ext_funs.getMetriDistance(state.loc, enemy.location)
+                enemy.distFromSquad = state.distance_from_assesedBlues[k]
             aim_list.append(enemy)
         else:
             enemy.distFromSquad = None
@@ -88,7 +86,17 @@ def aim_op(state,a):
             name = entity.unit_name
             state.aim_list_names.append(name)
     return state
-pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_op,null_op,aim_op,shoot_op)
+
+def null_op(state,a):
+    return state
+
+def shoot_op(state,a):
+    state.shoot=1
+    return state
+
+pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,null_op,aim_op,shoot_op)
+
+
 
 
 def end_mission_m(state,a):
@@ -122,7 +130,7 @@ pyhop.declare_methods('move_to_position', move_to_position_m)
 pyhop.declare_original_methods('move_to_position', move_to_position_m)
 
 def scan_for_enemy_m(state,a):
-    return [('scan_for_enemy_op', a),('continue_task',a)]
+    return [('scan_for_enemy_and_assess_exposure_op', a),('continue_task',a)]
 
 pyhop.declare_methods('scan_for_enemy', scan_for_enemy_m)
 pyhop.declare_original_methods('scan_for_enemy', scan_for_enemy_m)
@@ -171,6 +179,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.basicRanges=basicRanges
     #HTN
     init_state.nextPositionIndex = []
+    init_state.currentPositionIndex=[]
     init_state.assesedBlues = []
     init_state.enemy_number = None
     init_state.positions = []
