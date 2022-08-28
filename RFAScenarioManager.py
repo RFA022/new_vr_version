@@ -157,10 +157,10 @@ class RFAScenarioManager:
                                 if losRespose['distance'][0][0] < self.basicRanges['squad_eyes_range']:
                                     if losRespose['los'][0][0] == True:
                                         enemy.last_seen_worldLocation = enemy.location
-                                        if enemy.alive==True:
+                                        if enemy.is_alive==True:
                                             logging.debug("Enemy: " + str(
                                                 enemy.unit_name) + " has been detected during motion")
-                                        elif enemy.alive==False:
+                                        elif enemy.is_alive==False:
                                             logging.debug("Destroyed enemy: " + str(
                                                 enemy.unit_name) + " has been detected during motion")
                             # updating HTN list which is used when shooting:
@@ -255,8 +255,12 @@ class RFAScenarioManager:
                     if losRespose['los'][0][0] == True:
                         enemy.observed = True
                         enemy.last_seen_worldLocation = enemy.location
-                        logging.debug("Enemy: " + str(
-                            enemy.unit_name) + " has been detected")
+                        if enemy.is_alive == True:
+                            logging.debug("Enemy: " + str(
+                                enemy.unit_name) + " has been detected during motion")
+                        elif enemy.is_alive == False:
+                            logging.debug("Destroyed enemy: " + str(
+                                enemy.unit_name) + " has been detected during motion")
                         detectionCount += 1
             # updating HTN list which is used when shooting:
             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
@@ -278,6 +282,16 @@ class RFAScenarioManager:
             if aim_list != []:
                 # sort by value - next sort by value and then by distance
                 aim_list = sorted(aim_list, key=lambda x: (x.val, -x.distFromSquad), reverse=True)
+                "Put emergency drones with short distance first:"
+                for enemy in aim_list:
+                    if (enemy.classification == EntityTypeEnum.OHEZ) or \
+                     (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                     (enemy.classification==EntityTypeEnum.UNKNOWN):
+                        if enemy.distFromSquad<self.basicRanges['ak47_range']*1.5:
+                            aim_list.remove(enemy)
+                            aim_list.insert(0,enemy)
+                            logging.debug("Drone type enemy has been pushed to the top of the aim list due to an emergency situation")
+
                 self.aim_list = aim_list
                 aim_list_names = []
                 for entity in aim_list:
@@ -315,7 +329,7 @@ class RFAScenarioManager:
                     (target.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                     (target.classification == EntityTypeEnum.UNKNOWN):
                 shooting_entities=[x for x in self.entity_list if x.squad == squad_name and x.classification == EntityTypeEnum.SOLDIER]  # based on uniqeness of at unit in a squad
-                if ext_funs.getMetriDistance(current_entity.location,target.location)<=self.basicRanges['ak47_range']*1.5:
+                if ext_funs.getMetriDistance(current_entity.current_location,target.location)<=self.basicRanges['ak47_range']*1.5:
                     for entity in shooting_entities:
                         entity.taskTime = time.time()
                         entity.fireState=isFire.yes
@@ -324,6 +338,10 @@ class RFAScenarioManager:
                         self.communicator.FireCommand(str(entity.unit_name), str(target.unit_name), amoNumber, "dif")
                 else:
                     logging.debug("Target is too far: Task aborted")
+                    #Debug
+                    # print(str(ext_funs.getMetriDistance(current_entity.current_location,target.location)))
+                    # print(str(current_entity.current_location))
+                    # print(str(target.location))
 
 
     #Function that handle termination of firing and moving tasks
