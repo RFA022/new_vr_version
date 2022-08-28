@@ -293,7 +293,7 @@ def seek_mcts_plan(state, tasks, plan, depth):
     task1 = tasks[0] #current task goes to task1
     #case that current task is compound:
     print("_______________________")
-    print("Planning step")
+    print("HTN - Planning step")
     print(str(task1[0]))
     if task1[0] in methods:
         ###print('depth {} method instance {}'.format(depth, task1))
@@ -356,6 +356,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods):
                 N[index] += 1
     # sort Q and N in descending order
     index = best_med(Q, N)
+    #DEBUG printing
     print(Q)
     print(N)
     print(index)
@@ -467,8 +468,12 @@ def calValue(state,subtask):
         val_squad_to_Position= 100/relation
 
         "value relative to distance to BluePolygon center"
-        relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / max(state.distance_positions_from_BluePolygonCentroid))
-        val_squad_to_PolygonCenter = 100*relation
+        if state.weights['choose_position_op_dist_from_polygon']>=0:
+            relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / max(state.distance_positions_from_BluePolygonCentroid))
+            val_squad_to_PolygonCenter = 100*relation
+        elif state.weights['choose_position_op_dist_from_polygon']<0:
+            relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / min(state.distance_positions_from_BluePolygonCentroid))
+            val_squad_to_PolygonCenter=100/relation
 
         "value relative to distance to BluePolygon center"
         relation = ((state.position_exposure_level[subtask[1]]) / max(state.position_exposure_level))
@@ -476,10 +481,12 @@ def calValue(state,subtask):
 
 
         ret_val=state.weights['choose_position_op_dist_from_position']*val_squad_to_Position +\
-                state.weights['choose_position_op_dist_from_polygon']*val_squad_to_PolygonCenter+\
+                abs(state.weights['choose_position_op_dist_from_polygon'])*val_squad_to_PolygonCenter+\
                 state.weights['choose_position_op_percent_exposure']*val_percent_exposure_polygon
         ret_val=state.weights['choose_position_op']*ret_val
 
+        # print('position is: ' +str(subtask[1]) + ', operator name is:' + str(
+        #     subtask[0]) + ", retval is: " + str(ret_val))
 
     elif subtask[0]=='scan_for_enemy_and_assess_exposure_op':
         "Value relative to scanning"
@@ -508,7 +515,7 @@ def calValue(state,subtask):
                      (enemy.classification==EntityTypeEnum.UNKNOWN):
                     ret_val_scan += x * (state.weights['ohez_val'])
         ret_val_scan=state.weights['scan_for_enemy_op']*ret_val_scan
-
+        # print('position is: ' + str(state.currentPositionIndex) + ', operator name is: scan'  + ", retval is: " + str(ret_val_scan))
         "Value relative to Exposure"
         state_copy=deepcopy(state)
         knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy)
@@ -523,13 +530,18 @@ def calValue(state,subtask):
             "If we dont know any of the enemies location we return exposure scan 100"
         elif knownEnemies==0:
             ret_val_exposure = state.weights['locate_at_position_op']*100 #means that Agent dont know about any enemies
+        # print('position is: ' + str(state.currentPositionIndex) + ', operator name is: exposure' + ", retval is: " + str(
+        #     ret_val_exposure))
         ret_val=ret_val_scan+ret_val_exposure
-
+        # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
+        #     subtask[0]) + ", retval is: " + str(ret_val))
     elif subtask[0] == 'shoot_op':
+        flag=0
         enemy=state.aim_list[0]
         blueDistance=ext_funs.calculate_blue_distance(state.loc,enemy)
         if blueDistance == None:
              blueDistance = ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
+             flag=1
         if enemy.classification==EntityTypeEnum.EITAN:
              shooterClassification="LONG_RANGE_ANTI_TANK"
              ratio=1
@@ -541,9 +553,12 @@ def calValue(state,subtask):
         maxRange = float(state.AccuracyConfiguration.at[str(shooterClassification), 'MAX_RANGE'])
         accuracy = ext_funs.getAccuracy(state, blueDistance, maxRange, shooterClassification)
         ret_val = state.weights['shoot_enemy_op']*100*accuracy*ratio
+        if flag ==1:
+             ret_val=0.00001
         print("position is: " + str(state.currentPositionIndex) + " " + "operator is " + str(
-            subtask[0]) + " " + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
-
+            subtask[0]) + " " + "blueDistance is: " + str(blueDistance) + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
+        # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
+        #     subtask[0]) + ", retval is: " + str(ret_val))
 
     if ret_val==0:
         ret_val=0.00001

@@ -178,13 +178,14 @@ def getAccumulatedHitProbability(state):
             classification = enemy.classification.name
             maxRange = float(state.AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
             blueDistance = state.distance_from_assesedBlues[k]
-            if blueDistance==None:
+            if blueDistance==None: #Ignore None Distance
                 #if enemy has been observed statistically we assume its in the middle of the polygon
                 blueDistance=getMetriDistance(state.loc, state.BluePolygonCentroid)
-            blueAccuracy = getAccuracy(state,blueDistance,maxRange,classification)
-            totalAccuracy += blueAccuracy
-            knownEnemies += 1
-            accuracyVec.append(blueAccuracy)
+            else:
+                blueAccuracy = getAccuracy(state,blueDistance,maxRange,classification)
+                totalAccuracy += blueAccuracy
+                knownEnemies += 1
+                accuracyVec.append(blueAccuracy)
     return (knownEnemies,totalAccuracy,accuracyVec)
 
 def getAccuracy(state,distance,maxRange,classification):

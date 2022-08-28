@@ -157,8 +157,12 @@ class RFAScenarioManager:
                                 if losRespose['distance'][0][0] < self.basicRanges['squad_eyes_range']:
                                     if losRespose['los'][0][0] == True:
                                         enemy.last_seen_worldLocation = enemy.location
-                                        logging.debug("Enemy: " + str(
-                                            enemy.unit_name) + " has been detected during motion")
+                                        if enemy.alive==True:
+                                            logging.debug("Enemy: " + str(
+                                                enemy.unit_name) + " has been detected during motion")
+                                        elif enemy.alive==False:
+                                            logging.debug("Destroyed enemy: " + str(
+                                                enemy.unit_name) + " has been detected during motion")
                             # updating HTN list which is used when shooting:
                             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                         if current_entity.COA==[]:
@@ -311,13 +315,15 @@ class RFAScenarioManager:
                     (target.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                     (target.classification == EntityTypeEnum.UNKNOWN):
                 shooting_entities=[x for x in self.entity_list if x.squad == squad_name and x.classification == EntityTypeEnum.SOLDIER]  # based on uniqeness of at unit in a squad
-                for entity in shooting_entities:
-                    entity.taskTime = time.time()
-                    entity.fireState=isFire.yes
-                    amoNumber = 10
-                    self.communicator.setEntityPosture(entity.unit_name, 13)
-                    self.communicator.FireCommand(str(entity.unit_name), str(target.unit_name), amoNumber, "dif")
-
+                if ext_funs.getMetriDistance(current_entity.location,target.location)<=self.basicRanges['ak47_range']*1.5:
+                    for entity in shooting_entities:
+                        entity.taskTime = time.time()
+                        entity.fireState=isFire.yes
+                        amoNumber = 10
+                        self.communicator.setEntityPosture(entity.unit_name, 13)
+                        self.communicator.FireCommand(str(entity.unit_name), str(target.unit_name), amoNumber, "dif")
+                else:
+                    logging.debug("Target is too far: Task aborted")
 
 
     #Function that handle termination of firing and moving tasks
