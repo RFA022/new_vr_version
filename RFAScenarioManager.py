@@ -271,24 +271,37 @@ class RFAScenarioManager:
             logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face))
             detectionCount = 0
             current_entity.taskTime=time.time()
-            for enemy in (self.blue_entity_list):
-                losRespose = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, enemy,
-                                                  current_entity.current_location)
-                if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
-                    if losRespose['los'][0][0] == True:
-                        enemy.observed = True
-                        enemy.last_seen_worldLocation = enemy.location
-                        if enemy.is_alive == True:
-                            logging.debug("Enemy: " + str(
-                                enemy.unit_name) + " has been detected during motion")
-                        elif enemy.is_alive == False:
-                            logging.debug("Destroyed enemy: " + str(
-                                enemy.unit_name) + " has been detected during motion")
-                        detectionCount += 1
-            # updating HTN list which is used when shooting:
-            self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
-            if detectionCount == 0:
-                logging.debug("No enemy has been detected")
+            while True:
+                for enemy in (self.blue_entity_list):
+                    losRespose = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, enemy,
+                                                      current_entity.current_location)
+                    if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
+                        if losRespose['los'][0][0] == True:
+                            enemy.observed = True
+                            enemy.last_seen_worldLocation = enemy.location
+                            if enemy.is_alive == True:
+                                logging.debug("Enemy: " + str(
+                                    enemy.unit_name) + " has been detected from position")
+                            elif enemy.is_alive == False:
+                                logging.debug("Destroyed enemy: " + str(
+                                    enemy.unit_name) + " has been detected from position")
+                            detectionCount += 1
+                            if (enemy.classification == EntityTypeEnum.OHEZ) or \
+                                    (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                                    (enemy.classification == EntityTypeEnum.UNKNOWN):
+                                if losRespose['distance'][0][0] < self.basicRanges['ak47_range']:
+                                    logging.debug( "Drone type enemy has been detected in emergency situation")
+
+                # updating HTN list which is used when shooting:
+                self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+                if detectionCount>0:
+                    pass
+                currTime = time.time()
+                if currTime - current_entity.taskTime > 1:
+                    if detectionCount == 0:
+                        logging.debug("No enemy has been detected Within 20 seconds of scanning")
+                    logging.debug("Scan Timeout")
+                    break
         # Aim
         # Atribute distFromSquad is local atribute for blue enemy only for Aim operator
         elif entity_next_state_and_action.aim == True:
@@ -348,7 +361,7 @@ class RFAScenarioManager:
                 amoNumber = 1
                 self.communicator.setEntityPosture(shooting_entity.unit_name, 13)
                 self.communicator.FireCommand(shooting_entity.unit_name, str(target.unit_name), amoNumber, "dif")
-                logging.debug("1 Shell has been fired at target")
+                logging.debug("1 Shell fire command has been sent to entity to fire at target")
             elif    (target.classification == EntityTypeEnum.OHEZ) or \
                     (target.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                     (target.classification == EntityTypeEnum.UNKNOWN):
