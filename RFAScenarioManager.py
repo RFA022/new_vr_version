@@ -123,6 +123,7 @@ class RFAScenarioManager:
                     if current_entity.alive:
                         "external function that handles all functionalities that relates to move and  fire"
                         self.handle_move_and_fire(current_entity,task_status_list,fire_list)
+                        #print("current entity:" + str(current_entity.unit_name) + "status: " + str(current_entity.movement_task_completed) + "success" + str(current_entity.movement_task_success) )
                         # # Debug:
                         # print("---Debug Seasson---")#
                         # print(str(current_entity.unit_name))
@@ -169,9 +170,13 @@ class RFAScenarioManager:
                                                 (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                                                 (enemy.classification == EntityTypeEnum.UNKNOWN):
                                                 enemyDistance=ext_funs.getMetriDistance(current_entity.current_location,enemy.location)
-                                                if enemyDistance< self.basicRanges['ak47_range'] :
+                                                if enemyDistance< self.basicRanges['ak47_range']:
                                                     logging.debug(
                                                         "Drone type enemy has been Detected in an emergency situation")
+                                                    # for entityStop in self.entity_list:
+                                                    #     if entityStop.squad==current_entity.squad:
+                                                    #         self.communicator.stopCommand(entityStop.unit_name)
+                                                    #         print(entityStop.unit_name)
                                                     self.communicator.stopCommand(current_entity.unit_name)
                                                     current_entity.state = PositionType.AT_OP
                                                     current_entity.movement_task_completed = 0
@@ -265,6 +270,7 @@ class RFAScenarioManager:
             # Basic functionality - next step is to use LOS between point and entity:
             logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face))
             detectionCount = 0
+            current_entity.taskTime=time.time()
             for enemy in (self.blue_entity_list):
                 losRespose = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, enemy,
                                                   current_entity.current_location)
@@ -304,7 +310,7 @@ class RFAScenarioManager:
                     if (enemy.classification == EntityTypeEnum.OHEZ) or \
                      (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                      (enemy.classification==EntityTypeEnum.UNKNOWN):
-                        if enemy.distFromSquad<self.basicRanges['ak47_range']*1.5:
+                        if enemy.distFromSquad<self.basicRanges['ak47_range']:
                             aim_list.remove(enemy)
                             aim_list.insert(0,enemy)
                             logging.debug("Drone type enemy has been pushed to the top of the aim list due to an emergency situation")
@@ -347,14 +353,20 @@ class RFAScenarioManager:
                     (target.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                     (target.classification == EntityTypeEnum.UNKNOWN):
                 shooting_entities=[x for x in self.entity_list if x.squad == squad_name and x.classification == EntityTypeEnum.SOLDIER]  # based on uniqeness of at unit in a squad
-                if ext_funs.getMetriDistance(current_entity.current_location,target.location)<=self.basicRanges['ak47_range']*1.5:
+                if ext_funs.getMetriDistance(current_entity.current_location,target.location)<=self.basicRanges['ak47_range']:
+                    shootCounter=0
+                    amoNumber = 5
                     for entity in shooting_entities:
-                        entity.taskTime = time.time()
-                        entity.fireState=isFire.yes
-                        amoNumber = 10
-                        self.communicator.setEntityPosture(entity.unit_name, 13)
-                        self.communicator.FireCommand(str(entity.unit_name), str(target.unit_name), amoNumber, "dif")
-                    logging.debug(str(int(amoNumber)*int(len(shooting_entities))) + " bullets has been fired at target from "+ str(len(shooting_entities)) + " shooting entities")
+                        losResponse = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, target, entity.current_location)
+                        if losResponse['los'][0][0] == True:
+                            shootCounter+=1
+                            entity.taskTime = time.time()
+                            entity.fireState=isFire.yes
+                            self.communicator.setEntityPosture(entity.unit_name, 13)
+                            self.communicator.FireCommand(str(entity.unit_name), str(target.unit_name), amoNumber, "dif")
+                        else:
+                            logging.debug("entity: " + str(entity.unit_name) + " did not have line of sight to target. Therefore did not shoot" )
+                    logging.debug(str(int(amoNumber)*int(shootCounter) )+ " bullets has been fired at target from "+ str(len(shooting_entities)) + " shooting entities")
                 else:
                     logging.debug("Target is too far: Task didn't started")
                     #Debug
