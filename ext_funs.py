@@ -74,7 +74,9 @@ def getMetriDistance(loc1,loc2):
         math.sin(dLon / 2) * math.sin(dLon / 2)
 
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    d = R * c
+    d_flat = R * c
+    d_alt=abs(float(loc2['altitude'])-float(loc1['altitude']))
+    d=math.sqrt(d_flat**2+ d_alt**2)
     return d
 
 def get_positions_fromCSV(filename):
