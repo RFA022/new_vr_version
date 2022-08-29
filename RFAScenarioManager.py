@@ -319,7 +319,7 @@ class RFAScenarioManager:
         elif entity_next_state_and_action.shoot == True:
             # NO CHECK FOR LOS and RANGE for each shooting unit.
             logging.debug(
-                "Try Shooting at target " + str(self.aim_list[0].unit_name))
+                "Starting shooting procedure at target " + str(self.aim_list[0].unit_name))
             target = self.aim_list[0]
             squad_name=current_entity.squad
             if target.classification == EntityTypeEnum.EITAN:
@@ -337,6 +337,7 @@ class RFAScenarioManager:
                 amoNumber = 1
                 self.communicator.setEntityPosture(shooting_entity.unit_name, 13)
                 self.communicator.FireCommand(shooting_entity.unit_name, str(target.unit_name), amoNumber, "dif")
+                logging.debug("1 Shell has been fired at target")
             elif    (target.classification == EntityTypeEnum.OHEZ) or \
                     (target.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                     (target.classification == EntityTypeEnum.UNKNOWN):
@@ -348,8 +349,9 @@ class RFAScenarioManager:
                         amoNumber = 10
                         self.communicator.setEntityPosture(entity.unit_name, 13)
                         self.communicator.FireCommand(str(entity.unit_name), str(target.unit_name), amoNumber, "dif")
+                    logging.debug(str(int(amoNumber)*int(len(shooting_entities))) + " bullets has been fired at target from "+ str(len(shooting_entities) + " shooting entities"))
                 else:
-                    logging.debug("Target is too far: Task aborted")
+                    logging.debug("Target is too far: Task didn't started")
                     #Debug
                     # print(str(ext_funs.getMetriDistance(current_entity.current_location,target.location)))
                     # print(str(current_entity.current_location))
