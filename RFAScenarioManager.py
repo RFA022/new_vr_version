@@ -149,7 +149,7 @@ class RFAScenarioManager:
                         # print(current_entity.movement_task_success)
                         # print('--------------------------------')
 
-                        "look for enemies if squad is on the move"
+                        "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             for enemy in (self.blue_entity_list):
                                 losRespose = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, enemy,
@@ -163,6 +163,18 @@ class RFAScenarioManager:
                                         elif enemy.is_alive==False:
                                             logging.debug("Destroyed enemy: " + str(
                                                 enemy.unit_name) + " has been detected during motion")
+
+                                        "REPLAN according to certain characteristics"
+                                        "-----------------DRONE CASE----------------"
+                                        if (enemy.classification == EntityTypeEnum.OHEZ) or \
+                                                (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                                                (enemy.classification == EntityTypeEnum.UNKNOWN):
+                                                enemyDistance=ext_funs.getMetriDistance(current_entity.current_location,enemy.location)
+                                                if enemyDistance< self.basicRanges['ak47_range'] * 1.5:
+                                                    logging.debug(
+                                                        "Drone type enemy has been Detected in an emergency situation")
+
+
                             # updating HTN list which is used when shooting:
                             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                         if current_entity.COA==[]:
@@ -409,6 +421,7 @@ class RFAScenarioManager:
                         current_entity.fireState = isFire.no
                         current_entity.fire_task_completed = 0
                         current_entity.fire_task_success = False
+                        #stopCommad?
             if current_entity.fire_task_success == False:
                 curr_time = time.time()
                 waitingTime = 8
@@ -419,7 +432,7 @@ class RFAScenarioManager:
                     current_entity.fireState = isFire.no
                     current_entity.fire_task_completed = 0
                     current_entity.fire_task_success = False
-
+                    # stopCommad?
 
     #Creates Blue list
     # Uses EntityInfo class to describe an entity

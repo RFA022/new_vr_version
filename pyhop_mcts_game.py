@@ -334,7 +334,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
-    NumSim = 400 #was 400
+    NumSim = 50 #was 400
     ### initiation lines:
     root_nodes = []
     for task in tasks:
@@ -402,7 +402,7 @@ def MCTS_Task(S_c, task, node, d, indicator,NumSim):
 def MCTS_Method(S_c, task, med, node,d,NumSIm):
     S_c.debug_method+=1
     par=node.par #parameter of parent node
-    d_max = 100  # maximum depth - arbitrary number
+    d_max = 30  # maximum depth - arbitrary number
     if d > (d_max):
         return S_c, node.Q   # 0 = arbitrary return
     try:
@@ -555,8 +555,8 @@ def calValue(state,subtask):
         ret_val = state.weights['shoot_enemy_op']*100*accuracy*ratio
         if flag ==1:
              ret_val=0.00001
-        print("position is: " + str(state.currentPositionIndex) + " " + "operator is " + str(
-            subtask[0]) + " " + "blueDistance is: " + str(blueDistance) + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
+        # print("position is: " + str(state.currentPositionIndex) + " " + "operator is " + str(
+        #     subtask[0]) + " " + "blueDistance is: " + str(blueDistance) + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
         #     subtask[0]) + ", retval is: " + str(ret_val))
 
