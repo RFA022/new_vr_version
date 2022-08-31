@@ -43,12 +43,14 @@ class EntityCurrentState: #red entities
 
         self.COA=[]
         self.face=None
+        self.HTNtarget=None
         self.planBool=1
         self.aim_list=[]
         self.taskTime=9223372036854775807 #maxint python 2
         self.preGameBool=True # boolean that active for first 10 seconds of the game. able to activate operations before first HTN search
         self.squad = None
         self.role = None
+
 
 class HTNentity:
     def __init__(self, entity_id: str):

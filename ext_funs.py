@@ -130,7 +130,7 @@ def losOperator(squadPosture,enemyDimensions,enemy,source_location):
     communicator = CommunicatorSingleton().obj
     source=copy.deepcopy(source_location)
     source['altitude'] = str(float(source['altitude']) +float(squadPosture['standing_height']))
-    target = enemy.location
+    target = copy.deepcopy(enemy.location)
     if enemy.classification == EntityTypeEnum.EITAN:
         target['altitude'] += enemyDimensions['eitan_cg_height']
     losRespose = (communicator.GetGeoQuery([source], [target], True, True))
@@ -171,6 +171,7 @@ def getPolygonCentroid(polygon) -> float:
         }
         return centroid
 
+"HTN FUNCTION ONLY"
 def getAccumulatedHitProbability(state):
     totalAccuracy = 0
     knownEnemies = 0
@@ -190,6 +191,7 @@ def getAccumulatedHitProbability(state):
                 accuracyVec.append(blueAccuracy)
     return (knownEnemies,totalAccuracy,accuracyVec)
 
+"HTN FUNCTION ONLY"
 def getAccuracy(state,distance,maxRange,classification):
     rangeString = None
     if distance <= 50:

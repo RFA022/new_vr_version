@@ -158,7 +158,7 @@ class RFAScenarioManager:
                                     if losRespose['los'][0][0] == True:
                                         enemy.last_seen_worldLocation = enemy.location
                                         if enemy.is_alive==True:
-                                            logging.debug("Enemy: " + str(
+                                            logging.debug("Alive enemy: " + str(
                                                 enemy.unit_name) + " has been detected during motion")
                                         elif enemy.is_alive==False:
                                             logging.debug("Destroyed enemy: " + str(
@@ -173,10 +173,6 @@ class RFAScenarioManager:
                                                 if enemyDistance< self.basicRanges['ak47_range']:
                                                     logging.debug(
                                                         "Drone type enemy has been Detected in an emergency situation")
-                                                    # for entityStop in self.entity_list:
-                                                    #     if entityStop.squad==current_entity.squad:
-                                                    #         self.communicator.stopCommand(entityStop.unit_name)
-                                                    #         print(entityStop.unit_name)
                                                     self.communicator.stopCommand(current_entity.unit_name)
                                                     current_entity.state = PositionType.AT_OP
                                                     current_entity.movement_task_completed = 0
@@ -185,6 +181,18 @@ class RFAScenarioManager:
                                                     current_entity.aim_list.append(enemy)
                                                     current_entity.COA=[]
                                                     current_entity.COA.append((['shoot_op',str(enemy.unit_name)]))
+                                        "-----------------LAV CASE----------------"
+                                        if (enemy.classification == EntityTypeEnum.EITAN):
+                                                enemyDistance=ext_funs.getMetriDistance(current_entity.current_location,enemy.location)
+                                                locDistance=ext_funs.getMetriDistance(current_entity.current_location,self.AttackPos[current_entity.face])
+                                                if enemyDistance<locDistance:
+                                                    logging.debug(
+                                                        "Armored Vhecile type enemy has been Detected - closer than next position - rePlan is needed")
+                                                self.communicator.stopCommand(current_entity.unit_name)
+                                                current_entity.state = PositionType.AT_OP
+                                                current_entity.movement_task_completed = 0
+                                                current_entity.movement_task_success = False
+                                                current_entity.COA = []
                             # updating HTN list which is used when shooting:
                             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                         if current_entity.COA==[]:
@@ -207,6 +215,17 @@ class RFAScenarioManager:
                                                                       self.AccuracyConfiguration)
                             logging.debug("New Plan has been given to Squad")
 
+                            "updateHTNtarget"
+                            current_entity.HTNtarget=[]
+                            for primitive_task in self.entity_list[i].COA:
+                                if primitive_task[0]=='shoot_op':
+                                    print("target is" + str(primitive_task[1]))
+                                    target= next(x for x in self.blue_entity_list_HTN if x.unit_name == (primitive_task[1]))
+                                    if calculate_blue_distance(current_entity.current_location,target)==None:
+                                        current_entity.HTNtarget.append([target.unit_name,"assesed"])
+                                    else:
+                                        current_entity.HTNtarget.append([target.unit_name,"real"])
+                            print(str(current_entity.HTNtarget))
                         "Generates next state and action for Squad commander"
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos)
@@ -271,36 +290,41 @@ class RFAScenarioManager:
             logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face))
             detectionCount = 0
             current_entity.taskTime=time.time()
+            scanned_list=[]
             while True:
                 for enemy in (self.blue_entity_list):
                     losRespose = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, enemy,
                                                       current_entity.current_location)
-                    if losRespose['distance'][0][0] < self.basicRanges['squad_view_range']:
+                    scan_range=self.basicRanges['squad_view_range']
+                    if losRespose['distance'][0][0] < scan_range:
                         if losRespose['los'][0][0] == True:
                             enemy.observed = True
                             enemy.last_seen_worldLocation = enemy.location
-                            if enemy.is_alive == True:
-                                logging.debug("Enemy: " + str(
-                                    enemy.unit_name) + " has been detected from position")
-                            elif enemy.is_alive == False:
-                                logging.debug("Destroyed enemy: " + str(
-                                    enemy.unit_name) + " has been detected from position")
+                            scanned_list.append(enemy)
                             detectionCount += 1
+                            "case of emergency drone detection:"
                             if (enemy.classification == EntityTypeEnum.OHEZ) or \
                                     (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                                     (enemy.classification == EntityTypeEnum.UNKNOWN):
                                 if losRespose['distance'][0][0] < self.basicRanges['ak47_range']:
                                     logging.debug( "Drone type enemy has been detected in emergency situation")
-
                 # updating HTN list which is used when shooting:
                 self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
-                if detectionCount>0:
-                    pass
                 currTime = time.time()
-                if currTime - current_entity.taskTime > 1:
+                if currTime - current_entity.taskTime > 2:
+                    logging.debug("Scan Timeout")
                     if detectionCount == 0:
                         logging.debug("No enemy has been detected Within 20 seconds of scanning")
-                    logging.debug("Scan Timeout")
+                    if detectionCount > 0:
+                        reduced_scanned_list=[]
+                        [reduced_scanned_list.append(enemy) for enemy in scanned_list if enemy not in reduced_scanned_list]
+                        print_list=[]
+                        for entity in reduced_scanned_list:
+                            if entity.is_alive==True:
+                                print_list.append("Alive enemy: " + str(entity.unit_name))
+                            elif entity.is_alive==False:
+                                print_list.append("Destroyed enemy: " + str(entity.unit_name))
+                        logging.debug("Entities: " + str(print_list) +" has been discovered during scanning proccess with range of " + str(scan_range))
                     break
         # Aim
         # Atribute distFromSquad is local atribute for blue enemy only for Aim operator
@@ -531,6 +555,7 @@ class RFAScenarioManager:
             current_entity.preGameBool      = entity_previous_list[k].preGameBool
             current_entity.squad            = entity_previous_list[k].squad
             current_entity.role             = entity_previous_list[k].role
+            current_entity.HTNtarget        = entity_previous_list[k].HTNtarget
 
             #task statuses:
             current_entity.movement_task_completed = entity_previous_list[k].movement_task_completed
