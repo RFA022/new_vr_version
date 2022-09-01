@@ -166,13 +166,12 @@ class RFAScenarioManager:
                                             pass
                                             logging.debug("Destroyed enemy: " + str(
                                                 enemy.unit_name) + " has been detected during motion")
-                                        if ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges):
+                                        if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges)):
                                             "REPLAN according to certain characteristics"
                                             "-----------------DRONE CASE----------------"
                                             if (enemy.classification == EntityTypeEnum.OHEZ) or \
                                                     (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                                                     (enemy.classification == EntityTypeEnum.UNKNOWN):
-                                                    enemyDistance=ext_funs.getMetriDistance(current_entity.current_location,enemy.location)
                                                         self.communicator.stopCommand(current_entity.unit_name)
                                                         current_entity.state = PositionType.AT_OP
                                                         current_entity.movement_task_completed = 0
@@ -182,12 +181,12 @@ class RFAScenarioManager:
                                                         current_entity.COA=[]
                                                         current_entity.COA.append((['shoot_op',str(enemy.unit_name)]))
                                             "-----------------LAV CASE----------------"
-                                            if (enemy.classification == EntityTypeEnum.EITAN):
-                                                    self.communicator.stopCommand(current_entity.unit_name)
-                                                    current_entity.state = PositionType.AT_OP
-                                                    current_entity.movement_task_completed = 0
-                                                    current_entity.movement_task_success = False
-                                                    current_entity.COA = []
+                                            if enemy.classification == EntityTypeEnum.EITAN:
+                                                        self.communicator.stopCommand(current_entity.unit_name)
+                                                        current_entity.state = PositionType.AT_OP
+                                                        current_entity.movement_task_completed = 0
+                                                        current_entity.movement_task_success = False
+                                                        current_entity.COA = []
                             # updating HTN list which is used when shooting:
                             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                         if current_entity.COA==[]:
