@@ -44,6 +44,7 @@ class EntityCurrentState: #red entities
         self.COA=[]
         self.face=None
         self.HTNtarget=None
+        self.HTNbluesFrozen=[]
         self.planBool=1
         self.aim_list=[]
         self.taskTime=9223372036854775807 #maxint python 2

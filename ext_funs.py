@@ -219,3 +219,27 @@ def getAccuracy(state,distance,maxRange,classification):
     #Debug
     #print("classification is: " + str(classification) + ". disntace is: " + str(distance)+ ". str is: " + str(rangeString) +". accuracy is:" + str(float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])))
     return float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])
+
+def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges):
+    if (enemy.classification == EntityTypeEnum.OHEZ) or \
+            (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+            (enemy.classification == EntityTypeEnum.UNKNOWN):
+        enemyDistance = getMetriDistance(current_entity.current_location, enemy.location)
+        if enemyDistance < basicRanges['ak47_range']:
+            logging.debug(
+                "Drone type enemy has been Detected in an emergency situation")
+            return True
+    if (enemy.classification == EntityTypeEnum.EITAN):
+        frozen_enemy = next(x for x in current_entity.HTNbluesFrozen if x.unit_name == enemy.unit_name)
+        if calculate_blue_distance(current_entity.current_location, frozen_enemy) == None:
+            if calculate_blue_distance(current_entity.current_location, enemy) != None:
+                logging.debug("New Armored vhecile type enemy has been detected. RePlan")
+                return True
+        else:
+            distanceDifference = getMetriDistance(enemy.location, frozen_enemy.location)
+            print("sssssssssssssssssssssssssssss")
+            if distanceDifference > basicRanges['rePlan_range']:
+                logging.debug(
+                    "Big change in world view . RePlan")
+                return True
+    return False

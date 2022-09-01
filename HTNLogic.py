@@ -56,6 +56,10 @@ class HTNLogic:
                     entity_next_state_and_action.shoot = True
                     logging.debug(
                         "Next Primitive Task: Fire the first enemy in the target list. According to HTN: " + str(entity_next_state_and_action.HTN_target))
+                if entity_current_state.COA[0][0] == 'null_op':
+                    entity_next_state_and_action.null = True
+                    logging.debug(
+                        "Next Primitive Task: null")
                 entity_next_state_and_action.takeAction=1
 
         return entity_next_state_and_action
