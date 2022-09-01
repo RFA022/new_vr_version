@@ -317,7 +317,7 @@ class RFAScenarioManager:
                 # updating HTN list which is used when shooting:
                 self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                 currTime = time.time()
-                scan_time=1
+                scan_time=20
                 if currTime - current_entity.taskTime > scan_time or breakBool==1:
                     logging.debug("Scan Timeout")
                     if detectionCount == 0:
@@ -419,8 +419,12 @@ class RFAScenarioManager:
                     # print(str(target.location))
             current_entity.aim_list=[]
         elif entity_next_state_and_action.null == True:
-                print("null")
-                pass
+            for enemy in self.blue_entity_list_HTN:
+                if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges)):
+                    current_entity.COA.append(['aim_op','me'])
+                    current_entity.COA.append(['shoot_op', str(enemy.unit_name)])
+                    break
+
 
     #Function that handle termination of firing and moving tasks
     def handle_move_and_fire(self,current_entity,task_status_list,fire_list):

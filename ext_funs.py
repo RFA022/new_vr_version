@@ -226,20 +226,18 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges):
             (enemy.classification == EntityTypeEnum.UNKNOWN):
         enemyDistance = getMetriDistance(current_entity.current_location, enemy.location)
         if enemyDistance < basicRanges['ak47_range']:
-            logging.debug(
-                "Drone type enemy has been Detected in an emergency situation")
+            logging.debug("Drone type enemy has been Detected in an emergency situation")
             return True
     if (enemy.classification == EntityTypeEnum.EITAN):
         frozen_enemy = next(x for x in current_entity.HTNbluesFrozen if x.unit_name == enemy.unit_name)
         if calculate_blue_distance(current_entity.current_location, frozen_enemy) == None:
             if calculate_blue_distance(current_entity.current_location, enemy) != None:
-                logging.debug("New Armored vhecile type enemy has been detected. RePlan")
+                logging.debug("New Armored vehicle type enemy has been detected")
                 return True
         else:
             distanceDifference = getMetriDistance(enemy.location, frozen_enemy.location)
-            print("sssssssssssssssssssssssssssss")
             if distanceDifference > basicRanges['rePlan_range']:
                 logging.debug(
-                    "Big change in world view . RePlan")
+                    "Significant change in world view has been observed by the squad")
                 return True
     return False
