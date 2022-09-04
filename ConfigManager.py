@@ -46,58 +46,11 @@ class ConfigManager:
 
     @staticmethod
     def init() -> None:
-        fileNameEntity = "Resources/RfsmEntityDef.csv"
-        fileNamePlacement = "Resources/PlacementDB.csv"
-        fileNameCompounds = "Resources/compounds.csv"
+
         configfileName = "Resources/RFSMConfig.json"
-
-        with open(fileNameEntity, newline='') as csv_file:
-            for line in csv.DictReader(csv_file):
-                if line.get("type") != "":
-                    ConfigManager.entity_config_data.append(line)
-
-        with open(fileNamePlacement, newline='') as csv_file:
-            for line in csv.DictReader(csv_file):
-                ConfigManager.placement_config_data.append(line)
-
-        with open(fileNameCompounds, newline='') as csv_file:
-            for line in csv.DictReader(csv_file):
-                ConfigManager.areas_config_data.append(line)
-
         with open(configfileName, "r") as config_file:
             ConfigManager.config_data = json.load(config_file)
 
-        for i in range(len(ConfigManager().entity_config_data)):
-            if 'CIVILIAN' in str.upper(ConfigManager().entity_config_data[i].get("type")):
-                ConfigManager.min_number_of_civilians_area_of_interest =  int(ConfigManager.entity_config_data[i].get("spawnminininian"))
-                ConfigManager.max_number_of_civilians_area_of_interest = int(ConfigManager.entity_config_data[i].get("spawnmaxininian"))
-                ConfigManager.min_number_of_civilians = int(ConfigManager.entity_config_data[i].get("spawnmin"))
-                ConfigManager.max_number_of_civilians = int(ConfigManager.entity_config_data[i].get("spawnmax"))
-                continue
-            if 'LONG_RANGE_ANTI_TANK' in str.upper(ConfigManager().entity_config_data[i].get("type")):
-                ConfigManager.min_number_of_anti_tank_area_of_interest = int(ConfigManager.entity_config_data[i].get("spawnminininian"))
-                ConfigManager.max_number_of_anti_tank_area_of_interest = int(ConfigManager.entity_config_data[i].get("spawnmaxininian"))
-                continue
-            min_number_of_entity_to_create = int(ConfigManager.entity_config_data[i].get("spawnmin"))
-            max_number_of_entity_to_create = int(ConfigManager.entity_config_data[i].get("spawnmax"))
-            ConfigManager().min_entity_to_create_list.append({
-                "type": str.upper(ConfigManager().entity_config_data[i].get("type")),
-                "number_of_entity_to_create": min_number_of_entity_to_create})
-            ConfigManager().max_entity_to_create_list.append({
-                "type": str.upper(ConfigManager().entity_config_data[i].get("type")),
-                "number_of_entity_to_create": max_number_of_entity_to_create})
-
-        for i in range(len(ConfigManager().areas_config_data)):
-            area = str.upper(ConfigManager().areas_config_data[i].get("area"))
-            alt = float(ConfigManager().areas_config_data[i]["alt"])
-            lat = float(ConfigManager().areas_config_data[i]["lat"])
-            lon = float(ConfigManager().areas_config_data[i]["lon"])
-            if not area in ConfigManager().compounds_dict:
-                ConfigManager().compounds_dict[area] = [{"latitude": lat, "longitude": lon, "altitude": alt}]
-            else:
-                ConfigManager().compounds_dict[area].append({"latitude": lat, "longitude": lon, "altitude": alt})
-
-        # logging.debug("ConfigManager is initializing")
 
     @staticmethod
     def GetMode() -> str:
