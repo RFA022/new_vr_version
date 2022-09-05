@@ -43,6 +43,7 @@ class RFAScenarioManager:
 
         #Entities Lists:
         self.entity_list = []
+        self.green_entity_list= []
         self.blue_entity_list = []
         self.blue_entity_list_HTN=[]
 
@@ -64,7 +65,6 @@ class RFAScenarioManager:
         self.basicRanges['rpg_range'] = float(self.configuration.at['rpg_range', 'value'])
         self.basicRanges['javelin_range'] = float(self.configuration.at['javelin_range', 'value'])
         self.basicRanges['ak47_range'] = float(self.configuration.at['ak47_range', 'value'])
-        self.basicRanges['rePlan_range']=float(self.configuration.at['rePlan_range', 'value'])
 
         self.config = {}
         self.config['rePlan_range'] = float(self.configuration.at['rePlan_range', 'value'])
@@ -171,7 +171,7 @@ class RFAScenarioManager:
                                             pass
                                             logging.debug("Destroyed enemy: " + str(
                                                 enemy.unit_name) + " has been detected during motion")
-                                        if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges)):
+                                        if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges,self.config)):
                                             "REPLAN according to certain characteristics"
                                             "-----------------DRONE CASE----------------"
                                             if (enemy.classification == EntityTypeEnum.OHEZ) or \
@@ -213,7 +213,10 @@ class RFAScenarioManager:
                                                                       self.BluePolygonCentroid,
                                                                       self.AccuracyConfiguration)
                             logging.debug("New Plan has been given to Squad")
-
+                            # print('s')
+                            # r=self.communicator.navigationPathPlan(current_entity.current_location, self.AttackPos[12], 100, self.AttackPos[5])
+                            # if r!= []:
+                            #     print(r)
                             "Update HTN target"
                             current_entity.HTNtarget=[]
                             for primitive_task in self.entity_list[i].COA:
@@ -251,6 +254,7 @@ class RFAScenarioManager:
                             spawnManager = SpawnManager_Nadav(self.communicator,self.spawnPos,self.AttackPos,self.squadsData)
                             spawnManager.Run()
                             self.entity_list = spawnManager.spawn_entity_list
+                            self.green_entity_list=spawnManager.green_spawn_entity_list
                             self.blue_entity_list = self.getBlueEntityList()
                             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                             # Squad commander COA push scanning operation before the game starts
@@ -322,7 +326,7 @@ class RFAScenarioManager:
                 # updating HTN list which is used when shooting:
                 self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                 currTime = time.time()
-                scan_time=20
+                scan_time=self.config['scan_time']
                 if currTime - current_entity.taskTime > scan_time or breakBool==1:
                     logging.debug("Scan Timeout")
                     if detectionCount == 0:
@@ -425,7 +429,7 @@ class RFAScenarioManager:
             current_entity.aim_list=[]
         elif entity_next_state_and_action.null == True:
             for enemy in self.blue_entity_list_HTN:
-                if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges)):
+                if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges,self.config)):
                     current_entity.COA.append(['aim_op','me'])
                     current_entity.COA.append(['shoot_op', str(enemy.unit_name)])
                     break
@@ -489,7 +493,7 @@ class RFAScenarioManager:
                     curr_time = time.time()
                     # Debug
                     # print(curr_time-entity_current_state.taskTime)
-                    waitingTime = 8
+                    waitingTime = self.config['shoot_timeout_time']
                     if curr_time - current_entity.taskTime > waitingTime:
                         logging.debug("case 1.1 - can't start firing after " + str(
                             waitingTime) + " seconds of trying. aborting task")
@@ -500,7 +504,7 @@ class RFAScenarioManager:
                         #self.communicator.stopCommand(current_entity.unit_name)
             if current_entity.fire_task_success == False:
                 curr_time = time.time()
-                waitingTime = 8
+                waitingTime = self.config['shoot_timeout_time']
                 if curr_time - current_entity.taskTime > waitingTime:
                     logging.debug(
                         "case 1.2 - firing command has not been sent to " + str(

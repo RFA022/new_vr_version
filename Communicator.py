@@ -17,6 +17,7 @@ class Communicator(CommunicatorInterface):
     GetAreasListResponse_DR = "GetAreasListResponse_DR"
     LosQueryResponse_DR = "LosQueryResponse_DR"
     GeoQueryResponse_DR = "GeoQueryResponse_DR"
+    NavigationPathPlanningResponse_DR="NavigationPathPlanningResponse_DR"
     EntityReport_DR = "EntityReport_DR"
     TickCounterReport_DR = "TickCounterReport_DR"
     AttackReport_DR = "AttackReport_DR"
@@ -37,8 +38,7 @@ class Communicator(CommunicatorInterface):
     StopTasksCommand_DW = "StopTasksCommand_DW"
     LosToPolygonRequest_DW="LosToPolygonRequest_DW"
     CreateTacticalGraphicCommand_DW="CreateTacticalGraphicCommand_DW"
-
-
+    NavigationPathPlanningRequest_DW = "NavigationPathPlanningRequest_DW"
 
     def __init__(self):
         super().__init__()
@@ -236,7 +236,7 @@ class Communicator(CommunicatorInterface):
                 try:
                     current_DR.wait(2000)
                 except:
-                    logging.debug("wait to los response timeout")
+                    logging.debug("wait to arealist response timeout")
                     return areaList
 
                 current_DR.read()
@@ -481,7 +481,7 @@ class Communicator(CommunicatorInterface):
             current_DW.instance.set_dictionary({
                 "unit_name": name,
                 "location": location,
-                "hostility": hostility,
+                "hostility": hostility.value,
                 "enumeration": code
             })
             current_DW.write()
@@ -583,7 +583,7 @@ class Communicator(CommunicatorInterface):
                 try:
                     current_DR.wait(20000)
                 except:
-                    logging.debug("wait to los response timeout")
+                    logging.debug("wait to LosToPolygonResponse_DR timeout")
                     return responseList
                 current_DR.take()
                 for sample in current_DR.samples:
@@ -617,6 +617,62 @@ class Communicator(CommunicatorInterface):
             current_DW.write()
             # looks for "ak" and if it not find its fire with default weapon
 
+    def navigationPathPlan(self,origin,destination,avoidanceRadius,locationToAvoid):
+        responseList = []
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.NavigationPathPlanningRequest_DW)
+            except:
+                logging.error("writer " + self.NavigationPathPlanningRequest_DW + " dont exist")
+            print(origin)
+            print(destination)
+            current_DW.instance.set_dictionary(
+                {
+                    "sourceID": "LMV",
+                    "recipientID": "test",
+                    "requestID": "1",
+                    "avoidanceRadius": avoidanceRadius,
+                    "vehicleID": "IVECO_LMV",
+
+                    "origin3DPoint": {
+                        "latitude": origin['latitude'],
+                        "longitude": origin['longitude'],
+                        "altitude": origin['altitude'],
+                    },
+                    "destination3DPoint": {
+                        "latitude": destination['latitude'],
+                        "longitude": destination['longitude'],
+                        "altitude": destination['altitude'],
+                    },
+                }
+            )
+            current_DW.write()
+            print("Sent pathPlan request")
+
+        print("Waiting for path response:")
+        with self.lock_read_write:
+            try:
+                current_DR = self.RFSM_connector.getInput(self.subscriber + self.NavigationPathPlanningResponse_DR)
+                # wait for messages for 2 sec
+                try:
+                    current_DR.wait(30000)
+                except:
+                    logging.debug("wait to path plan response timeout")
+                    return responseList
+                current_DR.take()
+                for sample in current_DR.samples:
+                    if sample.valid_data:
+                        # first - print the sample.
+                        responseList.append(sample.get_dictionary())
+                        print(sample.get_dictionary())
+                    else:
+                        print("Received non-valid message (Dispose)")
+                return responseList
+            except:
+                logging.error("reader " + self.NavigationPathPlanningResponse_DR + " dont exist")
+                return responseList
+
 class CommunicatorSingleton(metaclass=Singleton):
     def __init__(self):
         self.obj = Communicator()
+

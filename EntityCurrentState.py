@@ -15,11 +15,7 @@ class EntityCurrentState: #red entities
         self.unit_name = entity_id
         self.classification = CI.EntityTypeEnum.UNKNOWN
         self.hostility = CI.Hostility.UNKNOWN
-        self.location = {
-            "latitude": 0,
-            "longitude": 0,
-            "altitude": 0
-        }
+
         self.target_location = {
             "latitude": 0,
             "longitude": 0,

@@ -121,6 +121,9 @@
             <register_type name="gw_dds_types::LosToPolygonResponse" type_ref="gw_dds_types::LosToPolygonResponse"/>
 			<register_type name="gw_dds_types::LosToPolygonRequest" type_ref="gw_dds_types::LosToPolygonRequest"/>
 			<register_type name="gw_dds_types::CreateTacticalGraphicCommandType" type_ref="gw_dds_types::CreateTacticalGraphicCommandType"/>
+            <register_type name="gw_dds_types::mobility::NavigationPathPlanningRequest" type_ref="gw_dds_types::mobility::NavigationPathPlanningRequest"/>
+			<register_type name="gw_dds_types::mobility::NavigationPathPlanningResponse" type_ref="gw_dds_types::mobility::NavigationPathPlanningResponse"/>
+
 
             <topic name="LosToPolygonResponse" register_type_ref="gw_dds_types::LosToPolygonResponse"/>
 			<topic name="LosToPolygonRequest" register_type_ref="gw_dds_types::LosToPolygonRequest"/>
@@ -145,6 +148,8 @@
             <topic name="GetAreasListRequest" register_type_ref="gw_dds_types::GetAreasListRequest"/>
             <topic name="GetAreasListResponse" register_type_ref="gw_dds_types::GetAreasListResponse"/>
             <topic name="CreateTacticalGraphicCommand" register_type_ref="gw_dds_types::CreateTacticalGraphicCommandType"/>
+            <topic name="EntityNavigationPathPlanningRequest" register_type_ref="gw_dds_types::mobility::NavigationPathPlanningRequest"/>
+			<topic name="EntityNavigationPathPlanningResponse" register_type_ref="gw_dds_types::mobility::NavigationPathPlanningResponse"/>
 
         </domain>
     </domain_library>
@@ -154,6 +159,13 @@
             <participant_qos name="RFSM_Participant_Qos" base_name="QOSLibrary::DefaultProfile"/>
             <subscriber name="Subscriber">
                 <subscriber_qos/>
+                <data_reader name="NavigationPathPlanningResponse_DR" topic_ref="EntityNavigationPathPlanningResponse">
+					<datareader_qos base_name="QOSLibrary::DefaultProfile">
+						<reliability>
+							<kind>RELIABLE_RELIABILITY_QOS</kind>
+						</reliability>
+					</datareader_qos>
+				</data_reader>
                 <data_reader name="LosToPolygonResponse_DR" topic_ref="LosToPolygonResponse"/>
                 <data_reader name="GetAreasListResponse_DR" topic_ref="GetAreasListResponse"/>
                 <data_reader name="LosQueryResponse_DR" topic_ref="LosQueryResponse"/>
@@ -217,7 +229,7 @@
                 <data_writer name="EntityPosture_DW" topic_ref="EntityPosture"/>
                 <data_writer name="AimWeaponCommand_DW" topic_ref="AimWeaponCommand"/>
 				<data_writer name="CreateTacticalGraphicCommand_DW" topic_ref="CreateTacticalGraphicCommand"/>
-
+                <data_writer name="NavigationPathPlanningRequest_DW" topic_ref="EntityNavigationPathPlanningRequest"/>
             </publisher>
         </domain_participant>
     </domain_participant_library>

@@ -220,7 +220,7 @@ def getAccuracy(state,distance,maxRange,classification):
     #print("classification is: " + str(classification) + ". disntace is: " + str(distance)+ ". str is: " + str(rangeString) +". accuracy is:" + str(float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])))
     return float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])
 
-def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges):
+def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
     if (enemy.classification == EntityTypeEnum.OHEZ) or \
             (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
             (enemy.classification == EntityTypeEnum.UNKNOWN):
@@ -236,7 +236,7 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges):
                 return True
         else:
             distanceDifference = getMetriDistance(enemy.location, frozen_enemy.location)
-            if distanceDifference > basicRanges['rePlan_range']:
+            if distanceDifference > config['rePlan_range']:
                 logging.debug(
                     "Significant change in world view has been observed by the squad")
                 return True

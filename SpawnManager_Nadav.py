@@ -11,6 +11,7 @@ class SpawnManager_Nadav:
     def __init__(self, communicator,spawnPos,AttackPos,squadsData):
         self.communicator = communicator
         self.spawn_entity_list = []
+        self.green_spawn_entity_list = []
         self.spawnPos = spawnPos
         self.AttackPos = AttackPos
         self.squadsData=squadsData
@@ -18,14 +19,17 @@ class SpawnManager_Nadav:
 
 
     def Run(self):
+        "spawn squads"
         #agent creation:
         LOC_index =random.randrange(len(self.spawnPos))
         LOC=self.spawnPos[LOC_index]
         self.createRedSquad(LOC,'anti_tank_1')
 
-        # LOC_index = random.randrange(len(self.spawnPos))
-        # LOC = self.spawnPos[LOC_index]
-        # self.createRedSquad(LOC, 'anti_tank_2')
+        "Spawn green entities"
+
+        LOC_index = random.randrange(len(self.spawnPos))
+        LOC = self.spawnPos[LOC_index]
+        self.createGreenEntity(LOC,"civil_1","3:1:1:3:1:0:2")
 
 
         "Spawn and attack points"
@@ -61,3 +65,22 @@ class SpawnManager_Nadav:
             current_entity.squad = squadName
             self.spawn_entity_list.append(current_entity)
         self.communicator.createSquad(str(squadName), LOC)
+
+    def createGreenEntity(self,LOC,name,code):
+        LOC = {
+            "latitude":  LOC['latitude'],
+            "longitude": LOC['longitude'],
+            "altitude": LOC['altitude']
+        }
+
+        current_entity = EntityCurrentState("")
+        current_entity.worldLocation = {"location": {
+                "latitude": LOC['latitude'],
+                "longitude": LOC['longitude'],
+                "altitude": LOC['altitude']}}
+        current_entity.hostility = Hostility.NEUTRAL
+        current_entity.unit_name = name
+        current_entity.role = "ci"
+        current_entity.squad = "CivilSquad"
+        self.green_spawn_entity_list.append(current_entity)
+        self.communicator.CreateEntitySimple(name, LOC, Hostility.NEUTRAL, code)
