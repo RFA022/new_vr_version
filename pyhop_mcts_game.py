@@ -278,6 +278,7 @@ def get_relevant_methods(task):
             if methods_index_to_add[k]> methods_index_to_add[i]:
                 reduce_couter+=1
         relevant.pop(k-reduce_couter)
+        #print('s')
     return relevant
 
 ######################### MCTS HTN PAPER ################################
