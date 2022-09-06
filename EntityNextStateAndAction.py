@@ -3,8 +3,10 @@ from EntityCurrentState import *
 
 class EntityNextStateAndAction:
     def __init__(self, entity_id: str):
+        "Red"
         self.entity_id = entity_id
         self.position: PositionType = None
+        self.positionType = None
         self.position_location = {"latitude": -1, "longitude": -1, "altitude": -1}
         self.entity_to_fire = ""
         self.move_pos = False
@@ -17,7 +19,9 @@ class EntityNextStateAndAction:
         self.null=None
         self.HTN_target=[]
         self.timeOutAbortCurrentTask=False
-
+        "Green"
+        self.wait_at_position=False
+        self.waiting_time=None
     def SetPosition(self, new_position: PositionType, location: dict):
         self.position = new_position
         self.position_location["latitude"] = location["latitude"]

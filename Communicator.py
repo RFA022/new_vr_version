@@ -396,7 +396,7 @@ class Communicator(CommunicatorInterface):
                 logging.error("reader " + self.TaskStatus_DR + " don't exist")
                 return listOfMessage
 
-    def MoveEntityToLocation(self, entity_id: str, location: dict) -> None:
+    def MoveEntityToLocation(self, entity_id: str, location: dict, speed) -> None:
         """
         This function is responsible to move entity to location
         :param entity_id: id of the entity to move
@@ -412,7 +412,7 @@ class Communicator(CommunicatorInterface):
                 return
             current_DW.instance.set_dictionary({
                 "unit_name": entity_id,
-                "ordered_speed": 4.5,  # ConfigManager.GetMovingPosSpeed(),
+                "ordered_speed": speed,  # ConfigManager.GetMovingPosSpeed(),
                 "altitude_reference": 0,
                 "location": location
             })

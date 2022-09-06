@@ -20,14 +20,14 @@ class SpawnManager_Nadav:
 
     def Run(self):
         "spawn squads"
-        #agent creation:
-        # LOC_index =random.randrange(len(self.spawnPos))
-        # LOC=self.spawnPos[LOC_index]
-        # self.createRedSquad(LOC,'anti_tank_1')
+        # agent creation:
+        LOC_index =random.randrange(len(self.spawnPos))
+        LOC=self.spawnPos[LOC_index]
+        self.createRedSquad(LOC,'anti_tank_1')
 
         "Spawn green entities"
 
-        for i in range(3):
+        for i in range(1):
             LOC_index = random.randrange(len(self.spawnPos))
             LOC = self.spawnPos[LOC_index]
             name=str("civil_")+(str(i))

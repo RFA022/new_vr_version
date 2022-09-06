@@ -170,7 +170,6 @@ pyhop.declare_original_methods('shoot',shoot_m)
 pyhop.update_method_list()
 #####----------------------------------------#####
 
-print('s')
 def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration):
     init_state = pyhop.State('init_state')
     #VRF configs:
@@ -230,8 +229,12 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.AccuracyConfiguration=AccuracyConfiguration
 
     #pyhop.print_state_simple(init_state)
-    print("Begin Planning:")
-    plan = pyhop.shop_m(init_state, [('attack', 'me')])
+    debug_level = 0
+    if debug_level >= 2:
+        print("init state is:")
+        pyhop.print_state(init_state)
+    print("Begin Planning Red:")
+    plan = pyhop.shop_m(init_state, [('attack', 'me')],1) #third parameter is debug mode
     print(plan)
     return plan
 

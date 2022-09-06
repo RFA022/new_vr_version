@@ -248,9 +248,7 @@ def print_methods(mlist=methods):
 
 ######################### Custom helper functions ################################
 def update_method_list():
-    print('sss')
     for key in methods:
-        print(key)
         methods[key]=get_relevant_methods(key)
     #print('Methods list has been updated')
 
@@ -263,7 +261,6 @@ def get_relevant_methods(task):
         method_name=method.__name__
         params=mc.get_method_params(method_name)
         if params!= None:
-            print(params)
             methods_index_to_add.append(i)
             params_to_add.append(params)
         else:
@@ -278,7 +275,6 @@ def get_relevant_methods(task):
             if methods_index_to_add[k]> methods_index_to_add[i]:
                 reduce_couter+=1
         relevant.pop(k-reduce_couter)
-        #print('s')
     return relevant
 
 ######################### MCTS HTN PAPER ################################
@@ -294,23 +290,24 @@ class TreeNode():
         self.par = par
 
 #mcts planner
-def shop_m(state, tasks):
+def shop_m(state, tasks,debug_level):
     #print("starting to find a plan!") - log print
-    result = seek_mcts_plan(state, tasks, [], 0)  # state, tasks, plan, depth
+    result = seek_mcts_plan(state, tasks, [], 0,debug_level)  # state, tasks, plan, depth,debug_level
     return result
 
 # The actual planner
 #Non recursive function
-def seek_mcts_plan(state, tasks, plan, depth):
+def seek_mcts_plan(state, tasks, plan, depth,debug_level):
     if tasks == []:
         #print("final step")
         ###print('depth {} returns plan {}'.format(depth, plan))
         return plan
     task1 = tasks[0] #current task goes to task1
     #case that current task is compound:
-    print("_______________________")
-    print("HTN - Planning step")
-    print(str(task1[0]))
+    if debug_level>=1:
+        print("_______________________")
+        print("HTN - Planning step")
+        print(str(task1[0]))
     if task1[0] in methods:
         ###print('depth {} method instance {}'.format(depth, task1))
         S_c = state #local copy of state
@@ -318,7 +315,7 @@ def seek_mcts_plan(state, tasks, plan, depth):
         if len(relevant_methods)==1:
             index=0
         else:
-            index = MCTS_HTN(S_c, tasks,relevant_methods)
+            index = MCTS_HTN(S_c, tasks,relevant_methods,debug_level)
         # 2 cases- 1 case is that the next method is grounded. 2 case is that the next method is lifted.
         if len(original_methods[task1[0]])==len(relevant_methods): #grounded method case
             method = methods[task1[0]][index]
@@ -329,7 +326,7 @@ def seek_mcts_plan(state, tasks, plan, depth):
             subtasks = method[0](S_c,par, *task1[1:])
         ###print('depth {} new tasks: {}'.format(depth, subtasks))
         if subtasks != False:
-             solution = seek_mcts_plan(state, subtasks + tasks[1:], plan, depth + 1)
+             solution = seek_mcts_plan(state, subtasks + tasks[1:], plan, depth + 1,debug_level)
              if solution != False:
                  return solution
     #case that current task is primitive
@@ -338,15 +335,16 @@ def seek_mcts_plan(state, tasks, plan, depth):
             operator = operators[task1[0]]
             newstate = operator(copy.deepcopy(state), *task1[1:])
             ###print('depth {} new state:'.format(depth))
-            print_state(newstate)
+            if debug_level>=2:
+                print_state(newstate)
             if newstate:
-                solution = seek_mcts_plan(newstate, tasks[1:], plan + [task1], depth + 1)
+                solution = seek_mcts_plan(newstate, tasks[1:], plan + [task1], depth + 1,debug_level)
                 if solution != False:
                     return solution
     print('depth {} returns failure'.format(depth))
     return False
 
-def MCTS_HTN(initial_state, tasks,relevant_methods):
+def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
@@ -373,9 +371,10 @@ def MCTS_HTN(initial_state, tasks,relevant_methods):
     # sort Q and N in descending order
     index = best_med(Q, N)
     #DEBUG printing
-    print(Q)
-    print(N)
-    print(index)
+    if debug_level>=1:
+        print(Q)
+        print(N)
+        print(index)
     return index
 
 def MCTS_Task(S_c, task, node, d, indicator,NumSim):

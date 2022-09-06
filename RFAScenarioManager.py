@@ -127,13 +127,20 @@ class RFAScenarioManager:
                         "external function that handles all functionalities that relates to move and  fire"
                         self.handle_move_and_fire(current_entity,task_status_list,fire_list)
                     if current_entity.state == PositionType.MOVE_TO_OP:
-                        print("moving")
+                        pass
                     if current_entity.COA == []:
                         current_entity.planBool = 1
                     if current_entity.planBool == 1 and current_entity.COA == []:
                         current_entity.planBool = 0
                         current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
-                        logging.debug("New Plan has been given to Squad")
+                        logging.debug("New Plan has been given to " + str(current_entity.unit_name))
+                    entity_next_state_and_action = HTNLogic().Step(current_entity,
+                                                                   self.start_scenario_time, self.AttackPos, self.spawnPos)
+                    "next task implementation"
+                    if current_entity.alive and entity_next_state_and_action.takeAction == 1 :
+                        current_entity.COA.pop(0)
+                        self.entity_next_state_and_action_impleneter(entity_next_state_and_action, current_entity)
+                    # update the entity parameters that changed during this iteration
                     self.green_entity_list[i] = current_entity
                 "Red Entities Control"
                 for i in range(len(self.entity_list)):
@@ -252,7 +259,7 @@ class RFAScenarioManager:
                             #     print("entity location: " + str(entity.location))
                         "Generates next state and action for Squad commander"
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
-                                                                       self.start_scenario_time, self.AttackPos)
+                                                                       self.start_scenario_time, self.AttackPos,self.spawnPos)
 
                         "next task implementation"
                         if current_entity.alive and (((entity_next_state_and_action.takeAction == 1) and (current_entity.preGameBool==False)) or \
@@ -296,11 +303,19 @@ class RFAScenarioManager:
 
         # Move entity:
         elif entity_next_state_and_action.move_pos:
-            self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
-                                                   entity_next_state_and_action.position_location)
+
+            if current_entity.role=='co':
+                logging.debug("Squad started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
+                self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
+                                                       entity_next_state_and_action.position_location,
+                                                       4.5)
+            elif current_entity.role=='ci':
+                logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
+                self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
+                                                       entity_next_state_and_action.position_location,
+                                                       2)
             current_entity.state = entity_next_state_and_action.position
             current_entity.target_location = entity_next_state_and_action.position_location
-            logging.debug("Squad started to move to Attack position: " + str(current_entity.face))
         # Locate at position:
         elif entity_next_state_and_action.nextPosture == 'get_in_position':
             for j in range(len(self.entity_list)):

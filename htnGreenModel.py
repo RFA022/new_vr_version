@@ -10,11 +10,8 @@ import pandas as pd
 import logging
 from copy import deepcopy
 
-def green_choose_random_position_op(state,a):
-    positionIndexVec=[]
-    for i in range(len(state.positions)):
-        positionIndexVec.append(i)
-    state.nextPositionIndex=random.choice(positionIndexVec)
+def green_choose_random_position_op(state,nextPositionIndex):
+    state.nextPositionIndex=nextPositionIndex
     return state
 
 def green_move_to_position_op(state,nextPositionIndex):
@@ -43,7 +40,11 @@ def green_go_and_wait_at_position_m(state,a):
     #agent still did not reach the target
     if (0):
         return False
-    return [('green_choose_position',a)]
+    positionIndexVec = []
+    for i in range(len(state.positions)):
+        positionIndexVec.append(i)
+    nextPositionIndex = random.choice(positionIndexVec)
+    return [('green_choose_position',nextPositionIndex)]
 
 pyhop.declare_methods('green_be', green_go_and_wait_at_position_m,green_end_mission_m)
 pyhop.declare_original_methods('green_be', green_go_and_wait_at_position_m,green_end_mission_m)
@@ -76,9 +77,8 @@ pyhop.declare_original_methods('green_locate_and_wait_at_position', green_locate
 pyhop.update_method_list()
 #####----------------------------------------#####
 
-print('sssssss')
 
-def findPlan(loc):
+def findplan(loc):
     init_state = pyhop.State('init_state')
     # HTN
     init_state.loc=loc
@@ -101,34 +101,42 @@ def findPlan(loc):
     init_state.debug_task = 0
     init_state.debug_method = 0
     init_state.debug_ope = 0
-    print("init state is:")
-    pyhop.print_state(init_state)
-    plan = pyhop.shop_m(init_state, [('green_be', 'me')])
+
+    debug_level = 0
+    if debug_level >= 2:
+        print("init state is:")
+        pyhop.print_state(init_state)
+    print("Begin Planning Green:")
+    plan = pyhop.shop_m(init_state, [('green_be', 'me')],debug_level) #third parameter is debug mode
     print(plan)
-
-init_state = pyhop.State('init_state')
-# HTN
-init_state.loc=[]
-init_state.nextPositionIndex = []
-init_state.currentPositionIndex = []
-init_state.positions = []
-init_state.entity_state = 'at_position'
-init_state.waiting_time=[]
-# Update distances from positions
-init_state.positions = ext_funs.get_positions_fromCSV('Resources\RedSpawnPos.csv')
-htnConfig = pd.read_csv('Resources\greenHtnConfig.csv',
-                                   header=[0],
-                                   index_col=[0])
-# updateSpecificConfigs
-init_state.config = {}
-init_state.config['waiting_time_mean'] = float(htnConfig.at['waiting_time_mean', 'value'])
-init_state.config['waiting_time_std'] = float(htnConfig.at['waiting_time_std', 'value'])
+    return(plan)
 
 
-init_state.debug_task = 0
-init_state.debug_method = 0
-init_state.debug_ope = 0
-print("init state is:")
-pyhop.print_state(init_state)
-plan = pyhop.shop_m(init_state, [('green_be', 'me')])
-print(plan)
+# init_state = pyhop.State('init_state')
+# # HTN
+# init_state.loc=[]
+# init_state.nextPositionIndex = []
+# init_state.currentPositionIndex = []
+# init_state.positions = []
+# init_state.entity_state = 'at_position'
+# init_state.waiting_time=[]
+# # Update distances from positions
+# init_state.positions = ext_funs.get_positions_fromCSV('Resources\RedSpawnPos.csv')
+# htnConfig = pd.read_csv('Resources\greenHtnConfig.csv',
+#                                    header=[0],
+#                                    index_col=[0])
+# # updateSpecificConfigs
+# init_state.config = {}
+# init_state.config['waiting_time_mean'] = float(htnConfig.at['waiting_time_mean', 'value'])
+# init_state.config['waiting_time_std'] = float(htnConfig.at['waiting_time_std', 'value'])
+#
+#
+# init_state.debug_task = 0
+# init_state.debug_method = 0
+# init_state.debug_ope = 0
+# debug_level=0
+# if debug_level>=2:
+#     print("init state is:")
+#     pyhop.print_state(init_state)
+# plan = pyhop.shop_m(init_state, [('green_be', 'me')],debug_level)
+# print(plan)
