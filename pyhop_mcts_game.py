@@ -136,6 +136,9 @@ def print_state(state, indent=4):
 
 def print_state_simple(state, indent=4):
     """Print each variable in state, indented by indent spaces."""
+    # green htn :
+    #htnConfig
+    #config
     if state != False:
         for (name, val) in vars(state).items():
             if name != '__name__' and \
@@ -148,7 +151,9 @@ def print_state_simple(state, indent=4):
                     name!='distance_from_positions' and \
                     name !='BluePolygonCentroid' and \
                     name !='distance_positions_from_BluePolygonCentroid' and \
-                    name!='AccuracyConfiguration':
+                    name != 'htnConfig' and \
+                    name != 'config' and \
+                    name !='AccuracyConfiguration':
 
                 for x in range(indent): sys.stdout.write(' ')
                 sys.stdout.write(state.__name__ + '.' + name)
@@ -322,7 +327,7 @@ def seek_mcts_plan(state, tasks, plan, depth):
             operator = operators[task1[0]]
             newstate = operator(copy.deepcopy(state), *task1[1:])
             ###print('depth {} new state:'.format(depth))
-            #print_state_simple(newstate)
+            print_state(newstate)
             if newstate:
                 solution = seek_mcts_plan(newstate, tasks[1:], plan + [task1], depth + 1)
                 if solution != False:

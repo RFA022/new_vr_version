@@ -10,6 +10,7 @@ from SpawnManager_Nadav import *
 import time
 import copy
 import htnModel
+import htnGreenModel
 import pandas as pd
 import pymap3d as pm
 from ext_funs import *
@@ -119,7 +120,22 @@ class RFAScenarioManager:
                 # print("---Debug Seasson---")  #
                 # print(fire_list)
                 # print(task_status_list)
-                print(self.green_entity_list[0].current_location)
+                "Green Entities Control"
+                for i in range(len(self.green_entity_list)):
+                    current_entity = self.green_entity_list[i]
+                    if current_entity.alive:
+                        "external function that handles all functionalities that relates to move and  fire"
+                        self.handle_move_and_fire(current_entity,task_status_list,fire_list)
+                    if current_entity.state == PositionType.MOVE_TO_OP:
+                        print("moving")
+                    if current_entity.COA == []:
+                        current_entity.planBool = 1
+                    if current_entity.planBool == 1 and current_entity.COA == []:
+                        current_entity.planBool = 0
+                        current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
+                        logging.debug("New Plan has been given to Squad")
+                    self.green_entity_list[i] = current_entity
+                "Red Entities Control"
                 for i in range(len(self.entity_list)):
                     current_entity = self.entity_list[i]
                     #Debug
@@ -207,7 +223,7 @@ class RFAScenarioManager:
                         "Plan new plan if COA is empty and planbool =1"
                         if current_entity.planBool==1 and current_entity.COA==[]:
                             current_entity.planBool=0
-                            self.entity_list[i].COA=htnModel.findplan(self.basicRanges,
+                            current_entity.COA=htnModel.findplan(self.basicRanges,
                                                                       self.squadPosture,
                                                                       self.enemyDimensions,
                                                                       current_entity.current_location,
