@@ -248,12 +248,14 @@ def print_methods(mlist=methods):
 
 ######################### Custom helper functions ################################
 def update_method_list():
+    print('sss')
     for key in methods:
+        print(key)
         methods[key]=get_relevant_methods(key)
     #print('Methods list has been updated')
 
 def get_relevant_methods(task):
-    relevant = deepcopy(methods[task])
+    relevant = deepcopy(original_methods[task])
     methods_index_to_add=[]
     params_to_add=[]
     for i in range(len(relevant)):
@@ -261,13 +263,21 @@ def get_relevant_methods(task):
         method_name=method.__name__
         params=mc.get_method_params(method_name)
         if params!= None:
+            print(params)
             methods_index_to_add.append(i)
             params_to_add.append(params)
+        else:
+            params_to_add.append("NONE")
     for i in (methods_index_to_add):
         current_method=relevant[i]
-        relevant.pop(i)
         for k in range(len(params_to_add[i])):
             relevant.append([current_method,(params_to_add[i][k])])
+    for k in (methods_index_to_add):
+        reduce_couter=0
+        for i, index in enumerate(methods_index_to_add):
+            if methods_index_to_add[k]> methods_index_to_add[i]:
+                reduce_couter+=1
+        relevant.pop(k-reduce_couter)
     return relevant
 
 ######################### MCTS HTN PAPER ################################

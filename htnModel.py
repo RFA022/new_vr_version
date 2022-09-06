@@ -170,6 +170,7 @@ pyhop.declare_original_methods('shoot',shoot_m)
 pyhop.update_method_list()
 #####----------------------------------------#####
 
+print('s')
 def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration):
     init_state = pyhop.State('init_state')
     #VRF configs:

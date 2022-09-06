@@ -76,6 +76,7 @@ pyhop.declare_original_methods('green_locate_and_wait_at_position', green_locate
 pyhop.update_method_list()
 #####----------------------------------------#####
 
+print('sssssss')
 
 def findPlan(loc):
     init_state = pyhop.State('init_state')
@@ -105,29 +106,29 @@ def findPlan(loc):
     plan = pyhop.shop_m(init_state, [('green_be', 'me')])
     print(plan)
 
-# init_state = pyhop.State('init_state')
-# # HTN
-# init_state.loc=[]
-# init_state.nextPositionIndex = []
-# init_state.currentPositionIndex = []
-# init_state.positions = []
-# init_state.entity_state = 'at_position'
-# init_state.waiting_time=[]
-# # Update distances from positions
-# init_state.positions = ext_funs.get_positions_fromCSV('Resources\RedSpawnPos.csv')
-# htnConfig = pd.read_csv('Resources\greenHtnConfig.csv',
-#                                    header=[0],
-#                                    index_col=[0])
-# # updateSpecificConfigs
-# init_state.config = {}
-# init_state.config['waiting_time_mean'] = float(htnConfig.at['waiting_time_mean', 'value'])
-# init_state.config['waiting_time_std'] = float(htnConfig.at['waiting_time_std', 'value'])
-#
-#
-# init_state.debug_task = 0
-# init_state.debug_method = 0
-# init_state.debug_ope = 0
-# print("init state is:")
-# pyhop.print_state(init_state)
-# plan = pyhop.shop_m(init_state, [('green_be', 'me')])
-# print(plan)
+init_state = pyhop.State('init_state')
+# HTN
+init_state.loc=[]
+init_state.nextPositionIndex = []
+init_state.currentPositionIndex = []
+init_state.positions = []
+init_state.entity_state = 'at_position'
+init_state.waiting_time=[]
+# Update distances from positions
+init_state.positions = ext_funs.get_positions_fromCSV('Resources\RedSpawnPos.csv')
+htnConfig = pd.read_csv('Resources\greenHtnConfig.csv',
+                                   header=[0],
+                                   index_col=[0])
+# updateSpecificConfigs
+init_state.config = {}
+init_state.config['waiting_time_mean'] = float(htnConfig.at['waiting_time_mean', 'value'])
+init_state.config['waiting_time_std'] = float(htnConfig.at['waiting_time_std', 'value'])
+
+
+init_state.debug_task = 0
+init_state.debug_method = 0
+init_state.debug_ope = 0
+print("init state is:")
+pyhop.print_state(init_state)
+plan = pyhop.shop_m(init_state, [('green_be', 'me')])
+print(plan)
