@@ -57,6 +57,7 @@ def calculate_blue_distance(loc,enemy):
 def simple_getLocation(state,index):
     return [state.positions[index][0],state.positions[index][1]]
 
+#HTN function only
 def getLocation(state,index):
     #float casting of location because altitude somehow automated casted to be str
     loc={'latitude':(state.positions[index]['latitude']),

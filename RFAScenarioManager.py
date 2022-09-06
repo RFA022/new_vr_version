@@ -29,8 +29,8 @@ class RFAScenarioManager:
             logging.error("None valid mode")
             raise Exception("None valid mode")
 
-        self.spawnPos =  ext_funs.get_positions_fromCSV('RedSpawnPos.csv')
-        self.AttackPos = ext_funs.get_positions_fromCSV('RedAttackPos.csv')
+        self.spawnPos =  ext_funs.get_positions_fromCSV('Resources\RedSpawnPos.csv')
+        self.AttackPos = ext_funs.get_positions_fromCSV('Resources\RedAttackPos.csv')
         self.Polygons = self.communicator.getAreasQuery()
 
         BluePolygon=next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')
@@ -48,7 +48,7 @@ class RFAScenarioManager:
         self.blue_entity_list_HTN=[]
 
         #General config data:
-        self.configuration = pd.read_csv('Configuration.csv',
+        self.configuration = pd.read_csv('Resources\Configuration.csv',
                                          header=[0],
                                          index_col=[0])
         self.squadPosture = {}
@@ -75,7 +75,7 @@ class RFAScenarioManager:
         self.squadsData = pd.read_csv(self.squadsDatalocation,
                             header=[0],
                             index_col=[6]) #Squad name column
-        self.AccuracyConfiguration = pd.read_csv('AccuracyConfiguration.csv',
+        self.AccuracyConfiguration = pd.read_csv('Resources/AccuracyConfiguration.csv',
                                                  header=[0],
                                                  index_col=[0])  # WeaponName column
 
@@ -92,6 +92,8 @@ class RFAScenarioManager:
                 "Entites list update"
                 #update Red list from simulator and from last iteration
                 self.entity_list=self.CreateAndUpdateEntityList(self.entity_list)
+                #update Green list from simulator and from last iteration - same format as blues
+                self.green_entity_list=self.CreateAndUpdateEntityList(self.green_entity_list)
                 #update Blue list from simulator and from last iteration (info about last seen location)
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
                 self.blue_entity_list_HTN=ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
@@ -117,7 +119,7 @@ class RFAScenarioManager:
                 # print("---Debug Seasson---")  #
                 # print(fire_list)
                 # print(task_status_list)
-
+                print(self.green_entity_list[0].current_location)
                 for i in range(len(self.entity_list)):
                     current_entity = self.entity_list[i]
                     #Debug
@@ -214,7 +216,7 @@ class RFAScenarioManager:
                                                                       self.AccuracyConfiguration)
                             logging.debug("New Plan has been given to Squad")
                             # print('s')
-                            # r=self.communicator.navigationPathPlan(current_entity.current_location, self.AttackPos[12], 100, self.AttackPos[5])
+                            # r=self.communicator.navigationPathPlan(self.spawnPos[16], self.spawnPos[17], 100, self.spawnPos[16])
                             # if r!= []:
                             #     print(r)
                             "Update HTN target"
@@ -229,9 +231,9 @@ class RFAScenarioManager:
                             # print(str(current_entity.HTNtarget))
                             "Update HTN frozen world view"
                             current_entity.HTNbluesFrozen=self.blue_entity_list_HTN
-                            for entity in current_entity.HTNbluesFrozen:
-                                print("entity name: " + str(entity.unit_name))
-                                print("entity location: " + str(entity.location))
+                            # for entity in current_entity.HTNbluesFrozen:
+                            #     print("entity name: " + str(entity.unit_name))
+                            #     print("entity location: " + str(entity.location))
                         "Generates next state and action for Squad commander"
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos)
@@ -428,8 +430,8 @@ class RFAScenarioManager:
                     # print(str(target.location))
             current_entity.aim_list=[]
         elif entity_next_state_and_action.null == True:
-            for enemy in self.blue_entity_list_HTN:
-                if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges,self.config)):
+            for enemy in self.blue_entity_list:
+                if enemy.observed==True:
                     current_entity.COA.append(['aim_op','me'])
                     current_entity.COA.append(['shoot_op', str(enemy.unit_name)])
                     break

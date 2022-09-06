@@ -170,7 +170,6 @@ pyhop.declare_original_methods('shoot',shoot_m)
 pyhop.update_method_list()
 #####----------------------------------------#####
 
-
 def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration):
     init_state = pyhop.State('init_state')
     #VRF configs:
@@ -194,7 +193,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.negativeHitsProbability=[]
 
     # Update distances from positions
-    init_state.positions = ext_funs.get_positions_fromCSV('RedAttackPos.csv')
+    init_state.positions = ext_funs.get_positions_fromCSV('Resources\RedAttackPos.csv')
     init_state.loc = loc
     init_state.distance_from_positions = ext_funs.update_distance_from_positions(init_state.loc,init_state.positions)
     init_state.assesedBlues = blueList
@@ -208,10 +207,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.BluePolygonCentroid=BluePolygonCentroid
     #stays constant throught the whole scenario:
     init_state.distance_positions_from_BluePolygonCentroid=ext_funs.update_distance_from_positions(init_state.BluePolygonCentroid,init_state.positions)
-    print("Begin Planning:")
-    #print('initial state is:')
-
-    init_state.htnConfig = pd.read_csv('htnConfig.csv',
+    init_state.htnConfig = pd.read_csv('Resources\htnConfig.csv',
                                        header=[0],
                                        index_col=[0])
     # updateSpecificConfigs
@@ -233,7 +229,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.AccuracyConfiguration=AccuracyConfiguration
 
     #pyhop.print_state_simple(init_state)
-
+    print("Begin Planning:")
     plan = pyhop.shop_m(init_state, [('attack', 'me')])
     print(plan)
     return plan

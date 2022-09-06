@@ -44,10 +44,10 @@ class Communicator(CommunicatorInterface):
         super().__init__()
         try:
             self.RFSM_connector = rti.Connector(config_name="RFSM_Participant_Library::RFSM_Participant",
-                                                url=file_path + "/RFSM_DDS_Participant_Config.xml")
+                                                url=file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
         except Exception as e:
             logging.error(e)
-            logging.error("connector fail !, url to file: " + file_path + "/RFSM_DDS_Participant_Config.xml")
+            logging.error("connector fail !, url to file: " + file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
 
         self.publisher = "Publisher::"
         self.subscriber = "Subscriber::"
@@ -628,11 +628,11 @@ class Communicator(CommunicatorInterface):
             print(destination)
             current_DW.instance.set_dictionary(
                 {
-                    "sourceID": "LMV",
+                    "sourceID": "RFM",
                     "recipientID": "test",
                     "requestID": "1",
                     "avoidanceRadius": avoidanceRadius,
-                    "vehicleID": "IVECO_LMV",
+                    "vehicleID": "LAV3",
 
                     "origin3DPoint": {
                         "latitude": origin['latitude'],
