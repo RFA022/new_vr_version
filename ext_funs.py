@@ -7,7 +7,8 @@ from CommunicatorInterface import EntityTypeEnum
 from Communicator import *
 from EntityCurrentState import  *
 import utm
-
+import shapely
+from shapely.geometry import Point
 def comm():
     if 'communicator' not in globals():
         communicator=Communicator()
@@ -124,6 +125,12 @@ def getBluesDataFromVRFtoHTN(blueList):
         Newentity.is_alive = entity.is_alive
         Newentity.val=val
         entities.append(Newentity)
+        if Newentity.location['latitude'] == None and \
+           Newentity.location['longitude'] == None and \
+           Newentity.location['altitude'] == None:
+                Newentity.locationType=HTNbluLocationType.fake
+        else:
+                Newentity.locationType = HTNbluLocationType.real
     return entities
 
 #los Operator for 1 entity and 1 location to be used from HTN and ScenarioManager as well
@@ -143,8 +150,30 @@ def getNumberofAliveEnemies(blues):
         if blue.is_alive==True:
             aliveBluesNumber+=1
     return aliveBluesNumber
-
+def generatePointInPolygon(polygon):
+    communicator = CommunicatorSingleton().obj
+    polygonUTM = []
+    polygonUTM_neto = []
+    for vertex in polygon:
+        polygonUTM.append(utm.from_latlon(vertex['latitude'], vertex['longitude']))
+    for i,vertex in enumerate(polygonUTM):
+        polygonUTM_neto.append([vertex[0],vertex[1]])
+    shapelyPolygonUTM=shapely.geometry.Polygon(polygonUTM_neto)
+    minx, miny, maxx, maxy = shapelyPolygonUTM.bounds
+    successBool=0
+    while successBool==0:
+        pnt = Point(np.random.uniform(minx, maxx), np.random.uniform(miny, maxy))
+        if shapelyPolygonUTM.contains(pnt):
+            successBool=1
+            pnt=utm.to_latlon(pnt.x, pnt.y, polygonUTM[0][2],str(polygonUTM[0][3]))
+            pnt = {
+                'latitude': pnt[0],
+                'longitude': pnt[1],
+                'altitude': communicator.getHeightAboveSeaLevel(pnt[0],pnt[1])
+            }
+    return pnt
 def getPolygonCentroid(polygon) -> float:
+        communicator = CommunicatorSingleton().obj
         list=[]
         for vertex in  polygon:
             list.append (utm.from_latlon(vertex['latitude'],vertex['longitude']))
@@ -157,14 +186,11 @@ def getPolygonCentroid(polygon) -> float:
             Cx+= (list[k][0]+list[k+1][0])*(list[k][0]*list[k+1][1] - list[k+1][0]*list[k][1])
             Cy+= (list[k][1]+list[k+1][1])*(list[k][0]*list[k+1][1] - list[k+1][0]*list[k][1])
             A+=  (list[k][0]*list[k+1][1] -list[k+1][0]*list[k][1])
-
-        for vertex in polygon:
-            alt+=vertex['altitude']/len(polygon)
         A=A/2
         Cx=Cx/(6*A)
         Cy=Cy/(6*A)
         centroidLatLong=utm.to_latlon(Cx, Cy, list[0][2],str(list[0][3]))
-
+        alt= communicator.getHeightAboveSeaLevel(centroidLatLong[0],centroidLatLong[1])
         centroid={
            'latitude': centroidLatLong[0],
             'longitude': centroidLatLong[1],

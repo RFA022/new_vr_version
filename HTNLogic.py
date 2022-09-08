@@ -23,7 +23,10 @@ class HTNLogic:
 
         #case 3:
         if entity_current_state.COA != []:
-            if entity_current_state.state is PositionType.AT_OP:
+            if entity_current_state.state  is PositionType.AT_OP and \
+            entity_current_state.fireState is isFire.no and \
+            entity_current_state.waitState is isWait.no and \
+            entity_current_state.scanState is isScan.no:
                 "---------Red HTN---------"
                 if entity_current_state.COA[0][0]=='choose_position_op':
                     entity_next_state_and_action.nextPos=entity_current_state.COA[0][1]
@@ -82,7 +85,7 @@ class HTNLogic:
                         ": Next Primitive Action-move to Spawn position number " + str(entity_current_state.face))
                 if entity_current_state.COA[0][0] == 'green_locate_and_wait_at_position_op':
                     entity_next_state_and_action.wait_at_position = True
-                    entity_next_state_and_action.waiting_time = entity_current_state.COA[0][2]
+                    entity_next_state_and_action.waitTime = entity_current_state.COA[0][2]
                     logging.debug(str(entity_current_state.unit_name) +
                                   ": Next Primitive Action: wait at position for " + str( entity_current_state.COA[0][2]) +" seconds")
                 entity_next_state_and_action.takeAction=1

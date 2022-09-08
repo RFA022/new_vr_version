@@ -24,6 +24,7 @@ class Communicator(CommunicatorInterface):
     ScenarioStatus_DR = "ScenarioStatus_DR"
     TaskStatus_DR = "TaskStatus_DR"
     LosToPolygonResponse_DR = "LosToPolygonResponse_DR"
+    HeightAboveTerrainResponse_DR = "HeightAboveTerrainResponse_DR"
     LosQueryRequest_DW = "LosQueryRequest_DW"
     GeoQueryRequest_DW = "GeoQueryRequest_DW"
     InitialEntitySnapshot_DW = "InitialEntitySnapshot_DW"
@@ -39,7 +40,7 @@ class Communicator(CommunicatorInterface):
     LosToPolygonRequest_DW="LosToPolygonRequest_DW"
     CreateTacticalGraphicCommand_DW="CreateTacticalGraphicCommand_DW"
     NavigationPathPlanningRequest_DW = "NavigationPathPlanningRequest_DW"
-
+    HeightAboveTerrainRequest_DW="HeightAboveTerrainRequest_DW"
     def __init__(self):
         super().__init__()
         try:
@@ -671,6 +672,50 @@ class Communicator(CommunicatorInterface):
             except:
                 logging.error("reader " + self.NavigationPathPlanningResponse_DR + " dont exist")
                 return responseList
+
+
+
+    def getHeightAboveSeaLevel(self,lat,long)-> float:
+        response = 0
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.HeightAboveTerrainRequest_DW)
+            except:
+                logging.error("writer " + self.HeightAboveTerrainRequest_DW + " dont exist")
+
+            current_DW.instance.set_dictionary({
+                    "HeightRequestedVector": [
+                        {
+                            "latitude": lat,
+                            "longitude": long,
+                            "altitude": 0,
+                        }
+                    ],
+                },)
+            current_DW.write()
+        with self.lock_read_write:
+            try:
+                current_DR = self.RFSM_connector.getInput(self.subscriber + self.HeightAboveTerrainResponse_DR)
+                # wait for messages for 2 sec
+                try:
+                    current_DR.wait(20000)
+                except:
+                    logging.debug("wait to HeightAboveTerrainResponse_DR timeout")
+                    return response
+                current_DR.take()
+                for sample in current_DR.samples:
+                    if sample.valid_data:
+                        # first - print the sample.
+                        request=sample.get_dictionary()
+                        lat=-request['HeightRequestedVector'][0][0]
+                        response=(lat)
+                    else:
+                        print("Received non-valid message (Dispose)")
+                return response
+            except:
+                logging.error("reader " + self.GetAreasListResponse_DR + " dont exist")
+                return responseList
+
 
 class CommunicatorSingleton(metaclass=Singleton):
     def __init__(self):

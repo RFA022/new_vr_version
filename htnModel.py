@@ -170,7 +170,7 @@ pyhop.declare_original_methods('shoot',shoot_m)
 pyhop.update_method_list()
 #####----------------------------------------#####
 
-def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration):
+def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration,bluePolygon):
     init_state = pyhop.State('init_state')
     #VRF configs:
     init_state.squadPosture=squadPosture
@@ -191,20 +191,28 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.aim_list_names=[]
     init_state.positiveHits=[]
     init_state.negativeHitsProbability=[]
+    # Scenario Data:
+    init_state.BluePolygonCentroid = BluePolygonCentroid
+    init_state.bluePolygon=bluePolygon
 
     # Update distances from positions
     init_state.positions = ext_funs.get_positions_fromCSV('Resources\RedAttackPos.csv')
     init_state.loc = loc
     init_state.distance_from_positions = ext_funs.update_distance_from_positions(init_state.loc,init_state.positions)
+    "edit blueList - append fake location to unknown blues"
+    for blue in blueList:
+        if blue.locationType==HTNbluLocationType.fake:
+            blue.location=ext_funs.generatePointInPolygon(bluePolygon)
     init_state.assesedBlues = blueList
     init_state.distance_from_assesedBlues=ext_funs.update_distance_from_blues(init_state.loc,init_state.assesedBlues)
     init_state.enemy_number = ext_funs.getNumberofAliveEnemies(init_state.assesedBlues)
+
+    "edit exposure list"
     exposure_list=[]
     for position in init_state.positions:
         exposure_list.append(float(position['exposure']))
     init_state.position_exposure_level=exposure_list
-    #Scenario Data:
-    init_state.BluePolygonCentroid=BluePolygonCentroid
+
     #stays constant throught the whole scenario:
     init_state.distance_positions_from_BluePolygonCentroid=ext_funs.update_distance_from_positions(init_state.BluePolygonCentroid,init_state.positions)
     init_state.htnConfig = pd.read_csv('Resources\htnConfig.csv',
@@ -234,7 +242,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
         print("init state is:")
         pyhop.print_state(init_state)
     print("Begin Planning Red:")
-    plan = pyhop.shop_m(init_state, [('attack', 'me')],1) #third parameter is debug mode
+    plan = pyhop.shop_m(init_state, [('attack', 'me')],debug_level) #third parameter is debug mode
     print(plan)
     return plan
 

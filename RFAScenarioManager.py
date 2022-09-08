@@ -18,6 +18,8 @@ import ext_funs
 from Communicator import CommunicatorSingleton
 import utm
 import geopandas
+import GUI
+from threading import *
 
 class RFAScenarioManager:
     def __init__(self):
@@ -79,11 +81,11 @@ class RFAScenarioManager:
         self.AccuracyConfiguration = pd.read_csv('Resources/AccuracyConfiguration.csv',
                                                  header=[0],
                                                  index_col=[0])  # WeaponName column
-
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
 
+        self.gui_thread = Thread(target=GUI.Gui)
+        self.gui_thread.start()
     def Run(self):
-
         while True:
             if self.communicator.GetScenarioStatus() == ScenarioStatusEnum.RUNNING:
                 time.sleep(0.5) #sleep time between every iteration - CPU time
@@ -120,26 +122,29 @@ class RFAScenarioManager:
                 # print("---Debug Seasson---")  #
                 # print(fire_list)
                 # print(task_status_list)
+                "update gui"
+                #self.gui.updateGUI(self.entity_list[0].current_location['latitude'])
+
                 "Green Entities Control"
                 for i in range(len(self.green_entity_list)):
                     current_entity = self.green_entity_list[i]
                     if current_entity.alive:
                         "external function that handles all functionalities that relates to move and  fire"
-                        self.handle_move_and_fire(current_entity,task_status_list,fire_list)
-                    if current_entity.state == PositionType.MOVE_TO_OP:
-                        pass
-                    if current_entity.COA == []:
-                        current_entity.planBool = 1
-                    if current_entity.planBool == 1 and current_entity.COA == []:
-                        current_entity.planBool = 0
-                        current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
-                        logging.debug("New Plan has been given to " + str(current_entity.unit_name))
-                    entity_next_state_and_action = HTNLogic().Step(current_entity,
-                                                                   self.start_scenario_time, self.AttackPos, self.spawnPos)
-                    "next task implementation"
-                    if current_entity.alive and entity_next_state_and_action.takeAction == 1 :
-                        current_entity.COA.pop(0)
-                        self.entity_next_state_and_action_impleneter(entity_next_state_and_action, current_entity)
+                        self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
+                        if current_entity.state == PositionType.MOVE_TO_OP:
+                            pass
+                        if current_entity.COA == []:
+                            current_entity.planBool = 1
+                        if current_entity.planBool == 1 and current_entity.COA == []:
+                            current_entity.planBool = 0
+                            current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
+                            logging.debug("New Plan has been given to " + str(current_entity.unit_name))
+                        entity_next_state_and_action = HTNLogic().Step(current_entity,
+                                                                       self.start_scenario_time, self.AttackPos, self.spawnPos)
+                        "next task implementation"
+                        if entity_next_state_and_action.takeAction == 1 :
+                            current_entity.COA.pop(0)
+                            self.entity_next_state_and_action_impleneter(entity_next_state_and_action, current_entity)
                     # update the entity parameters that changed during this iteration
                     self.green_entity_list[i] = current_entity
                 "Red Entities Control"
@@ -153,7 +158,7 @@ class RFAScenarioManager:
                             current_entity.preGameBool=False
                     if current_entity.alive:
                         "external function that handles all functionalities that relates to move and  fire"
-                        self.handle_move_and_fire(current_entity,task_status_list,fire_list)
+                        self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                         #print("current entity:" + str(current_entity.unit_name) + "status: " + str(current_entity.movement_task_completed) + "success" + str(current_entity.movement_task_success) )
                         # # Debug:
                         # print("---Debug Seasson---")#
@@ -236,7 +241,8 @@ class RFAScenarioManager:
                                                                       current_entity.current_location,
                                                                       self.blue_entity_list_HTN,
                                                                       self.BluePolygonCentroid,
-                                                                      self.AccuracyConfiguration)
+                                                                      self.AccuracyConfiguration,
+                                                                      next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')['polygon'])
                             logging.debug("New Plan has been given to Squad")
                             # print('s')
                             # r=self.communicator.navigationPathPlan(self.spawnPos[16], self.spawnPos[17], 100, self.spawnPos[16])
@@ -303,7 +309,6 @@ class RFAScenarioManager:
 
         # Move entity:
         elif entity_next_state_and_action.move_pos:
-
             if current_entity.role=='co':
                 logging.debug("Squad started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
@@ -313,7 +318,7 @@ class RFAScenarioManager:
                 logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
                                                        entity_next_state_and_action.position_location,
-                                                       2)
+                                                       3)
             current_entity.state = entity_next_state_and_action.position
             current_entity.target_location = entity_next_state_and_action.position_location
         # Locate at position:
@@ -328,53 +333,9 @@ class RFAScenarioManager:
         elif entity_next_state_and_action.scan_for_enemy == 1:
             # Basic functionality - next step is to use LOS between point and entity:
             logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face))
-            detectionCount = 0
+            current_entity.scanState=isScan.yes
+            current_entity.scanDetectionList=[]
             current_entity.taskTime=time.time()
-            scanned_list=[]
-            breakBool=0
-            while True:
-                for enemy in (self.blue_entity_list):
-                    losRespose = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, enemy,
-                                                      current_entity.current_location)
-                    scan_range=self.basicRanges['squad_view_range']
-                    if losRespose['distance'][0][0] < scan_range:
-                        if losRespose['los'][0][0] == True:
-                            enemy.observed = True
-                            enemy.last_seen_worldLocation = enemy.location
-                            scanned_list.append(enemy)
-                            detectionCount += 1
-                            "case of emergency drone detection:"
-                            if enemy.is_alive==True:
-                                if (enemy.classification == EntityTypeEnum.OHEZ) or \
-                                        (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
-                                        (enemy.classification == EntityTypeEnum.UNKNOWN):
-                                    if losRespose['distance'][0][0] < self.basicRanges['ak47_range']:
-                                        logging.debug( "Drone type enemy has been detected in emergency situation")
-                                        breakBool=1
-                                "case of fire opportunity lav detection:"
-                                if enemy.classification == EntityTypeEnum.EITAN:
-                                    if losRespose['distance'][0][0] < self.basicRanges['javelin_range']:
-                                        logging.debug( "Good shooting Opporunity at Armored vehicle")
-                                        breakBool = 1
-                # updating HTN list which is used when shooting:
-                self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
-                currTime = time.time()
-                scan_time=self.config['scan_time']
-                if currTime - current_entity.taskTime > scan_time or breakBool==1:
-                    logging.debug("Scan Timeout")
-                    if detectionCount == 0:
-                        logging.debug("No enemy has been detected within " + str(scan_time) + " seconds of scanning")
-                    if detectionCount > 0:
-                        reduced_scanned_list=[]
-                        [reduced_scanned_list.append(enemy) for enemy in scanned_list if enemy not in reduced_scanned_list]
-                        print_list=[]
-                        for entity in reduced_scanned_list:
-                            if entity.is_alive==True:
-                                print_list.append("Alive enemy: " + str(entity.unit_name))
-                            elif entity.is_alive==False:
-                                print_list.append("Destroyed enemy: " + str(entity.unit_name))
-                        logging.debug("Entities: " + str(print_list) +" has been discovered during scanning proccess with range of " + str(scan_range))
-                    break
         # Aim
         # Atribute distFromSquad is local atribute for blue enemy only for Aim operator
         elif entity_next_state_and_action.aim == True:
@@ -466,10 +427,14 @@ class RFAScenarioManager:
                     current_entity.COA.append(['aim_op','me'])
                     current_entity.COA.append(['shoot_op', str(enemy.unit_name)])
                     break
-
-
+            "Green unique operations"
+        elif entity_next_state_and_action.wait_at_position==True:
+            logging.debug(str(current_entity.unit_name) + ": is waiting at Spwan position: " + str(current_entity.face))
+            current_entity.waitState=isWait.yes
+            current_entity.waitTime=entity_next_state_and_action.waitTime
+            current_entity.taskTime = time.time()
     #Function that handle termination of firing and moving tasks
-    def handle_move_and_fire(self,current_entity,task_status_list,fire_list):
+    def handle_move_fire_scan_wait(self,current_entity,task_status_list,fire_list):
         # check movement status if unit is moving
         if current_entity.state == PositionType.MOVE_TO_OP:
             # Check task status for movement tasks
@@ -547,6 +512,54 @@ class RFAScenarioManager:
                     current_entity.fire_task_success = False
                     # abort task: needed to be checked
                     #self.communicator.stopCommand(current_entity.unit_name)
+        if current_entity.scanState==isScan.yes:
+            breakBool=0
+            for enemy in (self.blue_entity_list):
+                losRespose = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, enemy,
+                                                  current_entity.current_location)
+                scan_range=self.basicRanges['squad_view_range']
+                if losRespose['distance'][0][0] < scan_range:
+                    if losRespose['los'][0][0] == True:
+                        enemy.observed = True
+                        enemy.last_seen_worldLocation = enemy.location
+                        current_entity.scanDetectionList.append(enemy)
+                        "case of emergency drone detection:"
+                        if enemy.is_alive==True:
+                            if (enemy.classification == EntityTypeEnum.OHEZ) or \
+                                    (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                                    (enemy.classification == EntityTypeEnum.UNKNOWN):
+                                if losRespose['distance'][0][0] < self.basicRanges['ak47_range']:
+                                    logging.debug( "Drone type enemy has been detected in emergency situation")
+                                    breakBool=1
+                            "case of fire opportunity lav detection:"
+                            if enemy.classification == EntityTypeEnum.EITAN:
+                                if losRespose['distance'][0][0] < self.basicRanges['javelin_range']:
+                                    logging.debug( "Good shooting Opporunity at Armored vehicle")
+                                    breakBool = 1
+            # updating HTN list which is used when shooting:
+            self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+            currTime = time.time()
+            if currTime - current_entity.taskTime > self.config['scan_time'] or breakBool==1:
+                logging.debug(str(current_entity.squad) +": Scan Timeout")
+                if len(current_entity.scanDetectionList) == 0:
+                    logging.debug("No enemy has been detected within " + str(self.config['scan_time']) + " seconds of scanning")
+                else:
+                    reduced_scanned_names_list=[]
+                    [reduced_scanned_names_list.append([enemy.unit_name, enemy.is_alive]) for enemy in current_entity.scanDetectionList if [enemy.unit_name, enemy.is_alive] not in reduced_scanned_names_list]
+                    print_list=[]
+                    for object in reduced_scanned_names_list:
+                        if object[1] == True:
+                            print_list.append(str(object[0]) + str("-Alive entity" ))
+                        else:
+                            print_list.append(str(object[0]) + str("-Destroyed entity"))
+                    logging.debug("Entities: " + str(print_list) +" has been discovered during scanning proccess with range of " + str(scan_range))
+                current_entity.scanState=isScan.no
+        if current_entity.waitState == isWait.yes:
+            currTime = time.time()
+            if currTime - current_entity.taskTime > current_entity.waitTime:
+                logging.debug(str(current_entity.unit_name) + ": Wait time out")
+                current_entity.waitState=isWait.no
+                current_entity.waitTime=None
 
     #Creates Blue list
     # Uses EntityInfo class to describe an entity
@@ -607,6 +620,11 @@ class RFAScenarioManager:
             current_entity.planBool         = entity_previous_list[k].planBool
             current_entity.state            = entity_previous_list[k].state
             current_entity.fireState        = entity_previous_list[k].fireState
+            current_entity.scanState        = entity_previous_list[k].scanState
+            current_entity.scanDetectionList        = entity_previous_list[k].scanDetectionList
+            current_entity.waitState        = entity_previous_list[k].waitState
+            current_entity.waitTime        = entity_previous_list[k].waitTime
+
             current_entity.aim_list         = entity_previous_list[k].aim_list
             current_entity.preGameBool      = entity_previous_list[k].preGameBool
             current_entity.squad            = entity_previous_list[k].squad

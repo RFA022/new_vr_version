@@ -9,6 +9,18 @@ class isFire(Enum):
     yes = 1,
     no = 0
 
+class isScan(Enum):
+    yes = 1,
+    no = 0
+
+class isWait(Enum):
+    yes = 1,
+    no = 0
+
+class HTNbluLocationType(Enum):
+    real=1
+    fake=0
+
 class EntityCurrentState: #red entities
 
     def __init__(self, entity_id: str):
@@ -36,6 +48,10 @@ class EntityCurrentState: #red entities
         self.fire_task_completed = 0
         self.fire_task_success = False
 
+        self.scanState = isScan.no
+        self.scanDetectionList=[]
+        self.waitState = isWait.no
+        self.waitTime  = None # In the use of green entities
 
         self.COA=[]
         self.face=None
@@ -58,6 +74,7 @@ class HTNentity:
             "longitude": None,
             "altitude": None
         }
+        self.locationType=None
         self.observed=False
         self.is_alive = None
         self.val=None
