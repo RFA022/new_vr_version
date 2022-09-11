@@ -618,7 +618,7 @@ class Communicator(CommunicatorInterface):
             current_DW.write()
             # looks for "ak" and if it not find its fire with default weapon
 
-    def navigationPathPlan(self,origin,destination,avoidanceRadius,locationToAvoid):
+    def navigationPathPlan(self,origin,destination,locationToAvoid,avoidanceRadius,name,maximumNumberOfRoutes):
         responseList = []
         with self.lock_read_write:
             try:
@@ -627,26 +627,51 @@ class Communicator(CommunicatorInterface):
                 logging.error("writer " + self.NavigationPathPlanningRequest_DW + " dont exist")
             print(origin)
             print(destination)
-            current_DW.instance.set_dictionary(
-                {
-                    "sourceID": "RFM",
-                    "recipientID": "test",
-                    "requestID": "1",
-                    "avoidanceRadius": avoidanceRadius,
-                    "vehicleID": "LAV3",
-
-                    "origin3DPoint": {
-                        "latitude": origin['latitude'],
-                        "longitude": origin['longitude'],
-                        "altitude": origin['altitude'],
-                    },
-                    "destination3DPoint": {
-                        "latitude": destination['latitude'],
-                        "longitude": destination['longitude'],
-                        "altitude": destination['altitude'],
-                    },
-                }
-            )
+            if locationToAvoid != None:
+                current_DW.instance.set_dictionary(
+                    {
+                        "maximumNumberOfRoutes": maximumNumberOfRoutes,
+                        "sourceID": "RFA",
+                        "recipientID": "test",
+                        "requestID": "1",
+                        "avoidanceRadius": avoidanceRadius,
+                        "vehicleID": name,
+                        "locationToAvoid":{
+                            "latitude": locationToAvoid['latitude'],
+                            "longitude": locationToAvoid['longitude'],
+                            "altitude": locationToAvoid['altitude'],
+                        },
+                        "origin3DPoint": {
+                            "latitude": origin['latitude'],
+                            "longitude": origin['longitude'],
+                            "altitude": origin['altitude'],
+                        },
+                        "destination3DPoint": {
+                            "latitude": destination['latitude'],
+                            "longitude": destination['longitude'],
+                            "altitude": destination['altitude'],
+                        },
+                    }
+                )
+            else:
+                current_DW.instance.set_dictionary(
+                    {
+                        "sourceID": "RFA",
+                        "recipientID": "test",
+                        "requestID": "1",
+                        "vehicleID": name,
+                        "origin3DPoint": {
+                            "latitude": origin['latitude'],
+                            "longitude": origin['longitude'],
+                            "altitude": origin['altitude'],
+                        },
+                        "destination3DPoint": {
+                            "latitude": destination['latitude'],
+                            "longitude": destination['longitude'],
+                            "altitude": destination['altitude'],
+                        },
+                    }
+                )
             current_DW.write()
             print("Sent pathPlan request")
 
@@ -714,7 +739,7 @@ class Communicator(CommunicatorInterface):
                 return response
             except:
                 logging.error("reader " + self.GetAreasListResponse_DR + " dont exist")
-                return responseList
+                return response
 
 
 class CommunicatorSingleton(metaclass=Singleton):
