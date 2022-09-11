@@ -39,13 +39,13 @@ class SpawnManager_Nadav:
         "Spawn and attack points"
         # ##_______________code that creates positions as way points___________________###
         #---# create positions #---##
-        # for i in range(len(self.AttackPos)):
-        #     pos = [self.AttackPos[i]['latitude'], self.AttackPos[i]['longitude'], self.AttackPos[i]['altitude']]
-        #     self.communicator.CreateEntitySimple('attack point' + str(i), pos, 3, '16:0:0:1:0:0:0')
-        #
-        # for i in range(len(self.spawnPos)):
-        #     pos=[self.spawnPos[i]['latitude'],self.spawnPos[i]['longitude'],self.spawnPos[i]['altitude']]
-        #     self.communicator.CreateEntitySimple('spawn point' + str(i),pos,2,'16:0:0:1:0:0:0')
+        for i in range(len(self.AttackPos)):
+            pos = [self.AttackPos[i]['latitude'], self.AttackPos[i]['longitude'], self.AttackPos[i]['altitude']]
+            self.communicator.CreateEntitySimple('attack point' + str(i), pos, 3, '16:0:0:1:0:0:0')
+
+        for i in range(len(self.spawnPos)):
+            pos=[self.spawnPos[i]['latitude'],self.spawnPos[i]['longitude'],self.spawnPos[i]['altitude']]
+            self.communicator.CreateEntitySimple('spawn point' + str(i),pos,2,'16:0:0:1:0:0:0')
 
 
     def createRedSquad(self,LOC,squadName):
@@ -86,4 +86,4 @@ class SpawnManager_Nadav:
         current_entity.role = "ci"
         current_entity.squad = "CivilSquad"
         self.green_spawn_entity_list.append(current_entity)
-        self.communicator.CreateEntitySimple(name, LOC, Hostility.NEUTRAL, code)
+        self.communicator.CreateEntitySimple(name, LOC, 3, code)

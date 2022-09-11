@@ -482,7 +482,7 @@ class Communicator(CommunicatorInterface):
             current_DW.instance.set_dictionary({
                 "unit_name": name,
                 "location": location,
-                "hostility": hostility.value,
+                "hostility": hostility,
                 "enumeration": code
             })
             current_DW.write()
