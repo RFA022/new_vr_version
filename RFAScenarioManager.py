@@ -18,7 +18,6 @@ import ext_funs
 from Communicator import CommunicatorSingleton
 import utm
 import geopandas
-import GUI
 from threading import *
 
 class RFAScenarioManager:
@@ -83,8 +82,6 @@ class RFAScenarioManager:
                                                  index_col=[0])  # WeaponName column
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
 
-        self.gui_thread = Thread(target=GUI.Gui)
-        self.gui_thread.start()
     def Run(self):
         while True:
             if self.communicator.GetScenarioStatus() == ScenarioStatusEnum.RUNNING:
@@ -123,8 +120,7 @@ class RFAScenarioManager:
                 # print(fire_list)
                 # print(task_status_list)
                 "update gui"
-                #self.gui.updateGUI(self.entity_list[0].current_location['latitude'])
-
+                #TO BE WRITTEN
                 "Green Entities Control"
                 for i in range(len(self.green_entity_list)):
                     current_entity = self.green_entity_list[i]
