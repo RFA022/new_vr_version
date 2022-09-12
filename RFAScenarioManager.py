@@ -18,8 +18,8 @@ import ext_funs
 from Communicator import CommunicatorSingleton
 import utm
 import geopandas
-from threading import *
-
+import threading
+from GUI import Gui
 class RFAScenarioManager:
     def __init__(self):
 
@@ -81,25 +81,27 @@ class RFAScenarioManager:
                                                  header=[0],
                                                  index_col=[0])  # WeaponName column
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
-        simulatedLocation={
-            'latitude':33.3710914531,
-            'longitude':35.4963506969,
-            'altitude':443.4963506969
-        }
-        re = self.communicator.navigationPathPlan(self.AttackPos[3], self.spawnPos[8], self.AttackPos[7], 150, "at_1_1",2)
-        print(re)
-        for k in range(len(re[0]['pathPlanningResponseVector'][0]['path'])):
-            self.communicator.CreateEntitySimple('path_point_0_' + str(k),
-                                                 re[0]['pathPlanningResponseVector'][0]['path'][k], 2, '16:0:0:1:0:0:0')
-        for k in range(len(re[0]['pathPlanningResponseVector'][1]['path'])):
-            self.communicator.CreateEntitySimple('path_point_1_' + str(k),
-                                                 re[0]['pathPlanningResponseVector'][1]['path'][k], 3, '16:0:0:1:0:0:0')
+        # simulatedLocation={
+        #     'latitude':33.3710914531,
+        #     'longitude':35.4963506969,
+        #     'altitude':443.4963506969
+        # }
+        # re = self.communicator.navigationPathPlan(self.AttackPos[3], self.spawnPos[8], self.AttackPos[7], 150, "at_1_1",2)
+        # print(re)
+        # for k in range(len(re[0]['pathPlanningResponseVector'][0]['path'])):
+        #     self.communicator.CreateEntitySimple('path_point_0_' + str(k),
+        #                                          re[0]['pathPlanningResponseVector'][0]['path'][k], 2, '16:0:0:1:0:0:0')
+        # for k in range(len(re[0]['pathPlanningResponseVector'][1]['path'])):
+        #     self.communicator.CreateEntitySimple('path_point_1_' + str(k),
+        #                                          re[0]['pathPlanningResponseVector'][1]['path'][k], 3, '16:0:0:1:0:0:0')
     def Run(self):
         while True:
             if self.communicator.GetScenarioStatus() == ScenarioStatusEnum.RUNNING:
                 time.sleep(0.5) #sleep time between every iteration - CPU time
                 if self.start_scenario_time == 0:
                     self.start_scenario_time = time.time()
+                "update GUI"
+                self.gui.updatemed("ss")
 
                 "Entites list update"
                 #update Red list from simulator and from last iteration
@@ -305,6 +307,7 @@ class RFAScenarioManager:
                             logging.debug("Get Forces local ")
                         else:
                             logging.debug("Get Forces remotely ")
+                        self.gui = Gui(self.entity_list[0].squad, self.entity_list[0].COA, "dd")
                 self.start_scenario_time = time.time()
 
 
