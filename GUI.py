@@ -25,13 +25,28 @@ class Gui(threading.Thread):
 
 
     def update(self):
-        time.sleep(3)
+        self.root.after(100000)
         self.squad_name.config(text="1")
+
+
+    def quitmed(self):
+        self.root.quit()
+        self.root.update()
+
+def sleeper():
+    time.sleep(100)
+    print('done sleeping')
+
 my_gui=Gui()
 
 
-t2 = threading.Thread(target=my_gui.update)
-t2.start()
+st=time.time()
+breakbool_0=0
 while 1:
+    time.sleep(1)
     for thread in threading.enumerate():
             print(thread.name)
+    if time.time()-st >2 and breakbool_0==0:
+        gui_update_thread=threading.Thread(target=my_gui.update())
+        gui_update_thread.start()
+        breakbool_0+=1
