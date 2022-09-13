@@ -7,6 +7,8 @@ def get_method_params(method_mame):
         params = []
         for i in range(pos_length):
             params.append(i)
+    elif method_mame =='move_to_position_m':
+        params = [0,1]
     else:
        params=None
     return params

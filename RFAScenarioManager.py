@@ -9,7 +9,7 @@ from EntityNextStateAndAction import *
 from SpawnManager_Nadav import *
 import time
 import copy
-import htnModel
+import htnModel_withMobility as htnModel
 import htnGreenModel
 import pandas as pd
 import pymap3d as pm
@@ -72,6 +72,7 @@ class RFAScenarioManager:
         self.config['rePlan_range'] = float(self.configuration.at['rePlan_range', 'value'])
         self.config['scan_time'] = float(self.configuration.at['scan_time', 'value'])
         self.config['shoot_timeout_time'] = float(self.configuration.at['shoot_timeout_time', 'value'])
+        self.config['squad_speed']=float(self.configuration.at['squad_speed', 'value'])
 
         self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
         self.squadsData = pd.read_csv(self.squadsDatalocation,
@@ -81,27 +82,34 @@ class RFAScenarioManager:
                                                  header=[0],
                                                  index_col=[0])  # WeaponName column
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
+
+        "pathFollowing"
         # simulatedLocation={
         #     'latitude':33.3710914531,
         #     'longitude':35.4963506969,
         #     'altitude':443.4963506969
         # }
-        # re = self.communicator.navigationPathPlan(self.AttackPos[3], self.spawnPos[8], self.AttackPos[7], 150, "at_1_1",2)
-        # print(re)
-        # for k in range(len(re[0]['pathPlanningResponseVector'][0]['path'])):
+        # self.re = self.communicator.navigationPathPlan(self.AttackPos[3], self.spawnPos[8], self.AttackPos[7], 150, "at_1_1",2)
+        # print(self.re)
+        # for k in range(len(self.re[0]['pathPlanningResponseVector'][0]['path'])):
         #     self.communicator.CreateEntitySimple('path_point_0_' + str(k),
-        #                                          re[0]['pathPlanningResponseVector'][0]['path'][k], 2, '16:0:0:1:0:0:0')
-        # for k in range(len(re[0]['pathPlanningResponseVector'][1]['path'])):
+        #                                          self.re[0]['pathPlanningResponseVector'][0]['path'][k], 2, '16:0:0:1:0:0:0')
+        # for k in range(len(self.re[0]['pathPlanningResponseVector'][1]['path'])):
         #     self.communicator.CreateEntitySimple('path_point_1_' + str(k),
-        #                                          re[0]['pathPlanningResponseVector'][1]['path'][k], 3, '16:0:0:1:0:0:0')
+        #                                          self.re[0]['pathPlanningResponseVector'][1]['path'][k], 3, '16:0:0:1:0:0:0')
+        # print("follow_path")
+        # self.communicator.followPathCommand(current_entity.unit_name,
+        #                                     self.re[0]['pathPlanningResponseVector'][1]['path'], 3)
+        # print("begin sleep main thread")
+        # time.sleep(60)
+        # print("done sleeping main thread")
+
     def Run(self):
         while True:
             if self.communicator.GetScenarioStatus() == ScenarioStatusEnum.RUNNING:
-                time.sleep(0.5) #sleep time between every iteration - CPU time
+                time.sleep(0.1) #sleep time between every iteration - CPU time
                 if self.start_scenario_time == 0:
                     self.start_scenario_time = time.time()
-                "update GUI"
-                self.gui.updatemed("ss")
 
                 "Entites list update"
                 #update Red list from simulator and from last iteration
@@ -148,7 +156,7 @@ class RFAScenarioManager:
                         if current_entity.planBool == 1 and current_entity.COA == []:
                             current_entity.planBool = 0
                             current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
-                            logging.debug("New Plan has been given to " + str(current_entity.unit_name))
+                            #logging.debug("New Plan has been given to " + str(current_entity.unit_name))
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos, self.spawnPos)
                         "next task implementation"
@@ -205,12 +213,12 @@ class RFAScenarioManager:
                                         enemy.last_seen_worldLocation = enemy.location
                                         if enemy.is_alive==True:
                                             pass
-                                            logging.debug("Alive enemy: " + str(
-                                                enemy.unit_name) + " has been detected during motion")
+                                            # logging.debug("Alive enemy: " + str(
+                                            #     enemy.unit_name) + " has been detected during motion")
                                         elif enemy.is_alive==False:
                                             pass
-                                            logging.debug("Destroyed enemy: " + str(
-                                                enemy.unit_name) + " has been detected during motion")
+                                            # logging.debug("Destroyed enemy: " + str(
+                                            #     enemy.unit_name) + " has been detected during motion")
                                         if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges,self.config)):
                                             "REPLAN according to certain characteristics"
                                             "-----------------DRONE CASE----------------"
@@ -252,12 +260,9 @@ class RFAScenarioManager:
                                                                       self.blue_entity_list_HTN,
                                                                       self.BluePolygonCentroid,
                                                                       self.AccuracyConfiguration,
-                                                                      next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')['polygon'])
+                                                                      next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')['polygon'],
+                                                                      current_entity.unit_name)
                             logging.debug("New Plan has been given to Squad")
-                            # print('s')
-                            # r=self.communicator.navigationPathPlan(self.spawnPos[16], self.spawnPos[17], 100, self.spawnPos[16])
-                            # if r!= []:
-                            #     print(r)
                             "Update HTN target"
                             current_entity.HTNtarget=[]
                             for primitive_task in self.entity_list[i].COA:
@@ -307,7 +312,6 @@ class RFAScenarioManager:
                             logging.debug("Get Forces local ")
                         else:
                             logging.debug("Get Forces remotely ")
-                        self.gui = Gui(self.entity_list[0].squad, self.entity_list[0].COA, "dd")
                 self.start_scenario_time = time.time()
 
 
@@ -316,7 +320,8 @@ class RFAScenarioManager:
         # Change nextPos:
         if entity_next_state_and_action.nextPos != None:
             current_entity.face = entity_next_state_and_action.nextPos
-            logging.debug("Next destination has been changed to: " + str(current_entity.face))
+            if current_entity.hostility==Hostility.OPPOSING:
+                logging.debug("Next destination has been changed to: " + str(current_entity.face))
 
         # Move entity:
         elif entity_next_state_and_action.move_pos:
@@ -326,7 +331,7 @@ class RFAScenarioManager:
                                                        entity_next_state_and_action.position_location,
                                                        4.5)
             elif current_entity.role=='ci':
-                logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
+                #logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
                                                        entity_next_state_and_action.position_location,
                                                        3)
@@ -440,7 +445,7 @@ class RFAScenarioManager:
                     break
             "Green unique operations"
         elif entity_next_state_and_action.wait_at_position==True:
-            logging.debug(str(current_entity.unit_name) + ": is waiting at Spwan position: " + str(current_entity.face))
+            # logging.debug(str(current_entity.unit_name) + ": is waiting at Spwan position: " + str(current_entity.face))
             current_entity.waitState=isWait.yes
             current_entity.waitTime=entity_next_state_and_action.waitTime
             current_entity.taskTime = time.time()
@@ -462,13 +467,10 @@ class RFAScenarioManager:
                         current_entity.state = PositionType.AT_OP
                     current_entity.movement_task_completed = 0
                     current_entity.movement_task_success = False
-                    logging.debug(
-                        "entity: " + str(
-                            current_entity.unit_name) + " changed state to " + str(
-                            current_entity.state.name) + " arrived to location ")
-                    logging.debug(
-                        "case 1 " + current_entity.unit_name.strip() + " Entity arrived to location " + str(
-                            current_entity.face) + " movement task completed")
+                    if current_entity.hostility==Hostility.OPPOSING:
+                        logging.debug(
+                            "case 1 " + current_entity.unit_name.strip() + " Entity arrived to location " + str(
+                                current_entity.face) + " movement task completed")
                 else:
                     logging.debug(
                         "case 2 - Task completed, didn't arrive to location, unwanted situation")
@@ -568,7 +570,7 @@ class RFAScenarioManager:
         if current_entity.waitState == isWait.yes:
             currTime = time.time()
             if currTime - current_entity.taskTime > current_entity.waitTime:
-                logging.debug(str(current_entity.unit_name) + ": Wait time out")
+                #logging.debug(str(current_entity.unit_name) + ": Wait time out")
                 current_entity.waitState=isWait.no
                 current_entity.waitTime=None
 

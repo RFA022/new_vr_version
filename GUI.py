@@ -17,7 +17,7 @@ class Gui(threading.Thread):
 
     def run(self):
         self.root =tkinter.Tk()
-        self.root.iconbitmap('Resources/iai5.ico')
+        self.root.iconbitmap('Resources/icons/iai5.ico')
         self.root.title("RFA Manager")
         self.frame=tkinter.Frame(self.root)
         self.frame.pack()

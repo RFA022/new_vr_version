@@ -105,9 +105,9 @@ def findplan(loc):
     if debug_level >= 2:
         print("init state is:")
         pyhop.print_state(init_state)
-    print("Begin Planning Green:")
+    #print("Begin Planning Green:")
     plan = pyhop.shop_m(init_state, [('green_be', 'me')],debug_level) #third parameter is debug mode
-    print(plan)
+    #print(plan)
     return(plan)
 
 

@@ -69,8 +69,8 @@ class HTNLogic:
                 "---------Green HTN---------:"
                 if entity_current_state.COA[0][0]=='green_choose_random_position_op':
                     entity_next_state_and_action.nextPos=entity_current_state.COA[0][1]
-                    logging.debug(str(entity_current_state.unit_name) +
-                        ": Next Primitive Action: Change next destination to Spawn Position - "+ str(entity_current_state.COA[0][1]))
+                    # logging.debug(str(entity_current_state.unit_name) +
+                    #     ": Next Primitive Action: Change next destination to Spawn Position - "+ str(entity_current_state.COA[0][1]))
                 if entity_current_state.COA[0][0]=='green_move_to_position_op':
                     entity_next_state_and_action.move_pos = True
                     new_position_location = {
@@ -81,13 +81,13 @@ class HTNLogic:
                     }
                     entity_next_state_and_action.SetPosition(PositionType.MOVE_TO_OP, new_position_location)
                     entity_next_state_and_action.positionType = "Spawn"
-                    logging.debug(str(entity_current_state.unit_name) +
-                        ": Next Primitive Action-move to Spawn position number " + str(entity_current_state.face))
+                    # logging.debug(str(entity_current_state.unit_name) +
+                    #     ": Next Primitive Action-move to Spawn position number " + str(entity_current_state.face))
                 if entity_current_state.COA[0][0] == 'green_locate_and_wait_at_position_op':
                     entity_next_state_and_action.wait_at_position = True
                     entity_next_state_and_action.waitTime = entity_current_state.COA[0][2]
-                    logging.debug(str(entity_current_state.unit_name) +
-                                  ": Next Primitive Action: wait at position for " + str( entity_current_state.COA[0][2]) +" seconds")
+                    # logging.debug(str(entity_current_state.unit_name) +
+                    #               ": Next Primitive Action: wait at position for " + str( entity_current_state.COA[0][2]) +" seconds")
                 entity_next_state_and_action.takeAction=1
 
         return entity_next_state_and_action

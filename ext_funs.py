@@ -1,4 +1,5 @@
 import copy
+import time
 
 import numpy as np
 import csv
@@ -221,25 +222,19 @@ def getAccumulatedHitProbability(state):
 "HTN FUNCTION ONLY"
 def getAccuracy(state,distance,maxRange,classification):
     rangeString = None
-    if distance <= 30:
-        rangeString = "TO_30"
-    elif distance>30 and distance <= 50:
+    if distance <= 15:
+        rangeString = "TO_15"
+    elif distance>15 and distance <= 50:
         rangeString = "TO_50"
     elif distance > 50 and distance <= 100:
         rangeString = "TO_100"
-    elif distance > 100 and distance <= 200:
-        rangeString = "TO_200"
-    elif distance > 200 and distance <= 350:
-        rangeString = "TO_350"
-    elif distance > 350 and distance <= 500:
+    elif distance > 100 and distance <= 300:
+        rangeString = "TO_300"
+    elif distance > 300 and distance <= 500:
         rangeString = "TO_500"
-    elif distance > 500 and distance <= 650:
-        rangeString = "TO_650"
-    elif distance > 650 and distance <= 800:
-        rangeString = "TO_800"
-    elif distance > 800 and distance <= 950:
-        rangeString = "TO_950"
-    elif distance > 950:
+    elif distance > 500 and distance <= 550:
+        rangeString = "TO_550"
+    elif distance > 550:
         rangeString = "TO_MAX_RANGE"
     if distance > maxRange:
         rangeString = "AFTER_MAX_RANGE"
@@ -268,3 +263,9 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
                     "Significant change in world view has been observed by the squad")
                 return True
     return False
+
+def getAvaliableRouts(origin,destination,locationToAvoid,navigatedUnitName):
+    communicator = CommunicatorSingleton().obj
+    response=communicator.navigationPathPlan(origin, destination, None, 100, navigatedUnitName, 2)
+    print(response)
+    return response
