@@ -22,6 +22,7 @@ class EntityNextStateAndAction:
         "Green"
         self.wait_at_position=False
         self.waitTime=None
+        self.nextRoute=None
     def SetPosition(self, new_position: PositionType, location: dict):
         self.position = new_position
         self.position_location["latitude"] = location["latitude"]

@@ -65,7 +65,23 @@ class HTNLogic:
                     entity_next_state_and_action.null = True
                     logging.debug(str(entity_current_state.squad) +
                         ": Next Primitive Task: null")
-
+                if entity_current_state.COA[0][0] =='choose_route_op':
+                    entity_next_state_and_action.nextRoute=entity_current_state.COA[0][1]
+                    ": Next Primitive Action - Choose route to destination " + str(
+                        entity_current_state.COA[0][1])
+                if entity_current_state.COA[0][0]=='move_to_position_via_route_op':
+                    entity_next_state_and_action.move_pos = True
+                    new_position_location = {
+                        "location_id": -1,
+                        "latitude": AttackPos[entity_current_state.face]['latitude'],
+                        "longitude": AttackPos[entity_current_state.face]['longitude'],
+                        "altitude": AttackPos[entity_current_state.face]['altitude'],
+                    }
+                    entity_next_state_and_action.SetPosition(PositionType.MOVE_TO_OP, new_position_location)
+                    entity_next_state_and_action.positionType="Attack"
+                    logging.debug(str(entity_current_state.squad) +
+                                  ": Next Primitive Task: move to Attack position number " + str(
+                        entity_current_state.face))
                 "---------Green HTN---------:"
                 if entity_current_state.COA[0][0]=='green_choose_random_position_op':
                     entity_next_state_and_action.nextPos=entity_current_state.COA[0][1]

@@ -348,7 +348,10 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
-    NumSim = 50 #was 400
+    NumSim = 19
+    if tasks[0][0]==initial_state.main_task:
+        NumSim=2
+    print("numsim is" + str(NumSim))
     ### initiation lines:
     root_nodes = []
     for task in tasks:
@@ -574,7 +577,9 @@ def calValue(state,subtask):
         #     subtask[0]) + " " + "blueDistance is: " + str(blueDistance) + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
         #     subtask[0]) + ", retval is: " + str(ret_val))
-
+        "green HTN"
+    elif subtask[0]=='green_choose_random_position_op':
+        ret_val=1
     if ret_val==0:
         ret_val=0.00001
 

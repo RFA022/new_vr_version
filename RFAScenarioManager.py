@@ -9,6 +9,7 @@ from EntityNextStateAndAction import *
 from SpawnManager_Nadav import *
 import time
 import copy
+#import htnModel
 import htnModel_withMobility as htnModel
 import htnGreenModel
 import pandas as pd
@@ -84,11 +85,12 @@ class RFAScenarioManager:
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
 
         "pathFollowing"
-        # simulatedLocation={
-        #     'latitude':33.3710914531,
-        #     'longitude':35.4963506969,
-        #     'altitude':443.4963506969
-        # }
+        simulatedLocation={
+            'latitude':33.3710914531,
+            'longitude':35.4963506969,
+            'altitude':443.4963506969
+        }
+
         # self.re = self.communicator.navigationPathPlan(self.AttackPos[3], self.spawnPos[8], self.AttackPos[7], 150, "at_1_1",2)
         # print(self.re)
         # for k in range(len(self.re[0]['pathPlanningResponseVector'][0]['path'])):
@@ -103,6 +105,7 @@ class RFAScenarioManager:
         # print("begin sleep main thread")
         # time.sleep(60)
         # print("done sleeping main thread")
+
 
     def Run(self):
         while True:
@@ -262,6 +265,7 @@ class RFAScenarioManager:
                                                                       self.AccuracyConfiguration,
                                                                       next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')['polygon'],
                                                                       current_entity.unit_name)
+
                             logging.debug("New Plan has been given to Squad")
                             "Update HTN target"
                             current_entity.HTNtarget=[]
@@ -304,6 +308,7 @@ class RFAScenarioManager:
                             self.blue_entity_list = self.getBlueEntityList()
                             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
                             # Squad commander COA push scanning operation before the game starts
+                            "adding scan to commander COA"
                             for i in range(len(self.entity_list)):
                                 current_entity = self.entity_list[i]
                                 if current_entity.role == "co":
@@ -337,6 +342,27 @@ class RFAScenarioManager:
                                                        3)
             current_entity.state = entity_next_state_and_action.position
             current_entity.target_location = entity_next_state_and_action.position_location
+        #Choose Route
+        elif entity_next_state_and_action.nextRoute != None:
+            current_entity.face = entity_next_state_and_action.nextPos
+            if current_entity.hostility==Hostility.OPPOSING:
+                logging.debug("Next destination has been changed to: " + str(current_entity.face))
+        #Move via Route
+        elif entity_next_state_and_action.move_pos and current_entity.route!=None:
+            if current_entity.role == 'co':
+                logging.debug(
+                    "Squad started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(
+                        current_entity.face))
+                path=self.communicator.navigationPathPlan(current_entity.current_location, self.AttackPos[current_entity.face], None, 100, current_entity.unit_name,2)
+                self.communicator.followPathCommand(current_entity.unit_name,path[0]['pathPlanningResponseVector'][1]['path'], 4.5)
+            elif current_entity.role == 'ci':
+                # logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
+                self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
+                                                       entity_next_state_and_action.position_location,
+                                                       3)
+            current_entity.state = entity_next_state_and_action.position
+            current_entity.target_location = entity_next_state_and_action.position_location
+
         # Locate at position:
         elif entity_next_state_and_action.nextPosture == 'get_in_position':
             for j in range(len(self.entity_list)):
@@ -630,6 +656,7 @@ class RFAScenarioManager:
             current_entity.classification   = live_unit.classification
             current_entity.COA              = entity_previous_list[k].COA
             current_entity.face             = entity_previous_list[k].face
+            current_entity.route             = entity_previous_list[k].route
             current_entity.planBool         = entity_previous_list[k].planBool
             current_entity.state            = entity_previous_list[k].state
             current_entity.fireState        = entity_previous_list[k].fireState

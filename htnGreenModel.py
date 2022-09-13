@@ -80,6 +80,8 @@ pyhop.update_method_list()
 def findplan(loc):
     init_state = pyhop.State('init_state')
     # HTN
+    main_task = "green_be"
+    init_state.main_task = main_task
     init_state.loc=loc
     init_state.nextPositionIndex = []
     init_state.currentPositionIndex = []
