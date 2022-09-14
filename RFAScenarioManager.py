@@ -19,7 +19,8 @@ from Communicator import CommunicatorSingleton
 import utm
 import geopandas
 import threading
-from GUI import Gui
+
+#MADGIMON
 class RFAScenarioManager:
     def __init__(self):
 
@@ -100,9 +101,6 @@ class RFAScenarioManager:
                 time.sleep(0.5) #sleep time between every iteration - CPU time
                 if self.start_scenario_time == 0:
                     self.start_scenario_time = time.time()
-                "update GUI"
-                self.gui.updatemed("ss")
-
                 "Entites list update"
                 #update Red list from simulator and from last iteration
                 self.entity_list=self.CreateAndUpdateEntityList(self.entity_list)
@@ -133,8 +131,6 @@ class RFAScenarioManager:
                 # print("---Debug Seasson---")  #
                 # print(fire_list)
                 # print(task_status_list)
-                "update gui"
-                #TO BE WRITTEN
                 "Green Entities Control"
                 for i in range(len(self.green_entity_list)):
                     current_entity = self.green_entity_list[i]
@@ -307,7 +303,6 @@ class RFAScenarioManager:
                             logging.debug("Get Forces local ")
                         else:
                             logging.debug("Get Forces remotely ")
-                        self.gui = Gui(self.entity_list[0].squad, self.entity_list[0].COA, "dd")
                 self.start_scenario_time = time.time()
 
 
