@@ -73,6 +73,7 @@ class RFAScenarioManager:
         self.config['rePlan_range'] = float(self.configuration.at['rePlan_range', 'value'])
         self.config['scan_time'] = float(self.configuration.at['scan_time', 'value'])
         self.config['shoot_timeout_time'] = float(self.configuration.at['shoot_timeout_time', 'value'])
+        self.config['move_type'] = str(self.configuration.at['move_type', 'value'])
 
         self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
         self.squadsData = pd.read_csv(self.squadsDatalocation,

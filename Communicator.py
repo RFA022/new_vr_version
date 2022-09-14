@@ -41,6 +41,8 @@ class Communicator(CommunicatorInterface):
     CreateTacticalGraphicCommand_DW="CreateTacticalGraphicCommand_DW"
     NavigationPathPlanningRequest_DW = "NavigationPathPlanningRequest_DW"
     HeightAboveTerrainRequest_DW="HeightAboveTerrainRequest_DW"
+    EntityFollowPathCommand_DW="EntityFollowPathCommand_DW"
+
     def __init__(self):
         super().__init__()
         try:
@@ -500,7 +502,7 @@ class Communicator(CommunicatorInterface):
                 "location": location
             })
             current_DW.write()
-            time.sleep(0.3)
+            time.sleep(0.2)
 
     def setEntityPosture(self, entity_name, posture):
         with self.lock_read_write:
@@ -514,7 +516,7 @@ class Communicator(CommunicatorInterface):
                 "posture": posture
             })
             current_DW.write()
-            time.sleep(0.3)
+            time.sleep(0.2)
 
     def setEntityHeading(self, entity_name, azimuth):
         with self.lock_read_write:
@@ -528,7 +530,7 @@ class Communicator(CommunicatorInterface):
                 "azimuth": azimuth
             })
             current_DW.write()
-            time.sleep(0.3)
+            time.sleep(0.2)
 
     def aim_weapon_at_target(self, entity_name, aiming_point):
         with self.lock_read_write:
@@ -543,7 +545,7 @@ class Communicator(CommunicatorInterface):
                 "aiming_point": aiming_point
             })
             current_DW.write()
-            time.sleep(0.3)
+            time.sleep(0.2)
 
 
     def stopCommand(self, entity_name):
@@ -625,8 +627,8 @@ class Communicator(CommunicatorInterface):
                 current_DW = self.RFSM_connector.getOutput(self.publisher + self.NavigationPathPlanningRequest_DW)
             except:
                 logging.error("writer " + self.NavigationPathPlanningRequest_DW + " dont exist")
-            print(origin)
-            print(destination)
+            # print(origin)
+            # print(destination)
             if locationToAvoid != None:
                 current_DW.instance.set_dictionary(
                     {
@@ -673,9 +675,10 @@ class Communicator(CommunicatorInterface):
                     }
                 )
             current_DW.write()
-            print("Sent pathPlan request")
+            time.sleep(0.01)
+            # print("Sent pathPlan request")
 
-        print("Waiting for path response:")
+        # print("Waiting for path response:")
         with self.lock_read_write:
             try:
                 current_DR = self.RFSM_connector.getInput(self.subscriber + self.NavigationPathPlanningResponse_DR)
@@ -690,7 +693,7 @@ class Communicator(CommunicatorInterface):
                     if sample.valid_data:
                         # first - print the sample.
                         responseList.append(sample.get_dictionary())
-                        print(sample.get_dictionary())
+                        #print(sample.get_dictionary())
                     else:
                         print("Received non-valid message (Dispose)")
                 return responseList
@@ -741,7 +744,23 @@ class Communicator(CommunicatorInterface):
                 logging.error("reader " + self.GetAreasListResponse_DR + " dont exist")
                 return response
 
-
+    def followPathCommand(self, unit_name,path,ordered_speed):
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.EntityFollowPathCommand_DW)
+            except:
+                logging.error("writer " + self.EntityFollowPathCommand_DW + " dont exist")
+                return
+            current_DW.instance.set_dictionary({
+                "unit_name": unit_name,
+                "path_id_or_full":{
+                    "full_path": path
+                } ,
+                "ordered_speed": ordered_speed,
+            })
+            current_DW.write()
+            time.sleep(0.2)
+            print('sss')
 class CommunicatorSingleton(metaclass=Singleton):
     def __init__(self):
         self.obj = Communicator()
