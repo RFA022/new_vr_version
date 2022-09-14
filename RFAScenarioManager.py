@@ -317,10 +317,19 @@ class RFAScenarioManager:
         # Move entity:
         elif entity_next_state_and_action.move_pos:
             if current_entity.role=='co':
-                logging.debug("Squad started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
-                self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
-                                                       entity_next_state_and_action.position_location,
-                                                       4.5)
+                if self.config['move_type']=="destination":
+                    logging.debug("Squad started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
+                    self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
+                                                           entity_next_state_and_action.position_location,
+                                                           4.5)
+                elif self.config['move_type']=="path":
+
+                    path=self.communicator.navigationPathPlan(current_entity.current_location
+                                                         ,entity_next_state_and_action.position_location,
+                                                         None,100,current_entity.current_name,2)
+                    self.communicator.followPathCommand(current_entity.unit_name
+                                                        ,path
+                                                        ,4.5)
             elif current_entity.role=='ci':
                 logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,

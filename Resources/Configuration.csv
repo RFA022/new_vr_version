@@ -1,0 +1,15 @@
+Name,value,unit,remark
+standing_height,1.7,meter,
+crouching_height,1.3,meter,
+squad_view_range,2500,meter,
+squad_eyes_range,400,meter,
+rpg_range,300,meter,
+javelin_range,1200,meter,
+ak47_range,100,meter,
+eitan_cg_height,1.2,meter,
+rePlan_range,200,meter,
+scan_time,30,seconds,
+shoot_timeout_time,8,seconds,
+squad_speed,4.5,m per s,
+move_type,path,type,Destination / path
+squadsDataLocation,C:\\MAK\\vrforces4.7\\bin64\\Config_Files\\Sherlock\\unit.csv,directory,
