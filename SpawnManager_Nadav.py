@@ -27,25 +27,25 @@ class SpawnManager_Nadav:
 
         "Spawn green entities"
 
-        for i in range(5):
-            LOC_index = random.randrange(len(self.spawnPos))
-            LOC = self.spawnPos[LOC_index]
-            name=str("civil_")+(str(i))
-            choices=["3:1:225:3:0:1:0","3:1:225:3:1:1:0"] #civil male, civil female,
-            code=random.choice(choices)
-            self.createGreenEntity(LOC,name,code)
+        # for i in range(2):
+        #     LOC_index = random.randrange(len(self.spawnPos))
+        #     LOC = self.spawnPos[LOC_index]
+        #     name=str("civil_")+(str(i))
+        #     choices=["3:1:225:3:0:1:0","3:1:225:3:1:1:0"] #civil male, civil female,
+        #     code=random.choice(choices)
+        #     self.createGreenEntity(LOC,name,code)
 
 
         "Spawn and attack points"
         ##_______________code that creates positions as way points___________________###
         # ---# create positions #---##
-        for i in range(len(self.AttackPos)):
-            pos = [self.AttackPos[i]['latitude'], self.AttackPos[i]['longitude'], self.AttackPos[i]['altitude']]
-            self.communicator.CreateEntitySimple('attack point' + str(i), pos, 3, '16:0:0:1:0:0:0')
-
-        for i in range(len(self.spawnPos)):
-            pos=[self.spawnPos[i]['latitude'],self.spawnPos[i]['longitude'],self.spawnPos[i]['altitude']]
-            self.communicator.CreateEntitySimple('spawn point' + str(i),pos,2,'16:0:0:1:0:0:0')
+        # for i in range(len(self.AttackPos)):
+        #     pos = [self.AttackPos[i]['latitude'], self.AttackPos[i]['longitude'], self.AttackPos[i]['altitude']]
+        #     self.communicator.CreateEntitySimple('attack point' + str(i), pos, 3, '16:0:0:1:0:0:0')
+        #
+        # for i in range(len(self.spawnPos)):
+        #     pos=[self.spawnPos[i]['latitude'],self.spawnPos[i]['longitude'],self.spawnPos[i]['altitude']]
+        #     self.communicator.CreateEntitySimple('spawn point' + str(i),pos,2,'16:0:0:1:0:0:0')
 
 
     def createRedSquad(self,LOC,squadName):

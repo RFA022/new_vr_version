@@ -8,8 +8,8 @@ javelin_range,1200,meter,
 ak47_range,100,meter,
 eitan_cg_height,1.2,meter,
 rePlan_range,200,meter,
-scan_time,30,seconds,
+scan_time,1,seconds,
 shoot_timeout_time,8,seconds,
 squad_speed,4.5,m per s,
-move_type,path,type,Destination / path
+move_type,path,type,destination / path
 squadsDataLocation,C:\\MAK\\vrforces4.7\\bin64\\Config_Files\\Sherlock\\unit.csv,directory,

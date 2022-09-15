@@ -182,6 +182,11 @@ class RFAScenarioManager:
                         # Executing next task in COA:
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
+                        print("______________________")
+                        print(current_entity.state)
+                        print(current_entity.movement_task_success)
+                        print(current_entity.movement_task_completed)
+                        print("______________________")
                         # Debug:
                         # print("---Debug Seasson---")#
                         # print(current_entity.fireState)
@@ -316,20 +321,41 @@ class RFAScenarioManager:
 
         # Move entity:
         elif entity_next_state_and_action.move_pos:
+            # print("current location is: " + str(current_entity.current_location))
+            # print("current destination is: "+ str(entity_next_state_and_action.position_location) )
             if current_entity.role=='co':
+                logging.debug(
+                    "Squad started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(
+                        current_entity.face))
+
                 if self.config['move_type']=="destination":
-                    logging.debug("Squad started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                     self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
                                                            entity_next_state_and_action.position_location,
                                                            4.5)
                 elif self.config['move_type']=="path":
-
-                    path=self.communicator.navigationPathPlan(current_entity.current_location
+                    paths=self.communicator.navigationPathPlan(current_entity.current_location
                                                          ,entity_next_state_and_action.position_location,
-                                                         None,100,current_entity.current_name,2)
-                    self.communicator.followPathCommand(current_entity.unit_name
-                                                        ,path
-                                                        ,4.5)
+                                                         None,100,current_entity.unit_name,2)
+                    if paths[0]['pathPlanningResponseVector']==[]:
+                        logging.debug("mobility agent didnt work")
+                        self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
+                                                               entity_next_state_and_action.position_location,
+                                                               4.5)
+                    else:
+                        if len(paths[0]['pathPlanningResponseVector'])==2:
+                            path=paths[0]['pathPlanningResponseVector'][1]['path']
+                            self.communicator.followPathCommand(current_entity.unit_name
+                                                                , path
+                                                                , 4.5)
+                        elif len(paths[0]['pathPlanningResponseVector'])==1:
+                            path=paths[0]['pathPlanningResponseVector'][0]['path']
+                            self.communicator.followPathCommand(current_entity.unit_name
+                                                                , path
+                                                                , 4.5)
+                        path=paths[0]['pathPlanningResponseVector'][0]['path']
+                        self.communicator.followPathCommand(current_entity.unit_name
+                                                                , path
+                                                                , 4.5)
             elif current_entity.role=='ci':
                 logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
@@ -556,7 +582,7 @@ class RFAScenarioManager:
             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
             currTime = time.time()
             if currTime - current_entity.taskTime > self.config['scan_time'] or breakBool==1:
-                logging.debug(str(current_entity.squad) +": Scan Timeout")
+                #logging.debug(str(current_entity.squad) +": Scan Timeout")
                 if len(current_entity.scanDetectionList) == 0:
                     logging.debug("No enemy has been detected within " + str(self.config['scan_time']) + " seconds of scanning")
                 else:
@@ -568,7 +594,7 @@ class RFAScenarioManager:
                             print_list.append(str(object[0]) + str("-Alive entity" ))
                         else:
                             print_list.append(str(object[0]) + str("-Destroyed entity"))
-                    logging.debug("Entities: " + str(print_list) +" has been discovered during scanning proccess with range of " + str(scan_range))
+                    #logging.debug("Entities: " + str(print_list) +" has been discovered during scanning proccess with range of " + str(scan_range))
                 current_entity.scanState=isScan.no
         if current_entity.waitState == isWait.yes:
             currTime = time.time()
