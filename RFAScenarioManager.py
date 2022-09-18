@@ -182,11 +182,11 @@ class RFAScenarioManager:
                         # Executing next task in COA:
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
-                        print("______________________")
-                        print(current_entity.state)
-                        print(current_entity.movement_task_success)
-                        print(current_entity.movement_task_completed)
-                        print("______________________")
+                        # print("______________________")
+                        # print(current_entity.state)
+                        # print(current_entity.movement_task_success)
+                        # print(current_entity.movement_task_completed)
+                        # print("______________________")
                         # Debug:
                         # print("---Debug Seasson---")#
                         # print(current_entity.fireState)
@@ -256,10 +256,6 @@ class RFAScenarioManager:
                                                                       self.AccuracyConfiguration,
                                                                       next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')['polygon'])
                             logging.debug("New Plan has been given to Squad")
-                            # print('s')
-                            # r=self.communicator.navigationPathPlan(self.spawnPos[16], self.spawnPos[17], 100, self.spawnPos[16])
-                            # if r!= []:
-                            #     print(r)
                             "Update HTN target"
                             current_entity.HTNtarget=[]
                             for primitive_task in self.entity_list[i].COA:
@@ -337,7 +333,7 @@ class RFAScenarioManager:
                                                          ,entity_next_state_and_action.position_location,
                                                          None,100,current_entity.unit_name,2)
                     if paths[0]['pathPlanningResponseVector']==[]:
-                        logging.debug("mobility agent didnt work")
+                        logging.debug("mobility agent failed to work")
                         self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
                                                                entity_next_state_and_action.position_location,
                                                                4.5)
@@ -482,7 +478,12 @@ class RFAScenarioManager:
             # Check task status for movement tasks
             for task in task_status_list:
                 if current_entity.unit_name == task.get("markingText"):
+                    #Move entity command controls
                     if task.get("taskName") == "vrf-move-to-location-task":
+                        current_entity.movement_task_completed = task.get("currentStatus")
+                        current_entity.movement_task_success = task.get("taskSuccess")
+                    #Follow path  controls - same control as Move entity command
+                    elif task.get("taskName") == "vrf-move-along":
                         current_entity.movement_task_completed = task.get("currentStatus")
                         current_entity.movement_task_success = task.get("taskSuccess")
             # check task status
