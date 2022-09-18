@@ -52,9 +52,18 @@ class Communicator(CommunicatorInterface):
             logging.error(e)
             logging.error("connector fail !, url to file: " + file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
 
+        try:
+            self.Geo_connector = rti.Connector(config_name="RFSM_Participant_Library::Geo_Participant",
+                                                url=file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
+        except Exception as e:
+            logging.error(e)
+            logging.error("connector fail !, url to file: " + file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
+
+
         self.publisher = "Publisher::"
         self.subscriber = "Subscriber::"
         self.lock_read_write = threading.Lock()
+        self.geo_lock_read_write = threading.Lock()
         self.entity_counter = 0
         logging.debug(self.__class__.__name__ + " is initialized")
         self.current_status = ScenarioStatusEnum.NA
@@ -266,9 +275,9 @@ class Communicator(CommunicatorInterface):
             "distance": []
         }
         # start_time = time.time_ns()
-        with self.lock_read_write:
+        with self.geo_lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.GeoQueryRequest_DW)
+                current_DW = self.Geo_connector.getOutput(self.publisher + self.GeoQueryRequest_DW)
             except:
                 logging.error("writer " + self.GeoQueryRequest_DW + " don't exist")
                 return ans
@@ -282,12 +291,12 @@ class Communicator(CommunicatorInterface):
             })
             current_DW.write()
 
-        with self.lock_read_write:
+        with self.geo_lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.GeoQueryResponse_DR)
-                # wait for messages for 1 sec
+                current_DR = self.Geo_connector.getInput(self.subscriber + self.GeoQueryResponse_DR)
+                # wait for messages for 2 sec
                 try:
-                    current_DR.wait(1000)
+                    current_DR.wait(2000)
                 except:
                     logging.debug("wait to GeoQuery response timeout")
                     return ans

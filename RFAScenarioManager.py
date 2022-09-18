@@ -145,20 +145,22 @@ class RFAScenarioManager:
                     if current_entity.role=="co": #commander roll type
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
-                            for enemy in (self.blue_entity_list):
-                                losRespose = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, enemy,
-                                                                  current_entity.current_location)
-                                if losRespose['distance'][0][0] < self.basicRanges['squad_eyes_range']:
-                                    if losRespose['los'][0][0] == True:
+                            enemies_location_list=[]
+                            losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
+                                                           current_entity.current_location)
+                            for response_index in range(len(losRespose_vec['los'][0])):
+                                enemy= self.blue_entity_list[response_index]
+                                if losRespose_vec['distance'][0][response_index] < self.basicRanges['squad_eyes_range']:
+                                    if losRespose_vec['los'][0][response_index] == True:
                                         enemy.last_seen_worldLocation = enemy.location
                                         if enemy.is_alive==True:
                                             pass
-                                            # logging.debug("Alive enemy: " + str(
-                                            #     enemy.unit_name) + " has been detected during motion")
+                                            logging.debug("Alive enemy: " + str(
+                                                enemy.unit_name) + " has been detected during motion")
                                         elif enemy.is_alive==False:
                                             pass
-                                            # logging.debug("Destroyed enemy: " + str(
-                                            #     enemy.unit_name) + " has been detected during motion")
+                                            logging.debug("Destroyed enemy: " + str(
+                                                enemy.unit_name) + " has been detected during motion")
                                         if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges,self.config)):
                                             "REPLAN according to certain characteristics"
                                             "-----------------DRONE CASE----------------"

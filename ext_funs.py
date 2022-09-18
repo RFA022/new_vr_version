@@ -144,6 +144,21 @@ def losOperator(squadPosture,enemyDimensions,enemy,source_location):
     losRespose = (communicator.GetGeoQuery([source], [target], True, True))
     return losRespose
 
+#los Operator for 1 source location to vector of destinations
+def losOperatorlist (squadPosture,enemyDimensions,enemy_vector,source_location):
+    communicator = CommunicatorSingleton().obj
+    source=copy.deepcopy(source_location)
+    source['altitude'] = str(float(source['altitude']) +float(squadPosture['standing_height']))
+    enemies_location_list=[]
+    for enemy in (enemy_vector):
+        destination=copy.deepcopy(enemy.location)
+        if enemy.classification == EntityTypeEnum.EITAN:
+            destination['altitude'] += enemyDimensions['eitan_cg_height']
+        enemies_location_list.append(destination)
+    losRespose = (communicator.GetGeoQuery([source], enemies_location_list, True, True))
+    return losRespose
+
+
 def getNumberofAliveEnemies(blues):
     aliveBluesNumber=0
     for blue in blues:
