@@ -83,19 +83,6 @@ class RFAScenarioManager:
                                                  header=[0],
                                                  index_col=[0])  # WeaponName column
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
-        # simulatedLocation={
-        #     'latitude':33.3710914531,
-        #     'longitude':35.4963506969,
-        #     'altitude':443.4963506969
-        # }
-        # re = self.communicator.navigationPathPlan(self.AttackPos[3], self.spawnPos[8], self.AttackPos[7], 150, "at_1_1",2)
-        # print(re)
-        # for k in range(len(re[0]['pathPlanningResponseVector'][0]['path'])):
-        #     self.communicator.CreateEntitySimple('path_point_0_' + str(k),
-        #                                          re[0]['pathPlanningResponseVector'][0]['path'][k], 2, '16:0:0:1:0:0:0')
-        # for k in range(len(re[0]['pathPlanningResponseVector'][1]['path'])):
-        #     self.communicator.CreateEntitySimple('path_point_1_' + str(k),
-        #                                          re[0]['pathPlanningResponseVector'][1]['path'][k], 3, '16:0:0:1:0:0:0')
     def Run(self):
         while True:
             if self.communicator.GetScenarioStatus() == ScenarioStatusEnum.RUNNING:
@@ -116,22 +103,10 @@ class RFAScenarioManager:
                 if numberOfAliveBlues == 0:
                     logging.debug("Red as won the game")
                     break
-                #Debug
-                # for blue in self.blue_entity_list:
-                #     print('alive status for blue list entity '+ str(blue.unit_name + "is: "+ str(blue.is_alive)))
-                # for blue in self.blue_entity_list_HTN:
-                #     print('alive status for HTN blue list entity ' + str(blue.unit_name + "is: " + str(blue.is_alive)))
 
                 "Update fire and task lists from simulator"
                 fire_list = self.communicator.GetFireEvent()
                 task_status_list = self.communicator.GetTaskStatusEvent()
-                #Debug
-                # print(task_status_list)
-                # print(fire_list)
-                # Run over all entity
-                # print("---Debug Seasson---")  #
-                # print(fire_list)
-                # print(task_status_list)
                 "Green Entities Control"
                 for i in range(len(self.green_entity_list)):
                     current_entity = self.green_entity_list[i]
@@ -166,37 +141,8 @@ class RFAScenarioManager:
                     if current_entity.alive:
                         "external function that handles all functionalities that relates to move and  fire"
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
-                        #print("current entity:" + str(current_entity.unit_name) + "status: " + str(current_entity.movement_task_completed) + "success" + str(current_entity.movement_task_success) )
-                        # # Debug:
-                        # print("---Debug Seasson---")#
-                        # print(str(current_entity.unit_name))
-                        # print(current_entity.fireState)
-                        # print(current_entity.fire_task_completed)
-                        # print(current_entity.fire_task_success)
-                        # print('--------------------------------')
-
-                        # #Debug:
-                        # if self.entity_list[1].fireState== isFire.yes and self.entity_list[2].fireState== isFire.no:
-                        #     print('ss')
-                        # next state and action - every iteration even tough COA is empty
-                        # Executing next task in COA:
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
-                        # print("______________________")
-                        # print(current_entity.state)
-                        # print(current_entity.movement_task_success)
-                        # print(current_entity.movement_task_completed)
-                        # print("______________________")
-                        # Debug:
-                        # print("---Debug Seasson---")#
-                        # print(current_entity.fireState)
-                        # print(current_entity.fire_task_completed)
-                        # print(current_entity.fire_task_success)
-                        # print('--------------------------------')
-                        # print(current_entity.state)
-                        # print(current_entity.movement_task_completed)
-                        # print(current_entity.movement_task_success)
-                        # print('--------------------------------')
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             for enemy in (self.blue_entity_list):
@@ -207,12 +153,12 @@ class RFAScenarioManager:
                                         enemy.last_seen_worldLocation = enemy.location
                                         if enemy.is_alive==True:
                                             pass
-                                            logging.debug("Alive enemy: " + str(
-                                                enemy.unit_name) + " has been detected during motion")
+                                            # logging.debug("Alive enemy: " + str(
+                                            #     enemy.unit_name) + " has been detected during motion")
                                         elif enemy.is_alive==False:
                                             pass
-                                            logging.debug("Destroyed enemy: " + str(
-                                                enemy.unit_name) + " has been detected during motion")
+                                            # logging.debug("Destroyed enemy: " + str(
+                                            #     enemy.unit_name) + " has been detected during motion")
                                         if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges,self.config)):
                                             "REPLAN according to certain characteristics"
                                             "-----------------DRONE CASE----------------"

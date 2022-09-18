@@ -760,7 +760,7 @@ class Communicator(CommunicatorInterface):
             })
             current_DW.write()
             time.sleep(0.2)
-            print('sss')
+            logging.debug("mobility agent at work")
 class CommunicatorSingleton(metaclass=Singleton):
     def __init__(self):
         self.obj = Communicator()
