@@ -501,12 +501,13 @@ class RFAScenarioManager:
                     #self.communicator.stopCommand(current_entity.unit_name)
         if current_entity.scanState==isScan.yes:
             breakBool=0
-            for enemy in (self.blue_entity_list):
-                losRespose = ext_funs.losOperator(self.squadPosture, self.enemyDimensions, enemy,
-                                                  current_entity.current_location)
+            losRespose_vec = losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
+                                             current_entity.current_location)
+            for response_index in range(len(losRespose_vec['los'][0])):
+                enemy = self.blue_entity_list[response_index]
                 scan_range=self.basicRanges['squad_view_range']
-                if losRespose['distance'][0][0] < scan_range:
-                    if losRespose['los'][0][0] == True:
+                if losRespose_vec['distance'][0][response_index] < scan_range:
+                    if losRespose_vec['los'][0][response_index] == True:
                         enemy.observed = True
                         enemy.last_seen_worldLocation = enemy.location
                         current_entity.scanDetectionList.append(enemy)
@@ -515,13 +516,13 @@ class RFAScenarioManager:
                             if (enemy.classification == EntityTypeEnum.OHEZ) or \
                                     (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                                     (enemy.classification == EntityTypeEnum.UNKNOWN):
-                                if losRespose['distance'][0][0] < self.basicRanges['ak47_range']:
-                                    logging.debug( "Drone type enemy has been detected in emergency situation")
+                                if losRespose_vec['distance'][0][response_index] < self.basicRanges['ak47_range']:
+                                    logging.debug( "Drone type enemy: " +  str(enemy.unit_name) + " has been detected in emergency situation")
                                     breakBool=1
                             "case of fire opportunity lav detection:"
                             if enemy.classification == EntityTypeEnum.EITAN:
-                                if losRespose['distance'][0][0] < self.basicRanges['javelin_range']:
-                                    logging.debug( "Good shooting Opporunity at Armored vehicle")
+                                if losRespose_vec['distance'][0][response_index] < self.basicRanges['javelin_range']:
+                                    logging.debug( "Good shooting Opporunity at Armored vehicle: " + str(enemy.unit_name))
                                     breakBool = 1
             # updating HTN list which is used when shooting:
             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
