@@ -98,6 +98,7 @@ class RFAScenarioManager:
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
                 self.blue_entity_list_HTN=ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
 
+                print("blue 0 is:" + str(self.blue_entity_list.unit_name) + "it's velocity is:" + str )
                 "Check if Red won"
                 numberOfAliveBlues=getNumberofAliveEnemies(self.blue_entity_list)
                 if numberOfAliveBlues == 0:
@@ -694,7 +695,7 @@ class RFAScenarioManager:
             current_entity.power = entity_info_list[i].get("power")
             current_entity.entity_damage_state = entity_info_list[i].get("entity_damage_state")
             current_entity.global_id = entity_info_list[i].get("global_id")
-
+            current_entity.velocity = entity_info_list[i].get("velocity")
             list_to_return.append(current_entity)
 
         return list_to_return
