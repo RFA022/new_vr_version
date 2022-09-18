@@ -294,10 +294,6 @@ class RFAScenarioManager:
                             self.communicator.followPathCommand(current_entity.unit_name
                                                                 , path
                                                                 , 4.5)
-                        path=paths[0]['pathPlanningResponseVector'][0]['path']
-                        self.communicator.followPathCommand(current_entity.unit_name
-                                                                , path
-                                                                , 4.5)
             elif current_entity.role=='ci':
                 logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
