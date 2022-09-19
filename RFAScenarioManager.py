@@ -74,7 +74,8 @@ class RFAScenarioManager:
         self.config['scan_time'] = float(self.configuration.at['scan_time', 'value'])
         self.config['shoot_timeout_time'] = float(self.configuration.at['shoot_timeout_time', 'value'])
         self.config['move_type'] = str(self.configuration.at['move_type', 'value'])
-
+        self.config['squad_speed'] = str(self.configuration.at['squad_speed', 'value'])
+        self.config['mobility_avoidance_radius'] = str(self.configuration.at['mobility_avoidance_radius', 'value'])
         self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
         self.squadsData = pd.read_csv(self.squadsDatalocation,
                             header=[0],
@@ -96,9 +97,9 @@ class RFAScenarioManager:
                 self.green_entity_list=self.CreateAndUpdateEntityList(self.green_entity_list)
                 #update Blue list from simulator and from last iteration (info about last seen location)
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
-                self.blue_entity_list_HTN=ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
 
-                print("blue 0 is:" + str(self.blue_entity_list.unit_name) + "it's velocity is:" + str )
+                # print("blue 0 is:" + str(self.blue_entity_list[0].unit_name) + "it's velocity is:" + str(self.blue_entity_list[0].velocity))
+
                 "Check if Red won"
                 numberOfAliveBlues=getNumberofAliveEnemies(self.blue_entity_list)
                 if numberOfAliveBlues == 0:
@@ -108,6 +109,7 @@ class RFAScenarioManager:
                 "Update fire and task lists from simulator"
                 fire_list = self.communicator.GetFireEvent()
                 task_status_list = self.communicator.GetTaskStatusEvent()
+
                 "Green Entities Control"
                 for i in range(len(self.green_entity_list)):
                     current_entity = self.green_entity_list[i]
@@ -144,6 +146,12 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
+                        #DEBUG
+                        # for entity in self.blue_entity_list:
+                        #     HTN_entity = next(x for x in self.blue_entity_list if x.unit_name == (entity.unit_name))
+                        #     print(str(entity.unit_name))
+                        #     print(" observed: " + str(entity.observed) + " HTN observed: " + str(HTN_entity.observed))
+                        # print("---------------")
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             enemies_location_list=[]
@@ -156,12 +164,12 @@ class RFAScenarioManager:
                                         enemy.last_seen_worldLocation = enemy.location
                                         if enemy.is_alive==True:
                                             pass
-                                            logging.debug("Alive enemy: " + str(
-                                                enemy.unit_name) + " has been detected during motion")
+                                            # logging.debug("Alive enemy: " + str(
+                                            #     enemy.unit_name) + " has been detected during motion")
                                         elif enemy.is_alive==False:
                                             pass
-                                            logging.debug("Destroyed enemy: " + str(
-                                                enemy.unit_name) + " has been detected during motion")
+                                            # logging.debug("Destroyed enemy: " + str(
+                                            #     enemy.unit_name) + " has been detected during motion")
                                         if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges,self.config)):
                                             "REPLAN according to certain characteristics"
                                             "-----------------DRONE CASE----------------"
@@ -276,27 +284,55 @@ class RFAScenarioManager:
                 if self.config['move_type']=="destination":
                     self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
                                                            entity_next_state_and_action.position_location,
-                                                           4.5)
+                                                           self.config['squad_speed'])
                 elif self.config['move_type']=="path":
-                    paths=self.communicator.navigationPathPlan(current_entity.current_location
-                                                         ,entity_next_state_and_action.position_location,
-                                                         None,100,current_entity.unit_name,2)
+                    "generating pathes that avoid the closest blue:"
+                    enemies_location_list = []
+                    for enemy in self.blue_entity_list_HTN:
+                        if (enemy.location['latitude'] != None and
+                                enemy.location['longitude'] != None and
+                                enemy.location['altitude'] != None):
+                            if enemy.is_alive == True:
+                                # new atribute:
+                                enemy_copy = copy.deepcopy(enemy)
+                                enemy_copy.distFromSquad = ext_funs.getMetriDistance(current_entity.current_location,
+                                                                                     enemy.location)
+                                enemies_location_list.append(enemy_copy)
+                    # sort: observed list by classification when Eitan comes before Ohez
+                    if enemies_location_list != []:
+                        # sort by value - next sort by value and then by distance
+                        #enemies_location_list = sorted(enemies_location_list, key=lambda x: (x.val, -x.distFromSquad), reverse=True)
+                        enemies_location_list = sorted(enemies_location_list, key=lambda x: ( -x.distFromSquad), reverse=True)
+                        ignore_location=enemies_location_list[0].location
+                        logging.debug("mobility agent try to skip: " + str(enemies_location_list[0].unit_name))
+                        paths = self.communicator.navigationPathPlan(current_entity.current_location
+                                                                     , entity_next_state_and_action.position_location,
+                                                                     ignore_location, self.config['mobility_avoidance_radius'],
+                                                                     current_entity.unit_name, 2)
+                    else:
+                        paths = self.communicator.navigationPathPlan(current_entity.current_location
+                                                                     , entity_next_state_and_action.position_location,
+                                                                     None,
+                                                                     self.config['mobility_avoidance_radius'],
+                                                                     current_entity.unit_name, 2)
                     if paths[0]['pathPlanningResponseVector']==[]:
                         logging.debug("mobility agent failed to work")
                         self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
                                                                entity_next_state_and_action.position_location,
-                                                               4.5)
+                                                               self.config['squad_speed'])
                     else:
                         if len(paths[0]['pathPlanningResponseVector'])==2:
                             path=paths[0]['pathPlanningResponseVector'][1]['path']
+                            logging.debug("mobility agent route 2 follow")
                             self.communicator.followPathCommand(current_entity.unit_name
                                                                 , path
-                                                                , 4.5)
+                                                                , self.config['squad_speed'])
                         elif len(paths[0]['pathPlanningResponseVector'])==1:
                             path=paths[0]['pathPlanningResponseVector'][0]['path']
+                            logging.debug("mobility agent route 1 follow")
                             self.communicator.followPathCommand(current_entity.unit_name
                                                                 , path
-                                                                , 4.5)
+                                                                , self.config['squad_speed'])
             elif current_entity.role=='ci':
                 logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
@@ -311,7 +347,6 @@ class RFAScenarioManager:
                 logging.debug(
                     "Squad member " + str(self.entity_list[j].unit_name) + "is locating in Attack position:  " + str(
                         current_entity.face))
-
         # LOS:
         elif entity_next_state_and_action.scan_for_enemy == 1:
             # Basic functionality - next step is to use LOS between point and entity:
@@ -319,11 +354,11 @@ class RFAScenarioManager:
             current_entity.scanState=isScan.yes
             current_entity.scanDetectionList=[]
             current_entity.taskTime=time.time()
-        # Aim
+        # Aim - using blue list HTN
         # Atribute distFromSquad is local atribute for blue enemy only for Aim operator
         elif entity_next_state_and_action.aim == True:
             aim_list = []
-            for enemy in self.blue_entity_list:
+            for enemy in self.blue_entity_list_HTN:
                 if enemy.observed == True and enemy.is_alive == True:
                     # new atribute:
                     enemy.distFromSquad = ext_funs.getMetriDistance(current_entity.current_location, enemy.location)
@@ -416,6 +451,7 @@ class RFAScenarioManager:
             current_entity.waitState=isWait.yes
             current_entity.waitTime=entity_next_state_and_action.waitTime
             current_entity.taskTime = time.time()
+
     #Function that handle termination of firing and moving tasks
     def handle_move_fire_scan_wait(self,current_entity,task_status_list,fire_list):
         # check movement status if unit is moving

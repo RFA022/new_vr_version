@@ -202,6 +202,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.distance_from_positions = ext_funs.update_distance_from_positions(init_state.loc,init_state.positions)
     "edit blueList - append fake location to unknown blues"
     for blue in blueList:
+        blue.observed=False
         if blue.locationType==HTNbluLocationType.fake:
             blue.location=ext_funs.generatePointInPolygon(bluePolygon)
     init_state.assesedBlues = blueList
@@ -247,3 +248,10 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     print(plan)
     return plan
 
+"""""""""
+"Debug section with the ability to plot the location of the first enemy"
+pos = [init_state.assesedBlues[0].location['latitude'], init_state.assesedBlues[0].location['longitude'],
+       init_state.assesedBlues[0].location['altitude']]
+communicator = CommunicatorSingleton().obj
+communicator.CreateEntitySimple('enemy' + str(random.randint(0, 10000000000)), pos, 2, '16:0:0:1:0:0:0')
+"""""""""""

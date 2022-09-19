@@ -67,7 +67,7 @@ def getLocation(state,index):
     return loc
 
 def getMetriDistance(loc1,loc2):
-    R = 6371000 # Eart Radius - m
+    R = 6378000 # Eart Radius - m
     dLat = (math.radians(float(loc1['latitude'])) - math.radians(float(loc2['latitude'])))
     dLon = (math.radians(float(loc1['longitude'])) - math.radians(float(loc2['longitude'])))
 
@@ -123,7 +123,9 @@ def getBluesDataFromVRFtoHTN(blueList):
         Newentity.classification=entity.classification
         Newentity.location=entity.last_seen_worldLocation
         Newentity.is_alive = entity.is_alive
+        Newentity.velocity = entity.velocity
         Newentity.val=val
+        Newentity.observed=entity.observed
         entities.append(Newentity)
         if Newentity.location['latitude'] == None and \
            Newentity.location['longitude'] == None and \
@@ -263,6 +265,7 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
         enemyDistance = getMetriDistance(current_entity.current_location, enemy.location)
         if enemyDistance < basicRanges['ak47_range']:
             logging.debug("Drone type enemy has been Detected in an emergency situation")
+            print(enemyDistance)
             return True
     if (enemy.classification == EntityTypeEnum.EITAN):
         frozen_enemy = next(x for x in current_entity.HTNbluesFrozen if x.unit_name == enemy.unit_name)

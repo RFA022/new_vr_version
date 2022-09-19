@@ -78,3 +78,4 @@ class HTNentity:
         self.observed=False
         self.is_alive = None
         self.val=None
+        self.velocity=[]

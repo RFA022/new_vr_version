@@ -81,7 +81,6 @@ class Communicator(CommunicatorInterface):
                 for sample in current_DR.samples:
                     if sample.valid_data:
                         listOfMessage.append(sample.get_dictionary())
-
                 return listOfMessage
 
             except:
@@ -768,8 +767,6 @@ class Communicator(CommunicatorInterface):
                 "ordered_speed": ordered_speed,
             })
             current_DW.write()
-            time.sleep(0.2)
-            logging.debug("mobility agent at work")
 class CommunicatorSingleton(metaclass=Singleton):
     def __init__(self):
         self.obj = Communicator()
