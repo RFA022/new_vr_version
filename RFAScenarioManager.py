@@ -1,4 +1,5 @@
 import logging
+import re
 import sys
 
 import ConfigManager
@@ -83,7 +84,16 @@ class RFAScenarioManager:
         self.AccuracyConfiguration = pd.read_csv('Resources/AccuracyConfiguration.csv',
                                                  header=[0],
                                                  index_col=[0])  # WeaponName column
+        "intervisibility_polygoins - reads from csv"
+        #self.intervisibility_polygoins =ext_funs.readIntervisibilityCSV()
+        "intervisibility_polygoins - reads from scenario"
+        self.intervisibility_polygoins=[]
+        for polygon in self.Polygons:
+            if "cover_" in (polygon['areaName']):
+                print(polygon['areaName'])
+                self.intervisibility_polygoins.append(polygon['polygon'])
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
+
     def Run(self):
         while True:
             if self.communicator.GetScenarioStatus() == ScenarioStatusEnum.RUNNING:
@@ -146,12 +156,6 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
-                        #DEBUG
-                        # for entity in self.blue_entity_list:
-                        #     HTN_entity = next(x for x in self.blue_entity_list if x.unit_name == (entity.unit_name))
-                        #     print(str(entity.unit_name))
-                        #     print(" observed: " + str(entity.observed) + " HTN observed: " + str(HTN_entity.observed))
-                        # print("---------------")
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             enemies_location_list=[]
@@ -162,6 +166,7 @@ class RFAScenarioManager:
                                 if losRespose_vec['distance'][0][response_index] < self.basicRanges['squad_eyes_range']:
                                     if losRespose_vec['los'][0][response_index] == True:
                                         enemy.last_seen_worldLocation = enemy.location
+                                        enemy.last_seen_velocity = enemy.velocity
                                         if enemy.is_alive==True:
                                             pass
                                             # logging.debug("Alive enemy: " + str(
@@ -208,7 +213,7 @@ class RFAScenarioManager:
                                                                       self.squadPosture,
                                                                       self.enemyDimensions,
                                                                       current_entity.current_location,
-                                                                      self.blue_entity_list_HTN,
+                                                                      copy.deepcopy(self.blue_entity_list_HTN),
                                                                       self.BluePolygonCentroid,
                                                                       self.AccuracyConfiguration,
                                                                       next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')['polygon'])
@@ -247,7 +252,7 @@ class RFAScenarioManager:
                     if self.first_enter:
                         self.first_enter = False
                         if ConfigManager.GetForceRemote() == "FALSE":
-                            spawnManager = SpawnManager_Nadav(self.communicator,self.spawnPos,self.AttackPos,self.squadsData)
+                            spawnManager = SpawnManager_Nadav(self.communicator,self.spawnPos,self.AttackPos,self.squadsData,self.intervisibility_polygoins)
                             spawnManager.Run()
                             self.entity_list = spawnManager.spawn_entity_list
                             self.green_entity_list=spawnManager.green_spawn_entity_list
@@ -304,12 +309,13 @@ class RFAScenarioManager:
                         #enemies_location_list = sorted(enemies_location_list, key=lambda x: (x.val, -x.distFromSquad), reverse=True)
                         enemies_location_list = sorted(enemies_location_list, key=lambda x: ( -x.distFromSquad), reverse=True)
                         ignore_location=enemies_location_list[0].location
-                        logging.debug("mobility agent try to skip: " + str(enemies_location_list[0].unit_name))
+                        logging.debug("mobility agent try to avoid enemy: " + str(enemies_location_list[0].unit_name))
                         paths = self.communicator.navigationPathPlan(current_entity.current_location
                                                                      , entity_next_state_and_action.position_location,
                                                                      ignore_location, self.config['mobility_avoidance_radius'],
                                                                      current_entity.unit_name, 2)
                     else:
+                        logging.debug("mobility agent does not try to avoid any enemy: ")
                         paths = self.communicator.navigationPathPlan(current_entity.current_location
                                                                      , entity_next_state_and_action.position_location,
                                                                      None,
@@ -547,6 +553,7 @@ class RFAScenarioManager:
                     if losRespose_vec['los'][0][response_index] == True:
                         enemy.observed = True
                         enemy.last_seen_worldLocation = enemy.location
+                        enemy.last_seen_velocity = enemy.velocity
                         current_entity.scanDetectionList.append(enemy)
                         "case of emergency drone detection:"
                         if enemy.is_alive==True:
@@ -605,6 +612,7 @@ class RFAScenarioManager:
                         live_unit=entity_previous_list[i]
                         break
                 current_entity.last_seen_worldLocation=live_unit.last_seen_worldLocation
+                current_entity.last_seen_velocity=live_unit.last_seen_velocity
                 current_entity.observed=live_unit.observed
                 if current_entity.classification == EntityTypeEnum.EITAN:
                     current_entity.val = 1

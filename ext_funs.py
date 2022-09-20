@@ -122,8 +122,8 @@ def getBluesDataFromVRFtoHTN(blueList):
         Newentity=HTNentity(entity.unit_name)
         Newentity.classification=entity.classification
         Newentity.location=entity.last_seen_worldLocation
+        Newentity.velocity = entity.last_seen_velocity
         Newentity.is_alive = entity.is_alive
-        Newentity.velocity = entity.velocity
         Newentity.val=val
         Newentity.observed=entity.observed
         entities.append(Newentity)
@@ -280,3 +280,32 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
                     "Significant change in world view has been observed by the squad")
                 return True
     return False
+
+def readIntervisibilityCSV():
+    intervisibility=open('Resources/PolygonsIntervisebility.csv')
+    intervisibility_config=csv.reader(intervisibility)
+    intervisibility_polygoins=[]
+    header = next(intervisibility_config)
+
+    for k,row in enumerate(intervisibility_config):
+        print(k)
+        i=0
+        instance={"name":[], "polygon":[]}
+        instance['name'] = str("cover")+ str("_")+str(k)
+        while 1:
+            if i>0:
+                seperate_string=str(row[i]).split(",")
+                point={
+                "latitude":seperate_string[0],
+                "longitude":seperate_string[1],
+                "altitude":seperate_string[2]
+                }
+                instance['polygon'].append(point)
+            i = i + 1
+            try:
+                if not row[i]:
+                    break
+            except:
+                break
+        intervisibility_polygoins.append(instance)
+    return intervisibility_polygoins

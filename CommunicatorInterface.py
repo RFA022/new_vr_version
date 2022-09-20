@@ -53,6 +53,8 @@ class EntityInfo: #Blue entites data structure
         self.observed=False
         self.val=None
         self.velocity=[]
+        self.last_seen_velocity=[]
+
 class ScenarioStatusEnum(Enum):
     NA = 0,
     RUNNING = 1,

@@ -8,13 +8,14 @@ import numpy as np
 import pandas as pd
 
 class SpawnManager_Nadav:
-    def __init__(self, communicator,spawnPos,AttackPos,squadsData):
+    def __init__(self, communicator,spawnPos,AttackPos,squadsData,intervisibility_polygoins):
         self.communicator = communicator
         self.spawn_entity_list = []
         self.green_spawn_entity_list = []
         self.spawnPos = spawnPos
         self.AttackPos = AttackPos
         self.squadsData=squadsData
+        self.intervisibility_polygoins=intervisibility_polygoins
         logging.debug(self.__class__.__name__ + " is initialized")
 
 
@@ -46,6 +47,11 @@ class SpawnManager_Nadav:
         # for i in range(len(self.spawnPos)):
         #     pos=[self.spawnPos[i]['latitude'],self.spawnPos[i]['longitude'],self.spawnPos[i]['altitude']]
         #     self.communicator.CreateEntitySimple('spawn point' + str(i),pos,2,'16:0:0:1:0:0:0')
+
+        # "Spawn intervisibility polygons"
+        # for i in range(len(self.intervisibility_polygoins)):
+        #         area=self.intervisibility_polygoins[i]['polygon']
+        #         self.communicator.CreateTacticalGraphicCommand('cover_' + str(i),2,area)
 
 
     def createRedSquad(self,LOC,squadName):
