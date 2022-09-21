@@ -63,6 +63,7 @@ class EntityCurrentState: #red entities
         self.preGameBool=True # boolean that active for first 10 seconds of the game. able to activate operations before first HTN search
         self.squad = None
         self.role = None
+        self.enemies_relative_direction=[]
 
 
 class HTNentity:

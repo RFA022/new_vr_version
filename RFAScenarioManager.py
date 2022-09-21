@@ -90,7 +90,7 @@ class RFAScenarioManager:
         self.intervisibility_polygoins=[]
         for polygon in self.Polygons:
             if "cover_" in (polygon['areaName']):
-                print(polygon['areaName'])
+                # print(polygon['areaName'])
                 self.intervisibility_polygoins.append(polygon['polygon'])
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
 
@@ -107,8 +107,6 @@ class RFAScenarioManager:
                 self.green_entity_list=self.CreateAndUpdateEntityList(self.green_entity_list)
                 #update Blue list from simulator and from last iteration (info about last seen location)
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
-
-                # print("blue 0 is:" + str(self.blue_entity_list[0].unit_name) + "it's velocity is:" + str(self.blue_entity_list[0].velocity))
 
                 "Check if Red won"
                 numberOfAliveBlues=getNumberofAliveEnemies(self.blue_entity_list)
@@ -158,7 +156,6 @@ class RFAScenarioManager:
                     if current_entity.role=="co": #commander roll type
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
-                            enemies_location_list=[]
                             losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
                                                            current_entity.current_location)
                             for response_index in range(len(losRespose_vec['los'][0])):
@@ -167,6 +164,23 @@ class RFAScenarioManager:
                                     if losRespose_vec['los'][0][response_index] == True:
                                         enemy.last_seen_worldLocation = enemy.location
                                         enemy.last_seen_velocity = enemy.velocity
+
+                                        "update current entity list of scalar multiplication between enemies velocities to distance vector"
+                                        if not any(item['unit_name'] == enemy.unit_name for item in
+                                                   current_entity.enemies_relative_direction):
+                                            current_entity.enemies_relative_direction.append({
+                                                "unit_name": enemy.unit_name,
+                                                "value": ext_funs.evaluate_relative_direction(
+                                                    current_entity.current_location, enemy.last_seen_worldLocation,
+                                                    enemy.last_seen_velocity)
+                                            })
+                                        else:
+                                            item = next(x for x in current_entity.enemies_relative_direction if
+                                                        x['unit_name'] == enemy.unit_name)
+                                            item['value']=ext_funs.evaluate_relative_direction(
+                                                    current_entity.current_location, enemy.last_seen_worldLocation,
+                                                    enemy.last_seen_velocity)
+
                                         if enemy.is_alive==True:
                                             pass
                                             # logging.debug("Alive enemy: " + str(
@@ -196,8 +210,15 @@ class RFAScenarioManager:
                                                         current_entity.movement_task_completed = 0
                                                         current_entity.movement_task_success = False
                                                         current_entity.COA = []
+                                else:
+                                    if any(item['unit_name'] == enemy.unit_name for item in
+                                               current_entity.enemies_relative_direction):
+                                        item = next(x for x in current_entity.enemies_relative_direction if
+                                                    x['unit_name'] == enemy.unit_name)
+                                        current_entity.enemies_relative_direction.remove(item)
                             # updating HTN list which is used when shooting:
                             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+                            print(current_entity.enemies_relative_direction)
                         if current_entity.COA==[]:
                             fire_bool=0
                             for testEntity in self.entity_list:
@@ -664,7 +685,7 @@ class RFAScenarioManager:
             current_entity.role             = entity_previous_list[k].role
             current_entity.HTNtarget        = entity_previous_list[k].HTNtarget
             current_entity.HTNbluesFrozen   = entity_previous_list[k].HTNbluesFrozen
-
+            current_entity.enemies_relative_direction = entity_previous_list[k].enemies_relative_direction
             #task statuses:
             current_entity.movement_task_completed = entity_previous_list[k].movement_task_completed
             current_entity.movement_task_success   = entity_previous_list[k].movement_task_success
@@ -739,7 +760,7 @@ class RFAScenarioManager:
             current_entity.power = entity_info_list[i].get("power")
             current_entity.entity_damage_state = entity_info_list[i].get("entity_damage_state")
             current_entity.global_id = entity_info_list[i].get("global_id")
-            current_entity.velocity = entity_info_list[i].get("velocity")
+            current_entity.velocity = entity_info_list[i].get("velocity")['ENUVelocityVector']
             list_to_return.append(current_entity)
 
         return list_to_return

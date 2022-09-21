@@ -309,3 +309,29 @@ def readIntervisibilityCSV():
                 break
         intervisibility_polygoins.append(instance)
     return intervisibility_polygoins
+
+def evaluate_relative_direction(source,destination,destination_velocity):
+    source_utm=(utm.from_latlon(source['latitude'],source['longitude']))
+    destination_utm=(utm.from_latlon(destination['latitude'],destination['longitude']))
+    utm_vector_destination_to_source= {
+                            "east":source_utm[0]-destination_utm[0],
+                            "north": source_utm[1]-destination_utm[1],
+                                       }
+    destination_unit_vector_velocity_norm=math.sqrt(destination_velocity['east']**2+destination_velocity['north']**2)
+    utm_unit_vector_destination_to_source_norm=math.sqrt(utm_vector_destination_to_source['east']**2+utm_vector_destination_to_source['north']**2)
+
+    if destination_unit_vector_velocity_norm!=0 and utm_unit_vector_destination_to_source_norm!=0:
+        destination_unit_vector_velocity={
+            "east": destination_velocity["east"]/destination_unit_vector_velocity_norm,
+            "north":destination_velocity["north"]/destination_unit_vector_velocity_norm
+        }
+
+        utm_unit_vector_destination_to_source={
+            "east": utm_vector_destination_to_source["east"]/utm_unit_vector_destination_to_source_norm,
+            "north":utm_vector_destination_to_source["north"]/utm_unit_vector_destination_to_source_norm
+        }
+        scalar_multiplication=destination_unit_vector_velocity['east']*utm_unit_vector_destination_to_source['east']+ \
+                              destination_unit_vector_velocity['north'] * utm_unit_vector_destination_to_source['north']
+        return scalar_multiplication
+    else:
+        return None
