@@ -8,7 +8,7 @@ javelin_range,1200,meter,
 ak47_range,100,meter,
 eitan_cg_height,1.2,meter,
 rePlan_range,200,meter,
-scan_time,0.5,second,
+scan_time,1,second,
 shoot_timeout_time,8,second,
 squad_speed,4.5,meter per second,
 move_type,path,type,destination / path

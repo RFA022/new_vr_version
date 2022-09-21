@@ -164,7 +164,6 @@ class RFAScenarioManager:
                                     if losRespose_vec['los'][0][response_index] == True:
                                         enemy.last_seen_worldLocation = enemy.location
                                         enemy.last_seen_velocity = enemy.velocity
-
                                         "update current entity list of scalar multiplication between enemies velocities to distance vector"
                                         if not any(item['unit_name'] == enemy.unit_name for item in
                                                    current_entity.enemies_relative_direction):
@@ -189,27 +188,6 @@ class RFAScenarioManager:
                                             pass
                                             # logging.debug("Destroyed enemy: " + str(
                                             #     enemy.unit_name) + " has been detected during motion")
-                                        if (ext_funs.checkIfWorldViewChangedEnough(enemy,current_entity,self.basicRanges,self.config)):
-                                            "REPLAN according to certain characteristics"
-                                            "-----------------DRONE CASE----------------"
-                                            if (enemy.classification == EntityTypeEnum.OHEZ) or \
-                                                    (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
-                                                    (enemy.classification == EntityTypeEnum.UNKNOWN):
-                                                        self.communicator.stopCommand(current_entity.unit_name)
-                                                        current_entity.state = PositionType.AT_OP
-                                                        current_entity.movement_task_completed = 0
-                                                        current_entity.movement_task_success = False
-                                                        current_entity.aim_list = []
-                                                        current_entity.aim_list.append(enemy)
-                                                        current_entity.COA=[]
-                                                        current_entity.COA.append((['shoot_op',str(enemy.unit_name)]))
-                                            "-----------------LAV CASE----------------"
-                                            if enemy.classification == EntityTypeEnum.EITAN:
-                                                        self.communicator.stopCommand(current_entity.unit_name)
-                                                        current_entity.state = PositionType.AT_OP
-                                                        current_entity.movement_task_completed = 0
-                                                        current_entity.movement_task_success = False
-                                                        current_entity.COA = []
                                 else:
                                     if any(item['unit_name'] == enemy.unit_name for item in
                                                current_entity.enemies_relative_direction):
@@ -218,7 +196,30 @@ class RFAScenarioManager:
                                         current_entity.enemies_relative_direction.remove(item)
                             # updating HTN list which is used when shooting:
                             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
-                            print(current_entity.enemies_relative_direction)
+                            for enemy in self.blue_entity_list_HTN:
+                                if (ext_funs.checkIfWorldViewChangedEnough(enemy, current_entity, self.basicRanges,
+                                                                           self.config)):
+                                    "REPLAN according to certain characteristics"
+                                    "-----------------DRONE CASE----------------"
+                                    if (enemy.classification == EntityTypeEnum.OHEZ) or \
+                                            (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                                            (enemy.classification == EntityTypeEnum.UNKNOWN):
+                                        self.communicator.stopCommand(current_entity.unit_name)
+                                        current_entity.state = PositionType.AT_OP
+                                        current_entity.movement_task_completed = 0
+                                        current_entity.movement_task_success = False
+                                        current_entity.aim_list = []
+                                        current_entity.aim_list.append(enemy)
+                                        current_entity.COA = []
+                                        current_entity.COA.append((['shoot_op', str(enemy.unit_name)]))
+                                    "-----------------LAV CASE----------------"
+                                    if enemy.classification == EntityTypeEnum.EITAN:
+                                        self.communicator.stopCommand(current_entity.unit_name)
+                                        current_entity.state = PositionType.AT_OP
+                                        current_entity.movement_task_completed = 0
+                                        current_entity.movement_task_success = False
+                                        current_entity.COA = []
+                            print("relative vector is: "+str(current_entity.enemies_relative_direction))
                         if current_entity.COA==[]:
                             fire_bool=0
                             for testEntity in self.entity_list:
@@ -251,9 +252,6 @@ class RFAScenarioManager:
                             # print(str(current_entity.HTNtarget))
                             "Update HTN frozen world view"
                             current_entity.HTNbluesFrozen=self.blue_entity_list_HTN
-                            # for entity in current_entity.HTNbluesFrozen:
-                            #     print("entity name: " + str(entity.unit_name))
-                            #     print("entity location: " + str(entity.location))
                         "Generates next state and action for Squad commander"
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos,self.spawnPos)

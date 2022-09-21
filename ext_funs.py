@@ -265,8 +265,29 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
         enemyDistance = getMetriDistance(current_entity.current_location, enemy.location)
         if enemyDistance < basicRanges['ak47_range']:
             logging.debug("Drone type enemy has been Detected in an emergency situation")
-            print(enemyDistance)
             return True
+        frozen_enemy = next(x for x in current_entity.HTNbluesFrozen if x.unit_name == enemy.unit_name)
+        frozen_enemy_velocity_norm = math.sqrt(
+            frozen_enemy.velocity['east'] ** 2 + frozen_enemy.velocity['north'] ** 2)
+        enemy_velocity_norm = math.sqrt(
+            enemy.velocity['east'] ** 2 + enemy.velocity['north'] ** 2)
+
+        if frozen_enemy_velocity_norm!=0 and enemy_velocity_norm!=0:
+            frozen_enemy_unit_vector_velocity = {
+                "east": frozen_enemy.velocity["east"] / frozen_enemy_velocity_norm,
+                "north": frozen_enemy.velocity["north"] / frozen_enemy_velocity_norm
+            }
+            enemy_unit_vector_velocity={
+                "east": enemy.velocity["east"]/enemy_velocity_norm,
+                "north":enemy.velocity["north"]/enemy_velocity_norm
+            }
+            scalar_multiplication = enemy_unit_vector_velocity['east'] * frozen_enemy_unit_vector_velocity[
+                'east'] + \
+                                    enemy_unit_vector_velocity['north'] * frozen_enemy_unit_vector_velocity[
+                                        'north']
+            print("scalar multi= " +str(scalar_multiplication))
+        # diff_angle=math.acos(scalar_multiplication)
+        # print(diff_angle)
     if (enemy.classification == EntityTypeEnum.EITAN):
         frozen_enemy = next(x for x in current_entity.HTNbluesFrozen if x.unit_name == enemy.unit_name)
         if calculate_blue_distance(current_entity.current_location, frozen_enemy) == None:
@@ -317,18 +338,18 @@ def evaluate_relative_direction(source,destination,destination_velocity):
                             "east":source_utm[0]-destination_utm[0],
                             "north": source_utm[1]-destination_utm[1],
                                        }
-    destination_unit_vector_velocity_norm=math.sqrt(destination_velocity['east']**2+destination_velocity['north']**2)
-    utm_unit_vector_destination_to_source_norm=math.sqrt(utm_vector_destination_to_source['east']**2+utm_vector_destination_to_source['north']**2)
+    destination_velocity_norm=math.sqrt(destination_velocity['east']**2+destination_velocity['north']**2)
+    utm_destination_to_source_norm=math.sqrt(utm_vector_destination_to_source['east']**2+utm_vector_destination_to_source['north']**2)
 
-    if destination_unit_vector_velocity_norm!=0 and utm_unit_vector_destination_to_source_norm!=0:
+    if destination_velocity_norm!=0 and utm_destination_to_source_norm!=0:
         destination_unit_vector_velocity={
-            "east": destination_velocity["east"]/destination_unit_vector_velocity_norm,
-            "north":destination_velocity["north"]/destination_unit_vector_velocity_norm
+            "east": destination_velocity["east"]/destination_velocity_norm,
+            "north":destination_velocity["north"]/destination_velocity_norm
         }
 
         utm_unit_vector_destination_to_source={
-            "east": utm_vector_destination_to_source["east"]/utm_unit_vector_destination_to_source_norm,
-            "north":utm_vector_destination_to_source["north"]/utm_unit_vector_destination_to_source_norm
+            "east": utm_vector_destination_to_source["east"]/utm_destination_to_source_norm,
+            "north":utm_vector_destination_to_source["north"]/utm_destination_to_source_norm
         }
         scalar_multiplication=destination_unit_vector_velocity['east']*utm_unit_vector_destination_to_source['east']+ \
                               destination_unit_vector_velocity['north'] * utm_unit_vector_destination_to_source['north']
