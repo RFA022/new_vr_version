@@ -36,9 +36,9 @@ class EntityInfo: #Blue entites data structure
         self.global_id = None
         self.hostility = Hostility.UNKNOWN
         self.location = {
-                    "latitude": 0,
-                    "longitude": 0,
-                    "altitude": 0
+                    "latitude": None,
+                    "longitude": None,
+                    "altitude": None
                 }
         self.last_seen_worldLocation = {
                     "latitude": None,
@@ -52,8 +52,16 @@ class EntityInfo: #Blue entites data structure
         self.entity_damage_state = None
         self.observed=False
         self.val=None
-        self.velocity=[]
-        self.last_seen_velocity=[]
+        self.velocity={
+                    "east": None,
+                    "north": None,
+                    "up": None
+                }
+        self.last_seen_velocity={
+                    "east": None,
+                    "north": None,
+                    "up": None
+                }
 
 
 class ScenarioStatusEnum(Enum):

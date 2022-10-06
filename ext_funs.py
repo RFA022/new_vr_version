@@ -67,7 +67,7 @@ def getLocation(state,index):
     return loc
 
 def getMetriDistance(loc1,loc2):
-    R = 6378000 # Eart Radius - m
+    R = 6371000 # Eart Radius - m
     dLat = (math.radians(float(loc1['latitude'])) - math.radians(float(loc2['latitude'])))
     dLon = (math.radians(float(loc1['longitude'])) - math.radians(float(loc2['longitude'])))
 
@@ -261,16 +261,28 @@ def getAccuracy(state,distance,maxRange,classification):
 def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
     if (enemy.classification == EntityTypeEnum.OHEZ) or \
             (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
-            (enemy.classification == EntityTypeEnum.UNKNOWN):
-        enemyDistance = getMetriDistance(current_entity.current_location, enemy.location)
-        if enemyDistance < basicRanges['ak47_range']:
+            (enemy.classification == EntityTypeEnum.UNKNOWN) and enemy.is_alive==True:
+        enemyDistance = calculate_blue_distance(current_entity.current_location, enemy)
+        #print(enemyDistance)
+        "case drone is too close:"
+        if enemyDistance!=None and enemyDistance<basicRanges['ak47_range']:
             logging.debug("Drone type enemy has been Detected in an emergency situation")
             return True
+        "case: changed direction:"
         frozen_enemy = next(x for x in current_entity.HTNbluesFrozen if x.unit_name == enemy.unit_name)
-        frozen_enemy_velocity_norm = math.sqrt(
-            frozen_enemy.velocity['east'] ** 2 + frozen_enemy.velocity['north'] ** 2)
-        enemy_velocity_norm = math.sqrt(
-            enemy.velocity['east'] ** 2 + enemy.velocity['north'] ** 2)
+        #print("velocity is" + str(frozen_enemy.velocity))
+        frozen_enemy_velocity_norm=0
+        enemy_velocity_norm=0
+        if (frozen_enemy.velocity['east']!=None) and \
+           (frozen_enemy.velocity['north'] != None) and \
+           (frozen_enemy.velocity['up'] != None):
+                frozen_enemy_velocity_norm = math.sqrt(
+                    frozen_enemy.velocity['east'] ** 2 + frozen_enemy.velocity['north'] ** 2)
+        if enemy.velocity['east'] != None and \
+           enemy.velocity['north'] != None and \
+           enemy.velocity['up'] != None:
+                enemy_velocity_norm = math.sqrt(
+                    enemy.velocity['east'] ** 2 + enemy.velocity['north'] ** 2)
 
         if frozen_enemy_velocity_norm!=0 and enemy_velocity_norm!=0:
             frozen_enemy_unit_vector_velocity = {
@@ -285,10 +297,10 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
                 'east'] + \
                                     enemy_unit_vector_velocity['north'] * frozen_enemy_unit_vector_velocity[
                                         'north']
-            print("scalar multi= " +str(scalar_multiplication))
+            #print("scalar multi= " +str(scalar_multiplication))
         # diff_angle=math.acos(scalar_multiplication)
         # print(diff_angle)
-    if (enemy.classification == EntityTypeEnum.EITAN):
+    if (enemy.classification == EntityTypeEnum.EITAN) and enemy.is_alive==True:
         frozen_enemy = next(x for x in current_entity.HTNbluesFrozen if x.unit_name == enemy.unit_name)
         if calculate_blue_distance(current_entity.current_location, frozen_enemy) == None:
             if calculate_blue_distance(current_entity.current_location, enemy) != None:

@@ -28,13 +28,13 @@ class SpawnManager_Nadav:
 
         "Spawn green entities"
 
-        # for i in range(2):
-        #     LOC_index = random.randrange(len(self.spawnPos))
-        #     LOC = self.spawnPos[LOC_index]
-        #     name=str("civil_")+(str(i))
-        #     choices=["3:1:225:3:0:1:0","3:1:225:3:1:1:0"] #civil male, civil female,
-        #     code=random.choice(choices)
-        #     self.createGreenEntity(LOC,name,code)
+        for i in range(4):
+            LOC_index = random.randrange(len(self.spawnPos))
+            LOC = self.spawnPos[LOC_index]
+            name=str("civil_")+(str(i))
+            choices=["3:1:225:3:0:1:0","3:1:225:3:1:1:0"] #civil male, civil female,
+            code=random.choice(choices)
+            self.createGreenEntity(LOC,name,code)
 
 
         "Spawn and attack points"

@@ -84,8 +84,8 @@ class RFAScenarioManager:
         self.AccuracyConfiguration = pd.read_csv('Resources/AccuracyConfiguration.csv',
                                                  header=[0],
                                                  index_col=[0])  # WeaponName column
-        "intervisibility_polygoins - reads from csv"
-        #self.intervisibility_polygoins =ext_funs.readIntervisibilityCSV()
+        #"intervisibility_polygoins - reads from csv"
+        # self.intervisibility_polygoins =ext_funs.readIntervisibilityCSV()
         "intervisibility_polygoins - reads from scenario"
         self.intervisibility_polygoins=[]
         for polygon in self.Polygons:
@@ -131,7 +131,7 @@ class RFAScenarioManager:
                         if current_entity.planBool == 1 and current_entity.COA == []:
                             current_entity.planBool = 0
                             current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
-                            logging.debug("New Plan has been given to " + str(current_entity.unit_name))
+                            #logging.debug("New Plan has been given to " + str(current_entity.unit_name))
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos, self.spawnPos)
                         "next task implementation"
@@ -219,7 +219,7 @@ class RFAScenarioManager:
                                         current_entity.movement_task_completed = 0
                                         current_entity.movement_task_success = False
                                         current_entity.COA = []
-                            print("relative vector is: "+str(current_entity.enemies_relative_direction))
+                            #print("relative vector is: "+str(current_entity.enemies_relative_direction))
                         if current_entity.COA==[]:
                             fire_bool=0
                             for testEntity in self.entity_list:
@@ -359,7 +359,7 @@ class RFAScenarioManager:
                                                                 , path
                                                                 , self.config['squad_speed'])
             elif current_entity.role=='ci':
-                logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
+                #logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
                                                        entity_next_state_and_action.position_location,
                                                        3)
@@ -472,7 +472,7 @@ class RFAScenarioManager:
                     break
             "Green unique operations"
         elif entity_next_state_and_action.wait_at_position==True:
-            logging.debug(str(current_entity.unit_name) + ": is waiting at Spwan position: " + str(current_entity.face))
+            # logging.debug(str(current_entity.unit_name) + ": is waiting at Spwan position: " + str(current_entity.face))
             current_entity.waitState=isWait.yes
             current_entity.waitTime=entity_next_state_and_action.waitTime
             current_entity.taskTime = time.time()
@@ -500,17 +500,20 @@ class RFAScenarioManager:
                         current_entity.state = PositionType.AT_OP
                     current_entity.movement_task_completed = 0
                     current_entity.movement_task_success = False
-                    logging.debug(
-                        "entity: " + str(
-                            current_entity.unit_name) + " changed state to " + str(
-                            current_entity.state.name) + " arrived to location ")
-                    logging.debug(
-                        "case 1 " + current_entity.unit_name.strip() + " Entity arrived to location " + str(
-                            current_entity.face) + " movement task completed")
+                    if current_entity.hostility == Hostility.OPPOSING:
+                        logging.debug(
+                            "entity: " + str(
+                                current_entity.unit_name) + " changed state to " + str(
+                                current_entity.state.name) + " arrived to location ")
+                        logging.debug(
+                            "case 1 " + current_entity.unit_name.strip() + " Entity arrived to location " + str(
+                                current_entity.face) + " movement task completed")
                 else:
-                    logging.debug(
-                        "case 2 - Task completed, didn't arrive to location, unwanted situation")
-
+                    if current_entity.hostility == Hostility.OPPOSING:
+                        logging.debug(
+                            "case 2 - Task completed, didn't arrive to location, unwanted situation")
+                    else:
+                        pass
         # check fire status if unit is shooting
         if current_entity.fireState == isFire.yes:
             # Check task status for fire tasks
@@ -608,7 +611,8 @@ class RFAScenarioManager:
         if current_entity.waitState == isWait.yes:
             currTime = time.time()
             if currTime - current_entity.taskTime > current_entity.waitTime:
-                logging.debug(str(current_entity.unit_name) + ": Wait time out")
+                if current_entity.hostility==Hostility.OPPOSING:
+                    logging.debug(str(current_entity.unit_name) + ": Wait time out")
                 current_entity.waitState=isWait.no
                 current_entity.waitTime=None
 
