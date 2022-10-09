@@ -189,6 +189,19 @@ def generatePointInPolygon(polygon):
                 'altitude': communicator.getHeightAboveSeaLevel(pnt[0],pnt[1])
             }
     return pnt
+def is_inside_polygon(pnt,polygon):
+    pntUTM =utm.from_latlon(pnt['latitude'], pnt['longitude'])
+    pntUTM_neto=Point([pntUTM[0],pntUTM[1]])
+    polygonUTM = []
+    polygonUTM_neto = []
+    for vertex in polygon:
+        polygonUTM.append(utm.from_latlon(vertex['latitude'], vertex['longitude']))
+    for i,vertex in enumerate(polygonUTM):
+        polygonUTM_neto.append([vertex[0],vertex[1]])
+    shapelyPolygonUTM=shapely.geometry.Polygon(polygonUTM_neto)
+    if shapelyPolygonUTM.contains(pntUTM_neto):
+        return True
+    return False
 def getPolygonCentroid(polygon) -> float:
         communicator = CommunicatorSingleton().obj
         list=[]
@@ -259,9 +272,9 @@ def getAccuracy(state,distance,maxRange,classification):
     return float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])
 
 def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
-    if (enemy.classification == EntityTypeEnum.OHEZ) or \
+    if ((enemy.classification == EntityTypeEnum.OHEZ) or \
             (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
-            (enemy.classification == EntityTypeEnum.UNKNOWN) and enemy.is_alive==True:
+            (enemy.classification == EntityTypeEnum.UNKNOWN)) and enemy.is_alive==True:
         enemyDistance = calculate_blue_distance(current_entity.current_location, enemy)
         #print(enemyDistance)
         "case drone is too close:"
@@ -304,13 +317,13 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
         frozen_enemy = next(x for x in current_entity.HTNbluesFrozen if x.unit_name == enemy.unit_name)
         if calculate_blue_distance(current_entity.current_location, frozen_enemy) == None:
             if calculate_blue_distance(current_entity.current_location, enemy) != None:
-                logging.debug("New Armored vehicle type enemy has been detected")
+                logging.debug("New Armored vehicle type enemy has been detected: " + str(enemy.unit_name))
                 return True
         else:
             distanceDifference = getMetriDistance(enemy.location, frozen_enemy.location)
             if distanceDifference > config['rePlan_range']:
                 logging.debug(
-                    "Significant change in world view has been observed by the squad")
+                    "Significant change in world view has been observed by the squad: " + str(enemy.unit_name))
                 return True
     return False
 

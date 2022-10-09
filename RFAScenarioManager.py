@@ -12,6 +12,7 @@ import time
 import copy
 import htnModel
 import htnGreenModel
+import htnEmergencyModel
 import pandas as pd
 import pymap3d as pm
 from ext_funs import *
@@ -154,6 +155,13 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
+                        htnEmergencyModel.findplan(self.basicRanges,
+                                                   self.squadPosture,
+                                                   self.enemyDimensions,
+                                                   current_entity.current_location,
+                                                   copy.deepcopy(self.blue_entity_list_HTN),
+                                                   self.AccuracyConfiguration,
+                                                   self.intervisibility_polygoins)
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
@@ -220,6 +228,7 @@ class RFAScenarioManager:
                                         current_entity.movement_task_success = False
                                         current_entity.COA = []
                             #print("relative vector is: "+str(current_entity.enemies_relative_direction))
+                        "plan new plan - can't plan if one or more entites is at fire position"
                         if current_entity.COA==[]:
                             fire_bool=0
                             for testEntity in self.entity_list:
@@ -228,7 +237,7 @@ class RFAScenarioManager:
                             # print("fire bool is" + str(fire_bool))
                             if fire_bool==0:
                                 current_entity.planBool=1
-                        "Plan new plan if COA is empty and planbool =1"
+                        "Plan new plan if COA is empty and planbool = 1"
                         if current_entity.planBool==1 and current_entity.COA==[]:
                             current_entity.planBool=0
                             current_entity.COA=htnModel.findplan(self.basicRanges,
@@ -551,7 +560,8 @@ class RFAScenarioManager:
                         current_entity.fire_task_completed = 0
                         current_entity.fire_task_success = False
                         #abort task: needed to be checked
-                        #self.communicator.stopCommand(current_entity.unit_name)
+                        if current_entity.role=="co":
+                            self.communicator.stopCommand(current_entity.unit_name)
             if current_entity.fire_task_success == False:
                 curr_time = time.time()
                 waitingTime = self.config['shoot_timeout_time']
@@ -563,7 +573,8 @@ class RFAScenarioManager:
                     current_entity.fire_task_completed = 0
                     current_entity.fire_task_success = False
                     # abort task: needed to be checked
-                    #self.communicator.stopCommand(current_entity.unit_name)
+                    if current_entity.role == "co":
+                        self.communicator.stopCommand(current_entity.unit_name)
         if current_entity.scanState==isScan.yes:
             breakBool=0
             losRespose_vec = losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,

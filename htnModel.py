@@ -239,10 +239,10 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.AccuracyConfiguration=AccuracyConfiguration
 
     #pyhop.print_state_simple(init_state)
-    debug_level = 0
+    debug_level = 2
     if debug_level >= 2:
         print("init state is:")
-        pyhop.print_state(init_state)
+        pyhop.print_state_simple(init_state)
     print("Begin Planning Red:")
     plan = pyhop.shop_m(init_state, [('attack', 'me')],debug_level) #third parameter is debug mode
     print(plan)

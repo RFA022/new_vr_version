@@ -153,7 +153,8 @@ def print_state_simple(state, indent=4):
                     name !='distance_positions_from_BluePolygonCentroid' and \
                     name != 'htnConfig' and \
                     name != 'config' and \
-                    name !='AccuracyConfiguration':
+                    name !='AccuracyConfiguration' and\
+                    name != 'bluePolygon':
 
                 for x in range(indent): sys.stdout.write(' ')
                 sys.stdout.write(state.__name__ + '.' + name)
@@ -336,7 +337,7 @@ def seek_mcts_plan(state, tasks, plan, depth,debug_level):
             newstate = operator(copy.deepcopy(state), *task1[1:])
             ###print('depth {} new state:'.format(depth))
             if debug_level>=2:
-                print_state(newstate)
+                print_state_simple(newstate)
             if newstate:
                 solution = seek_mcts_plan(newstate, tasks[1:], plan + [task1], depth + 1,debug_level)
                 if solution != False:
