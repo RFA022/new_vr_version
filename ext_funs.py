@@ -279,7 +279,7 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
         #print(enemyDistance)
         "case drone is too close:"
         if enemyDistance!=None and enemyDistance<basicRanges['ak47_range']:
-            logging.debug("Drone type enemy has been Detected in an emergency situation")
+            logging.debug("Drone type enemy has been Detected in an emergency situation:" + str(enemy.unit_name) + " " + str(enemy.is_alive))
             return True
         "case: changed direction:"
         frozen_enemy = next(x for x in current_entity.HTNbluesFrozen if x.unit_name == enemy.unit_name)

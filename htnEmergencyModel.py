@@ -21,8 +21,8 @@ def e_continue_as_usual_m(state,a):
         return False
     return [('e_continue_as_usual_op',a)]
 
-pyhop.declare_methods('energency', e_continue_as_usual_m,e_go_to_cover_m,e_shoot_from_position_m)
-pyhop.declare_original_methods('energency', e_continue_as_usual_m,e_go_to_cover_m,e_shoot_from_position_m)
+# pyhop.declare_methods('energency', e_continue_as_usual_m,e_go_to_cover_m,e_shoot_from_position_m)
+# pyhop.declare_original_methods('energency', e_continue_as_usual_m,e_go_to_cover_m,e_shoot_from_position_m)
 
 def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,AccuracyConfiguration,intervisibility_polygoins):
     init_state = pyhop.State('init_state')

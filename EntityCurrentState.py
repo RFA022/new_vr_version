@@ -57,7 +57,7 @@ class EntityCurrentState: #red entities
         self.face=None
         self.HTNtarget=None
         self.HTNbluesFrozen=[]
-        self.planBool=1
+        self.planBool=0
         self.aim_list=[]
         self.taskTime=9223372036854775807 #maxint python 2
         self.preGameBool=True # boolean that active for first 10 seconds of the game. able to activate operations before first HTN search

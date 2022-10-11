@@ -155,13 +155,13 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
-                        htnEmergencyModel.findplan(self.basicRanges,
-                                                   self.squadPosture,
-                                                   self.enemyDimensions,
-                                                   current_entity.current_location,
-                                                   copy.deepcopy(self.blue_entity_list_HTN),
-                                                   self.AccuracyConfiguration,
-                                                   self.intervisibility_polygoins)
+                        # htnEmergencyModel.findplan(self.basicRanges,
+                        #                            self.squadPosture,
+                        #                            self.enemyDimensions,
+                        #                            current_entity.current_location,
+                        #                            copy.deepcopy(self.blue_entity_list_HTN),
+                        #                            self.AccuracyConfiguration,
+                        #                            self.intervisibility_polygoins)
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
@@ -235,10 +235,11 @@ class RFAScenarioManager:
                                 if testEntity.fireState == isFire.yes:
                                     fire_bool = 1
                             # print("fire bool is" + str(fire_bool))
-                            if fire_bool==0:
+                            if fire_bool==0 and current_entity.scanState==isScan.no: #No one is shooting and
                                 current_entity.planBool=1
                         "Plan new plan if COA is empty and planbool = 1"
                         if current_entity.planBool==1 and current_entity.COA==[]:
+                            print(current_entity.scanState)
                             current_entity.planBool=0
                             current_entity.COA=htnModel.findplan(self.basicRanges,
                                                                       self.squadPosture,
