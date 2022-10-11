@@ -534,7 +534,7 @@ def calValue(state,subtask):
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is: scan'  + ", retval is: " + str(ret_val_scan))
         "Value relative to Exposure"
         state_copy=deepcopy(state)
-        knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy)
+        knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration)
         if knownEnemies > 0:
             totalprobability = 1
             for accuracy in accuracyVec:
@@ -567,7 +567,7 @@ def calValue(state,subtask):
              shooterClassification = "SOLDIER"
              ratio=(state.weights['ohez_val'])/(state.weights['ohez_val']+state.weights['eitan_val'])
         maxRange = float(state.AccuracyConfiguration.at[str(shooterClassification), 'MAX_RANGE'])
-        accuracy = ext_funs.getAccuracy(state, blueDistance, maxRange, shooterClassification)
+        accuracy = ext_funs.getAccuracy(state.AccuracyConfiguration, blueDistance, maxRange, shooterClassification)
         ret_val = state.weights['shoot_enemy_op']*100*accuracy*ratio
         if flag ==1:
              ret_val=0.00001

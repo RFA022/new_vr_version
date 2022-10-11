@@ -227,7 +227,14 @@ class RFAScenarioManager:
                                         current_entity.movement_task_completed = 0
                                         current_entity.movement_task_success = False
                                         current_entity.COA = []
-                            #print("relative vector is: "+str(current_entity.enemies_relative_direction))
+
+                            print("----vulnerability----")
+                            print("relative vector is: "+str(current_entity.enemies_relative_direction))
+                            #check vulnerability:
+                            print("--vulnerability assesment function--")
+                            print("total vulnerability :" +str(ext_funs.assess_vulnerability(self.blue_entity_list_HTN, current_entity,
+                                                                self.AccuracyConfiguration)))
+                            print("--------------")
                         "plan new plan - can't plan if one or more entites is at fire position"
                         if current_entity.COA==[]:
                             fire_bool=0
@@ -235,7 +242,7 @@ class RFAScenarioManager:
                                 if testEntity.fireState == isFire.yes:
                                     fire_bool = 1
                             # print("fire bool is" + str(fire_bool))
-                            if fire_bool==0 and current_entity.scanState==isScan.no: #No one is shooting and
+                            if fire_bool==0 and current_entity.scanState==isScan.no: #No one is shooting and scanning when replan
                                 current_entity.planBool=1
                         "Plan new plan if COA is empty and planbool = 1"
                         if current_entity.planBool==1 and current_entity.COA==[]:
@@ -304,7 +311,8 @@ class RFAScenarioManager:
         # Change nextPos:
         if entity_next_state_and_action.nextPos != None:
             current_entity.face = entity_next_state_and_action.nextPos
-            logging.debug("Next destination has been changed to: " + str(current_entity.face))
+            if current_entity.hostility==Hostility.OPPOSING:
+                logging.debug("Next destination has been changed to: " + str(current_entity.face))
 
         # Move entity:
         elif entity_next_state_and_action.move_pos:

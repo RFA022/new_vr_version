@@ -229,7 +229,7 @@ def getPolygonCentroid(polygon) -> float:
         return centroid
 
 "HTN FUNCTION ONLY"
-def getAccumulatedHitProbability(state):
+def getAccumulatedHitProbability(state,AccuracyConfiguration):
     totalAccuracy = 0
     knownEnemies = 0
     accuracyVec=[]
@@ -242,14 +242,14 @@ def getAccumulatedHitProbability(state):
                 #if enemy has been observed statistically we assume its in the middle of the polygon
                 blueDistance=getMetriDistance(state.loc, state.BluePolygonCentroid)
             else:
-                blueAccuracy = getAccuracy(state,blueDistance,maxRange,classification)
+                blueAccuracy = getAccuracy(AccuracyConfiguration,blueDistance,maxRange,classification)
                 totalAccuracy += blueAccuracy
                 knownEnemies += 1
                 accuracyVec.append(blueAccuracy)
     return (knownEnemies,totalAccuracy,accuracyVec)
 
 "HTN FUNCTION ONLY"
-def getAccuracy(state,distance,maxRange,classification):
+def getAccuracy(AccuracyConfiguration,distance,maxRange,classification):
     rangeString = None
     if distance <= 15:
         rangeString = "TO_15"
@@ -269,7 +269,7 @@ def getAccuracy(state,distance,maxRange,classification):
         rangeString = "AFTER_MAX_RANGE"
     #Debug
     #print("classification is: " + str(classification) + ". disntace is: " + str(distance)+ ". str is: " + str(rangeString) +". accuracy is:" + str(float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])))
-    return float(state.AccuracyConfiguration.at[str(classification), str(rangeString)])
+    return float(AccuracyConfiguration.at[str(classification), str(rangeString)])
 
 def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
     if ((enemy.classification == EntityTypeEnum.OHEZ) or \
@@ -381,3 +381,35 @@ def evaluate_relative_direction(source,destination,destination_velocity):
         return scalar_multiplication
     else:
         return None
+
+def assess_vulnerability(blueList,current_entity,AccuracyConfiguration):
+    vulnerability=0
+    print("relative direction: " + str(current_entity.enemies_relative_direction))
+    for k, enemy in enumerate(blueList):
+        if enemy.is_alive == True and enemy.observed == True:
+            classification = enemy.classification.name
+            maxRange = float(AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
+            blueDistance = calculate_blue_distance(current_entity.current_location,enemy)
+            if blueDistance==None: #Ignore None Distance
+                pass
+            else:
+                print(enemy.unit_name)
+                blueAccuracy = getAccuracy(AccuracyConfiguration,blueDistance,maxRange,classification)
+                print("distance is: " + str(blueDistance))
+                print("accuracy is: " + str(blueAccuracy))
+
+                if not any(item['unit_name'] == enemy.unit_name for item in
+                           current_entity.enemies_relative_direction):
+                    scalar_multiplication_value = 0.5 #case we cant see enemy right now - we assume not very situation
+                else:
+                    scalar_multiplication_entity = next(x for x in current_entity.enemies_relative_direction if
+                                                        x['unit_name'] == enemy.unit_name)
+                    if scalar_multiplication_entity['value']!= None:
+                        scalar_multiplication_value = scalar_multiplication_entity['value']
+                    else:
+                        scalar_multiplication_value=0.5 # case that squad or enemy are at halt - we assume not very dengerous situation
+                if scalar_multiplication_value<0:
+                    scalar_multiplication_value=0 #deadzone
+                print("scalar_multiplication_value:" + str(scalar_multiplication_value))
+                vulnerability += blueAccuracy*scalar_multiplication_value
+    return (vulnerability)

@@ -52,7 +52,7 @@ def scan_for_enemy_and_assess_exposure_op(state,a):
 
     # Exposure Assesment part:
     state_copy = deepcopy(state)
-    knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy)
+    knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration)
     if knownEnemies > 0:
         totalprobability = 1
         for accuracy in accuracyVec:
@@ -239,7 +239,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.AccuracyConfiguration=AccuracyConfiguration
 
     #pyhop.print_state_simple(init_state)
-    debug_level = 2
+    debug_level = 0
     if debug_level >= 2:
         print("init state is:")
         pyhop.print_state_simple(init_state)
