@@ -393,10 +393,10 @@ def assess_vulnerability(blueList,current_entity,AccuracyConfiguration):
             if blueDistance==None: #Ignore None Distance
                 pass
             else:
-                print(enemy.unit_name)
+                # print(enemy.unit_name)
                 blueAccuracy = getAccuracy(AccuracyConfiguration,blueDistance,maxRange,classification)
-                print("distance is: " + str(blueDistance))
-                print("accuracy is: " + str(blueAccuracy))
+                # print("distance is: " + str(blueDistance))
+                # print("accuracy is: " + str(blueAccuracy))
 
                 if not any(item['unit_name'] == enemy.unit_name for item in
                            current_entity.enemies_relative_direction):
@@ -410,6 +410,14 @@ def assess_vulnerability(blueList,current_entity,AccuracyConfiguration):
                         scalar_multiplication_value=0.5 # case that squad or enemy are at halt - we assume not very dengerous situation
                 if scalar_multiplication_value<0:
                     scalar_multiplication_value=0 #deadzone
-                print("scalar_multiplication_value:" + str(scalar_multiplication_value))
+                # print("scalar_multiplication_value:" + str(scalar_multiplication_value))
                 vulnerability += blueAccuracy*scalar_multiplication_value
     return (vulnerability)
+
+"Emerrgency HTN"
+def update_enemies_relative_direction(loc,bluelist,enemies_relative_direction):
+    enemies_relative_direction_copy=copy.deepcopy(enemies_relative_direction)
+    for item in enemies_relative_direction_copy:
+        enemy = next(x for x in bluelist if x.unit_name==item['unit_name'])
+        item['value']=evaluate_relative_direction(loc, enemy.location, enemy.velocity)
+    return enemies_relative_direction_copy

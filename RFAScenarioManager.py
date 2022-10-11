@@ -155,13 +155,6 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
-                        # htnEmergencyModel.findplan(self.basicRanges,
-                        #                            self.squadPosture,
-                        #                            self.enemyDimensions,
-                        #                            current_entity.current_location,
-                        #                            copy.deepcopy(self.blue_entity_list_HTN),
-                        #                            self.AccuracyConfiguration,
-                        #                            self.intervisibility_polygoins)
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
@@ -228,13 +221,21 @@ class RFAScenarioManager:
                                         current_entity.movement_task_success = False
                                         current_entity.COA = []
 
-                            print("----vulnerability----")
-                            print("relative vector is: "+str(current_entity.enemies_relative_direction))
-                            #check vulnerability:
-                            print("--vulnerability assesment function--")
-                            print("total vulnerability :" +str(ext_funs.assess_vulnerability(self.blue_entity_list_HTN, current_entity,
-                                                                self.AccuracyConfiguration)))
-                            print("--------------")
+                            # print("----vulnerability----")
+                            # print("relative vector is: "+str(current_entity.enemies_relative_direction))
+                            # #check vulnerability:
+                            # print("--vulnerability assesment function--")
+                            # print("total vulnerability :" +str(ext_funs.assess_vulnerability(self.blue_entity_list_HTN, current_entity,
+                            #                                     self.AccuracyConfiguration)))
+                            # print("--------------")
+                            htnEmergencyModel.findplan(self.basicRanges,
+                                                       self.squadPosture,
+                                                       self.enemyDimensions,
+                                                       current_entity.current_location,
+                                                       current_entity.enemies_relative_direction,
+                                                       copy.deepcopy(self.blue_entity_list_HTN),
+                                                       self.AccuracyConfiguration,
+                                                       self.intervisibility_polygoins)
                         "plan new plan - can't plan if one or more entites is at fire position"
                         if current_entity.COA==[]:
                             fire_bool=0
