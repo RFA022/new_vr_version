@@ -225,8 +225,8 @@ class RFAScenarioManager:
                             # print("relative vector is: "+str(current_entity.enemies_relative_direction))
                             # #check vulnerability:
                             # print("--vulnerability assesment function--")
-                            # print("total vulnerability :" +str(ext_funs.assess_vulnerability(self.blue_entity_list_HTN, current_entity,
-                            #                                     self.AccuracyConfiguration)))
+                            print("total vulnerability :" +str(ext_funs.assess_vulnerability(self.blue_entity_list_HTN, current_entity,
+                                                                self.AccuracyConfiguration)))
                             # print("--------------")
                             htnEmergencyModel.findplan(self.basicRanges,
                                                        self.squadPosture,

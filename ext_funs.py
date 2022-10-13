@@ -384,9 +384,10 @@ def evaluate_relative_direction(source,destination,destination_velocity):
 
 def assess_vulnerability(blueList,current_entity,AccuracyConfiguration):
     vulnerability=0
+    vulnerability_vec=[]
     print("relative direction: " + str(current_entity.enemies_relative_direction))
     for k, enemy in enumerate(blueList):
-        if enemy.is_alive == True and enemy.observed == True:
+        if enemy.is_alive == True:
             classification = enemy.classification.name
             maxRange = float(AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
             blueDistance = calculate_blue_distance(current_entity.current_location,enemy)
@@ -397,22 +398,33 @@ def assess_vulnerability(blueList,current_entity,AccuracyConfiguration):
                 blueAccuracy = getAccuracy(AccuracyConfiguration,blueDistance,maxRange,classification)
                 # print("distance is: " + str(blueDistance))
                 # print("accuracy is: " + str(blueAccuracy))
-
                 if not any(item['unit_name'] == enemy.unit_name for item in
                            current_entity.enemies_relative_direction):
-                    scalar_multiplication_value = 0.5 #case we cant see enemy right now - we assume not very situation
+                    scalar_multiplication_value = 0 #case squad cant see enemy right now - we assume not a dangerous situation
                 else:
                     scalar_multiplication_entity = next(x for x in current_entity.enemies_relative_direction if
                                                         x['unit_name'] == enemy.unit_name)
-                    if scalar_multiplication_entity['value']!= None:
-                        scalar_multiplication_value = scalar_multiplication_entity['value']
+                    if enemy.classification!=EntityTypeEnum.EITAN: #Drone case
+                        if scalar_multiplication_entity['value']!= None:
+                            scalar_multiplication_value = scalar_multiplication_entity['value']
+                            if scalar_multiplication_entity['value']>0.95 and blueAccuracy>0.00: #drone is defenetly heading towards me
+                                blueAccuracy=1.0
+                        elif ((enemy.velocity['east'])**2 + enemy.velocity['north']**2) <0.05: # case that enemy is at halt - we assume not very dengerous situation
+                            scalar_multiplication_value=0
+                        else:
+                            scalar_multiplication_value=1.0 #case squad is at halt
                     else:
-                        scalar_multiplication_value=0.5 # case that squad or enemy are at halt - we assume not very dengerous situation
+                        scalar_multiplication_value=1.0
                 if scalar_multiplication_value<0:
                     scalar_multiplication_value=0 #deadzone
                 # print("scalar_multiplication_value:" + str(scalar_multiplication_value))
                 vulnerability += blueAccuracy*scalar_multiplication_value
-    return (vulnerability)
+                vulnerability_vec.append(blueAccuracy*scalar_multiplication_value)
+    miss_probability = 1
+    for probability in vulnerability_vec:
+        miss_probability=miss_probability*(1-probability)
+    self_hit_probability=1-miss_probability
+    return self_hit_probability
 
 "Emerrgency HTN"
 def update_enemies_relative_direction(loc,bluelist,enemies_relative_direction):
@@ -421,3 +433,25 @@ def update_enemies_relative_direction(loc,bluelist,enemies_relative_direction):
         enemy = next(x for x in bluelist if x.unit_name==item['unit_name'])
         item['value']=evaluate_relative_direction(loc, enemy.location, enemy.velocity)
     return enemies_relative_direction_copy
+
+def generate_interior_polygon_point(vertex,centroid):
+    communicator = CommunicatorSingleton().obj
+    vertex_utm=utm.from_latlon(vertex['latitude'],vertex['longitude'])
+    centroid_utm=utm.from_latlon(centroid['latitude'],centroid['longitude'])
+    utm_vector_vertex_to_centroid= {
+                            "east":centroid_utm[0]-vertex_utm[0],
+                            "north": centroid_utm[1]-vertex_utm[1],
+                                       }
+    utm_vector_vertex_to_centroid_norm=math.sqrt(utm_vector_vertex_to_centroid['east']**2+utm_vector_vertex_to_centroid['north']**2)
+    interior_point_utm= {"east":None,"north":None,}
+    interior_point_utm['east']=vertex_utm[0]+ 10*utm_vector_vertex_to_centroid_norm
+    interior_point_utm['north'] = vertex_utm[1] + 10 * utm_vector_vertex_to_centroid_norm[1]
+    interior_point_LatLong = utm.to_latlon(interior_point_utm['east'], interior_point_utm['north'], vertex_utm[2], vertex_utm[3])
+    alt = communicator.getHeightAboveSeaLevel(interior_point_LatLong[0], interior_point_LatLong[1])
+    interior_point = {
+        'latitude': interior_point_LatLong[0],
+        'longitude': interior_point_LatLong[1],
+        'altitude': alt
+    }
+    print("fin")
+    return interior_point
