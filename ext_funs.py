@@ -434,7 +434,7 @@ def update_enemies_relative_direction(loc,bluelist,enemies_relative_direction):
         item['value']=evaluate_relative_direction(loc, enemy.location, enemy.velocity)
     return enemies_relative_direction_copy
 
-def generate_interior_polygon_point(vertex,centroid):
+def generate_interior_polygon_point(vertex,centroid,polygon):
     communicator = CommunicatorSingleton().obj
     vertex_utm=utm.from_latlon(vertex['latitude'],vertex['longitude'])
     centroid_utm=utm.from_latlon(centroid['latitude'],centroid['longitude'])
@@ -443,9 +443,14 @@ def generate_interior_polygon_point(vertex,centroid):
                             "north": centroid_utm[1]-vertex_utm[1],
                                        }
     utm_vector_vertex_to_centroid_norm=math.sqrt(utm_vector_vertex_to_centroid['east']**2+utm_vector_vertex_to_centroid['north']**2)
+
+    utm_unit_vector_vertex_to_centroid_norm = {
+        "east": utm_vector_vertex_to_centroid["east"] / utm_vector_vertex_to_centroid_norm,
+        "north": utm_vector_vertex_to_centroid["north"] / utm_vector_vertex_to_centroid_norm
+    }
     interior_point_utm= {"east":None,"north":None,}
-    interior_point_utm['east']=vertex_utm[0]+ 10*utm_vector_vertex_to_centroid_norm
-    interior_point_utm['north'] = vertex_utm[1] + 10 * utm_vector_vertex_to_centroid_norm[1]
+    interior_point_utm['east']=vertex_utm[0] + 10 * utm_unit_vector_vertex_to_centroid_norm['east']
+    interior_point_utm['north'] = vertex_utm[1] + 10 * utm_unit_vector_vertex_to_centroid_norm['north']
     interior_point_LatLong = utm.to_latlon(interior_point_utm['east'], interior_point_utm['north'], vertex_utm[2], vertex_utm[3])
     alt = communicator.getHeightAboveSeaLevel(interior_point_LatLong[0], interior_point_LatLong[1])
     interior_point = {
@@ -453,5 +458,22 @@ def generate_interior_polygon_point(vertex,centroid):
         'longitude': interior_point_LatLong[1],
         'altitude': alt
     }
+    communicator.CreateEntitySimple('vertex', vertex, 2, '16:0:0:1:0:0:0')
+    communicator.CreateEntitySimple('centroid', centroid, 2, '16:0:0:1:0:0:0')
+    communicator.CreateEntitySimple('interior pt', interior_point, 2, '16:0:0:1:0:0:0')
     print("fin")
+    is_interior_point_valid_related_to_its_vertex(vertex,interior_point)
+    if is_inside_polygon(interior_point,polygon):
+         print("in polygon")
+    else:
+         print("not in polygon")
     return interior_point
+
+def is_interior_point_valid_related_to_its_vertex(vertex,point): #Assume flat surface
+    communicator = CommunicatorSingleton().obj
+    vertex_height = communicator.getHeightAboveSeaLevel(vertex['latitude'], vertex['longitude'])
+    point_height = communicator.getHeightAboveSeaLevel(point['latitude'], point['longitude'])
+    if abs(vertex_height-point_height)> 1:
+        return False
+    else:
+        return True

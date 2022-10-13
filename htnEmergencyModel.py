@@ -29,7 +29,7 @@ def e_go_to_cover_m(state,a):
                 state.closest_cover_point=vertex
                 minimum_polygon=polygon
     minimum_polygon_centroid=ext_funs.getPolygonCentroid(minimum_polygon)
-    ext_funs.generate_interior_polygon_point(state.closest_cover_point,minimum_polygon_centroid)
+    ext_funs.generate_interior_polygon_point(state.closest_cover_point,minimum_polygon_centroid,minimum_polygon)
     print("finish)")
     return [('e_move_to_closest_cover_op', a),('e_be_in_cover')]
 
