@@ -1,4 +1,5 @@
 import copy
+import random
 
 import numpy as np
 import csv
@@ -382,15 +383,15 @@ def evaluate_relative_direction(source,destination,destination_velocity):
     else:
         return None
 
-def assess_vulnerability(blueList,current_entity,AccuracyConfiguration):
+def assess_vulnerability(loc,enemies_relative_direction,blueList,AccuracyConfiguration):
     vulnerability=0
     vulnerability_vec=[]
-    print("relative direction: " + str(current_entity.enemies_relative_direction))
+    print("relative direction: " + str(enemies_relative_direction))
     for k, enemy in enumerate(blueList):
         if enemy.is_alive == True:
             classification = enemy.classification.name
             maxRange = float(AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
-            blueDistance = calculate_blue_distance(current_entity.current_location,enemy)
+            blueDistance = calculate_blue_distance(loc,enemy)
             if blueDistance==None: #Ignore None Distance
                 pass
             else:
@@ -399,10 +400,10 @@ def assess_vulnerability(blueList,current_entity,AccuracyConfiguration):
                 # print("distance is: " + str(blueDistance))
                 # print("accuracy is: " + str(blueAccuracy))
                 if not any(item['unit_name'] == enemy.unit_name for item in
-                           current_entity.enemies_relative_direction):
+                           enemies_relative_direction):
                     scalar_multiplication_value = 0 #case squad cant see enemy right now - we assume not a dangerous situation
                 else:
-                    scalar_multiplication_entity = next(x for x in current_entity.enemies_relative_direction if
+                    scalar_multiplication_entity = next(x for x in enemies_relative_direction if
                                                         x['unit_name'] == enemy.unit_name)
                     if enemy.classification!=EntityTypeEnum.EITAN: #Drone case
                         if scalar_multiplication_entity['value']!= None:
@@ -438,42 +439,86 @@ def generate_interior_polygon_point(vertex,centroid,polygon):
     communicator = CommunicatorSingleton().obj
     vertex_utm=utm.from_latlon(vertex['latitude'],vertex['longitude'])
     centroid_utm=utm.from_latlon(centroid['latitude'],centroid['longitude'])
-    utm_vector_vertex_to_centroid= {
-                            "east":centroid_utm[0]-vertex_utm[0],
-                            "north": centroid_utm[1]-vertex_utm[1],
-                                       }
-    utm_vector_vertex_to_centroid_norm=math.sqrt(utm_vector_vertex_to_centroid['east']**2+utm_vector_vertex_to_centroid['north']**2)
 
-    utm_unit_vector_vertex_to_centroid_norm = {
-        "east": utm_vector_vertex_to_centroid["east"] / utm_vector_vertex_to_centroid_norm,
-        "north": utm_vector_vertex_to_centroid["north"] / utm_vector_vertex_to_centroid_norm
-    }
-    interior_point_utm= {"east":None,"north":None,}
-    interior_point_utm['east']=vertex_utm[0] + 10 * utm_unit_vector_vertex_to_centroid_norm['east']
-    interior_point_utm['north'] = vertex_utm[1] + 10 * utm_unit_vector_vertex_to_centroid_norm['north']
-    interior_point_LatLong = utm.to_latlon(interior_point_utm['east'], interior_point_utm['north'], vertex_utm[2], vertex_utm[3])
-    alt = communicator.getHeightAboveSeaLevel(interior_point_LatLong[0], interior_point_LatLong[1])
-    interior_point = {
-        'latitude': interior_point_LatLong[0],
-        'longitude': interior_point_LatLong[1],
-        'altitude': alt
-    }
+    finish_bool=0
+    counter=0
+    while finish_bool==0:
+            centroid_utm_copy = copy.deepcopy(centroid_utm)
+            random_centroid_movement_x_meter = np.random.normal(0,15)
+            random_centroid_movement_y_meter = np.random.normal(0,15)
+            centroid_utm_copy=list(centroid_utm_copy)
+            centroid_utm_copy[0] += random_centroid_movement_x_meter
+            centroid_utm_copy[1] += random_centroid_movement_y_meter
+            centroid_utm_copy=tuple(centroid_utm_copy)
+            utm_vector_vertex_to_centroid = {
+                "east": centroid_utm_copy[0] - vertex_utm[0],
+                "north": centroid_utm_copy[1] - vertex_utm[1],
+            }
+            utm_vector_vertex_to_centroid_norm=math.sqrt(utm_vector_vertex_to_centroid['east']**2+utm_vector_vertex_to_centroid['north']**2)
+            utm_unit_vector_vertex_to_centroid_norm = {
+                "east": utm_vector_vertex_to_centroid["east"] / utm_vector_vertex_to_centroid_norm,
+                "north": utm_vector_vertex_to_centroid["north"] / utm_vector_vertex_to_centroid_norm
+            }
+            interior_point_utm= {"east":None,"north":None,}
+            random_push_into_polygon_meter=np.random.normal(40,15)
+            interior_point_utm['east']=vertex_utm[0] + random_push_into_polygon_meter * utm_unit_vector_vertex_to_centroid_norm['east']
+            interior_point_utm['north'] = vertex_utm[1] + random_push_into_polygon_meter  * utm_unit_vector_vertex_to_centroid_norm['north']
+
+            #Transormations:"
+            interior_point_LatLong = utm.to_latlon(interior_point_utm['east'], interior_point_utm['north'], vertex_utm[2], vertex_utm[3])
+            alt = communicator.getHeightAboveSeaLevel(interior_point_LatLong[0], interior_point_LatLong[1])
+            interior_point = {
+                'latitude': interior_point_LatLong[0],
+                'longitude': interior_point_LatLong[1],
+                'altitude': alt
+            }
+
+            centroid_copy_swiched_LatLong=utm.to_latlon(centroid_utm_copy[0], centroid_utm_copy[1], centroid_utm_copy[2], centroid_utm_copy[3])
+            cent_alt = communicator.getHeightAboveSeaLevel(centroid_copy_swiched_LatLong[0], centroid_copy_swiched_LatLong[1])
+            centroid_swiched= {
+                'latitude': centroid_copy_swiched_LatLong[0],
+                'longitude': centroid_copy_swiched_LatLong[1],
+                'altitude': cent_alt
+            }
+            if (is_interior_point_valid_related_to_its_vertex(vertex,interior_point) and is_inside_polygon(interior_point,polygon)) or counter>30:
+                finish_bool=1
+                if counter>30: #could not find good cover point
+                    interior_point_LatLong=vertex
+            counter+=1
     communicator.CreateEntitySimple('vertex', vertex, 2, '16:0:0:1:0:0:0')
-    communicator.CreateEntitySimple('centroid', centroid, 2, '16:0:0:1:0:0:0')
+    communicator.CreateEntitySimple('centroid_swiched', centroid_swiched, 2, '16:0:0:1:0:0:0')
     communicator.CreateEntitySimple('interior pt', interior_point, 2, '16:0:0:1:0:0:0')
-    print("fin")
-    is_interior_point_valid_related_to_its_vertex(vertex,interior_point)
-    if is_inside_polygon(interior_point,polygon):
-         print("in polygon")
-    else:
-         print("not in polygon")
     return interior_point
 
 def is_interior_point_valid_related_to_its_vertex(vertex,point): #Assume flat surface
     communicator = CommunicatorSingleton().obj
     vertex_height = communicator.getHeightAboveSeaLevel(vertex['latitude'], vertex['longitude'])
     point_height = communicator.getHeightAboveSeaLevel(point['latitude'], point['longitude'])
-    if abs(vertex_height-point_height)> 1:
+    if abs(vertex_height-point_height)> 1.5: #resonable tree height in meter - not configured
         return False
     else:
         return True
+
+def asses_waiting_time_in_waiting_location(config,current_location,waiting_location,bluelist,enemies_relative_direction):
+    # waiting_point - is the desired waiting point
+    # enemies_relative_direction - relative direction from enemies to current location.
+    waiting_times=[]
+    waiting_time=0
+    if enemies_relative_direction!= []: # Squad can see one of the enemies right now
+        for item in enemies_relative_direction:
+            if item['value']!= None:
+                if item['value']>0:
+                    enemy = next(x for x in bluelist if x.unit_name == item['unit_name'])
+                    enemy_velocity_norm=np.linalg.norm([enemy.velocity['east'],enemy.velocity['north'],enemy.velocity['up']])
+                    enemy_distance=getMetriDistance(enemy.location,waiting_location)
+                    waiting_times.append(first_order_time_estimator(enemy_distance,enemy_velocity_norm))
+                    print("s")
+        waiting_time=sum(waiting_times)/len(waiting_times) #average waiting time * safety factor - not configured
+    else:
+        waiting_time=config.basic_cover_waiting_time
+    return waiting_time
+
+def first_order_time_estimator(distance,velocity):
+    time=distance/velocity
+    return time
+

@@ -78,6 +78,7 @@ class RFAScenarioManager:
         self.config['move_type'] = str(self.configuration.at['move_type', 'value'])
         self.config['squad_speed'] = str(self.configuration.at['squad_speed', 'value'])
         self.config['mobility_avoidance_radius'] = str(self.configuration.at['mobility_avoidance_radius', 'value'])
+        self.config['basic_cover_waiting_time'] = str(self.configuration.at['basic_cover_waiting_time', 'value'])
         self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
         self.squadsData = pd.read_csv(self.squadsDatalocation,
                             header=[0],
@@ -225,16 +226,17 @@ class RFAScenarioManager:
                             # print("relative vector is: "+str(current_entity.enemies_relative_direction))
                             # #check vulnerability:
                             # print("--vulnerability assesment function--")
-                            print("total vulnerability :" +str(ext_funs.assess_vulnerability(self.blue_entity_list_HTN, current_entity,
-                                                                self.AccuracyConfiguration)))
+                            print("total vulnerability :" +str(ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
+                                                                 self.AccuracyConfiguration)))
                             # print("--------------")
-                            htnEmergencyModel.findplan(self.basicRanges,
+                            htnEmergencyModel.findplan(self.config,
+                                                       self.basicRanges,
                                                        self.squadPosture,
                                                        self.enemyDimensions,
+                                                       self.AccuracyConfiguration,
                                                        current_entity.current_location,
                                                        current_entity.enemies_relative_direction,
                                                        copy.deepcopy(self.blue_entity_list_HTN),
-                                                       self.AccuracyConfiguration,
                                                        self.intervisibility_polygoins)
                         "plan new plan - can't plan if one or more entites is at fire position"
                         if current_entity.COA==[]:
