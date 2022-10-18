@@ -349,7 +349,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
-    NumSim = 50 #was 400
+    NumSim = 10 #was 400
     ### initiation lines:
     root_nodes = []
     for task in tasks:
@@ -369,6 +369,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
             if task == tasks[0]:
                 Q[index] += Q_t
                 N[index] += 1
+            print("s")
     # sort Q and N in descending order
     index = best_med(Q, N)
     #DEBUG printing
@@ -575,10 +576,12 @@ def calValue(state,subtask):
         #     subtask[0]) + " " + "blueDistance is: " + str(blueDistance) + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
         #     subtask[0]) + ", retval is: " + str(ret_val))
-
+    elif subtask[0]=='e_continue_as_usual_op':
+        ret_val=0.00001
+    elif subtask[0]=='e_shoot_op':
+        ret_val=1
     if ret_val==0:
         ret_val=0.00001
-
     return ret_val
 
 

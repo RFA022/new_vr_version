@@ -79,6 +79,7 @@ class RFAScenarioManager:
         self.config['squad_speed'] = str(self.configuration.at['squad_speed', 'value'])
         self.config['mobility_avoidance_radius'] = str(self.configuration.at['mobility_avoidance_radius', 'value'])
         self.config['basic_cover_waiting_time'] = str(self.configuration.at['basic_cover_waiting_time', 'value'])
+        self.config['default_enemy_speed'] = str(self.configuration.at['default_enemy_speed', 'value'])
         self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
         self.squadsData = pd.read_csv(self.squadsDatalocation,
                             header=[0],
@@ -228,6 +229,7 @@ class RFAScenarioManager:
                             # print("--vulnerability assesment function--")
                             print("total vulnerability :" +str(ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
                                                                  self.AccuracyConfiguration)))
+                            print(current_entity.enemies_relative_direction)
                             # print("--------------")
                             htnEmergencyModel.findplan(self.config,
                                                        self.basicRanges,

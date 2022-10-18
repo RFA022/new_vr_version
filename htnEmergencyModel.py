@@ -18,18 +18,36 @@ def e_move_to_closest_cover_op(state,a):
     state.entity_state = 'move'
     state.estimated_mission_time += state.estimated_time_to_cover
     return state
-pyhop.declare_operators(e_continue_as_usual_op,e_move_to_closest_cover_op)
 
 def e_wait_in_cover_op(state,estimated_time_to_cover):
+    #not taking in account the movement of enemies
+    #update static position variables:
+    state.entity_state="wait_in_cover"
     state.loc = state.closest_cover_point
+    state.enemies_relative_direction=ext_funs.update_enemies_relative_direction(state.loc,state.assesedBlues,copy.deepcopy(state.enemies_relative_direction))
+    state.vulnerability = ext_funs.assess_vulnerability(state.loc, state.enemies_relative_direction,state.assesedBlues, state.AccuracyConfiguration)
     state.estimated_mission_time+=estimated_time_to_cover
     state.estimated_distance_to_cover=0
     state.estimated_time_to_cover=0
     state.in_cover =ext_funs.is_inside_polygon(state.loc,state.cover_polygon)
-    #update static position variables:
     state.distance_from_positions = ext_funs.update_distance_from_positions(state.loc, state.positions)
+    return state
 
+def e_wait_in_position_op(state,estimated_time_to_wait):
+    #not taking in account the movement of enemies
+    #update static position variables:
+    state.entity_state="wait_in_cover"
+    state.estimated_mission_time+=estimated_time_to_wait
+    return state
 
+def e_shoot_op(state,a):
+    state.entity_state='shoot'
+    return state
+
+pyhop.declare_operators(e_continue_as_usual_op,e_move_to_closest_cover_op, e_wait_in_cover_op,e_wait_in_position_op,e_shoot_op)
+
+def e_continue_as_usual_m(state,a):
+    return [('e_continue_as_usual_op',a)]
 
 def e_go_to_cover_m(state,a):
     "find closest_cover_point:"
@@ -44,33 +62,41 @@ def e_go_to_cover_m(state,a):
                 state.closest_cover_point=vertex
                 minimum_polygon=polygon
     minimum_polygon_centroid=ext_funs.getPolygonCentroid(minimum_polygon)
+    state.cover_polygon=minimum_polygon
     state.closest_cover_point=ext_funs.generate_interior_polygon_point(state.closest_cover_point,minimum_polygon_centroid,minimum_polygon)
     state.estimated_distance_to_cover=ext_funs.getMetriDistance(state.loc,state.closest_cover_point)
     state.estimated_time_to_cover = ext_funs.first_order_time_estimator(state.estimated_distance_to_cover,float(state.config['squad_speed']))
-    state.estimated_cover_waiting_time=ext_funs.asses_waiting_time_in_waiting_location(state.config,state.loc,state.closest_cover_point,state.assesedBlues,state.enemies_relative_direction)
+    state.estimated_cover_waiting_time=ext_funs.asses_waiting_time_in_waiting_location(state.config,state.closest_cover_point,state.assesedBlues,state.enemies_relative_direction)
+    return [('be_in_cover',a)]
 
-    return [('e_move_to_closest_cover_op', a),('e_be_in_cover')]
+def wait_in_cover_m(state,a):
+        return [('e_move_to_closest_cover_op', a), ('e_wait_in_cover_op', state.estimated_cover_waiting_time)]
 
-def e_continue_as_usual_m(state,a):
-    if (0):
-        return False
-    return [('e_continue_as_usual_op',a)]
+
+pyhop.declare_methods('be_in_cover', wait_in_cover_m)
+pyhop.declare_original_methods('be_in_cover', wait_in_cover_m)
 
 def e_shoot_from_position_m(state,a):
-    return(0)
+    state.estimated_intersection_time=asses_intersection_time_with_fastest_target(state.config,state.loc,state.assesedBlues,state.enemies_relative_direction)
+    return [('e_shoot_thread_from_current_position',a)]
 
 pyhop.declare_methods('high_exposure_protocol', e_continue_as_usual_m,e_go_to_cover_m,e_shoot_from_position_m)
 pyhop.declare_original_methods('high_exposure_protocol', e_continue_as_usual_m,e_go_to_cover_m,e_shoot_from_position_m)
 
-def e_wait_in_cover_m(state,a):
-    if (0):
-        return False
-    else:
-        return [('e_wait_in_cover_op',state,state.estimated_time_to_cover)]
 
+def e_shoot_immediately_m(state,a):
+        return [('e_shoot_op',a)]
 
-pyhop.declare_methods('e_be_in_cover', e_wait_in_cover_m)
-pyhop.declare_original_methods('e_be_in_cover', e_wait_in_cover_m)
+def e_wait_and_then_shoot_m(state,a):
+        return [('e_wait_in_position_op',state.estimated_intersection_time),('e_shoot_op',a)]
+
+pyhop.declare_methods('e_shoot_thread_from_current_position', e_shoot_immediately_m,e_wait_and_then_shoot_m)
+pyhop.declare_original_methods('e_shoot_thread_from_current_position', e_shoot_immediately_m,e_wait_and_then_shoot_m)
+
+#After defining all tasks - updating method list#
+#####----------------------------------------#####
+pyhop.update_method_list()
+#####----------------------------------------#####
 
 def findplan(config,basicRanges,squadPosture,enemyDimensions,AccuracyConfiguration,loc,enemies_relative_direction,blueList,intervisibility_polygoins):
     init_state = pyhop.State('init_state')
@@ -97,6 +123,7 @@ def findplan(config,basicRanges,squadPosture,enemyDimensions,AccuracyConfigurati
     init_state.estimated_distance_to_cover=None
     init_state.estimated_cover_waiting_time=None
     init_state.estimated_time_to_cover=None
+    init_state.estimated_intersection_time=None
 
     init_state.assesedBlues = blueList
     init_state.distance_from_assesedBlues = ext_funs.update_distance_from_blues(init_state.loc, init_state.assesedBlues)
@@ -118,4 +145,13 @@ def findplan(config,basicRanges,squadPosture,enemyDimensions,AccuracyConfigurati
     # Weapons Accuracy Data:
     init_state.AccuracyConfiguration=AccuracyConfiguration
 
-    e_go_to_cover_m(init_state,'me')
+    #pyhop.print_state_simple(init_state)
+    debug_level = 1
+    if debug_level >= 2:
+        print("init state is:")
+        pyhop.print_state_simple(init_state)
+    print("Begin Planning Red:")
+    plan = pyhop.shop_m(init_state, [('high_exposure_protocol', 'me')],debug_level) #third parameter is debug mode
+    print(plan)
+    return plan
+

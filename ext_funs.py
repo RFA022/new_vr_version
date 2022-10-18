@@ -386,7 +386,7 @@ def evaluate_relative_direction(source,destination,destination_velocity):
 def assess_vulnerability(loc,enemies_relative_direction,blueList,AccuracyConfiguration):
     vulnerability=0
     vulnerability_vec=[]
-    print("relative direction: " + str(enemies_relative_direction))
+    # print("relative direction: " + str(enemies_relative_direction))
     for k, enemy in enumerate(blueList):
         if enemy.is_alive == True:
             classification = enemy.classification.name
@@ -472,22 +472,23 @@ def generate_interior_polygon_point(vertex,centroid,polygon):
                 'longitude': interior_point_LatLong[1],
                 'altitude': alt
             }
-
-            centroid_copy_swiched_LatLong=utm.to_latlon(centroid_utm_copy[0], centroid_utm_copy[1], centroid_utm_copy[2], centroid_utm_copy[3])
-            cent_alt = communicator.getHeightAboveSeaLevel(centroid_copy_swiched_LatLong[0], centroid_copy_swiched_LatLong[1])
-            centroid_swiched= {
-                'latitude': centroid_copy_swiched_LatLong[0],
-                'longitude': centroid_copy_swiched_LatLong[1],
-                'altitude': cent_alt
-            }
             if (is_interior_point_valid_related_to_its_vertex(vertex,interior_point) and is_inside_polygon(interior_point,polygon)) or counter>30:
                 finish_bool=1
-                if counter>30: #could not find good cover point
-                    interior_point_LatLong=vertex
+                if counter>10: #could not find good cover point
+                    interior_point=vertex
             counter+=1
-    communicator.CreateEntitySimple('vertex', vertex, 2, '16:0:0:1:0:0:0')
-    communicator.CreateEntitySimple('centroid_swiched', centroid_swiched, 2, '16:0:0:1:0:0:0')
-    communicator.CreateEntitySimple('interior pt', interior_point, 2, '16:0:0:1:0:0:0')
+
+            # centroid_copy_swiched_LatLong=utm.to_latlon(centroid_utm_copy[0], centroid_utm_copy[1], centroid_utm_copy[2], centroid_utm_copy[3])
+            # cent_alt = communicator.getHeightAboveSeaLevel(centroid_copy_swiched_LatLong[0], centroid_copy_swiched_LatLong[1])
+            # centroid_swiched= {
+            #     'latitude': centroid_copy_swiched_LatLong[0],
+            #     'longitude': centroid_copy_swiched_LatLong[1],
+            #     'altitude': cent_alt
+            # }
+
+    # communicator.CreateEntitySimple('vertex', vertex, 2, '16:0:0:1:0:0:0')
+    # communicator.CreateEntitySimple('centroid_swiched', centroid_swiched, 2, '16:0:0:1:0:0:0')
+    # communicator.CreateEntitySimple('interior pt', interior_point, 2, '16:0:0:1:0:0:0')
     return interior_point
 
 def is_interior_point_valid_related_to_its_vertex(vertex,point): #Assume flat surface
@@ -499,7 +500,7 @@ def is_interior_point_valid_related_to_its_vertex(vertex,point): #Assume flat su
     else:
         return True
 
-def asses_waiting_time_in_waiting_location(config,current_location,waiting_location,bluelist,enemies_relative_direction):
+def asses_waiting_time_in_waiting_location(config,waiting_location,bluelist,enemies_relative_direction):
     # waiting_point - is the desired waiting point
     # enemies_relative_direction - relative direction from enemies to current location.
     waiting_times=[]
@@ -512,10 +513,27 @@ def asses_waiting_time_in_waiting_location(config,current_location,waiting_locat
                     enemy_velocity_norm=np.linalg.norm([enemy.velocity['east'],enemy.velocity['north'],enemy.velocity['up']])
                     enemy_distance=getMetriDistance(enemy.location,waiting_location)
                     waiting_times.append(first_order_time_estimator(enemy_distance,enemy_velocity_norm))
-                    print("s")
         waiting_time=sum(waiting_times)/len(waiting_times) #average waiting time * safety factor - not configured
     else:
         waiting_time=config.basic_cover_waiting_time
+    return waiting_time
+
+def asses_intersection_time_with_fastest_target(config,waiting_location,bluelist,enemies_relative_direction):
+    # waiting_point - is the desired waiting point
+    # enemies_relative_direction - relative direction from enemies to current location.
+    waiting_times=[]
+    waiting_time=0
+    if enemies_relative_direction!= []: # Squad can see one of the enemies right now
+        for item in enemies_relative_direction:
+            if item['value']!= None:
+                if item['value']>0:
+                    enemy = next(x for x in bluelist if x.unit_name == item['unit_name'])
+                    enemy_velocity_norm=np.linalg.norm([enemy.velocity['east'],enemy.velocity['north'],enemy.velocity['up']])
+                    enemy_distance=getMetriDistance(enemy.location,waiting_location)
+                    waiting_times.append(first_order_time_estimator(enemy_distance,enemy_velocity_norm))
+        waiting_time=min(waiting_times)
+    else:
+        waiting_time=config['squad_eyes_range']/config['default_enemy_speed'] #case we cant see enemy
     return waiting_time
 
 def first_order_time_estimator(distance,velocity):
