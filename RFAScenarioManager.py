@@ -133,7 +133,7 @@ class RFAScenarioManager:
                             current_entity.planBool = 1
                         if current_entity.planBool == 1 and current_entity.COA == []:
                             current_entity.planBool = 0
-                            current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
+                            # current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
                             #logging.debug("New Plan has been given to " + str(current_entity.unit_name))
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos, self.spawnPos)

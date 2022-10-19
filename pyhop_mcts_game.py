@@ -349,8 +349,9 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
-    NumSim = 10 #was 400
+    NumSim = 40 #was 400
     ### initiation lines:
+    print("________________________choose method index________________________")
     root_nodes = []
     for task in tasks:
         task_name = task[0]
@@ -359,7 +360,8 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
         elif task_name in operators:
             root_nodes.append(TreeNode(task[0], 'operator'))
     for i in range(NumSim):
-        S_c = initial_state
+        #print("_______new roll out_______")
+        S_c = copy.deepcopy(initial_state)
         for task_ind, task in enumerate(tasks):
             task_name=task[0]
             if task_name in methods:
@@ -367,9 +369,8 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
             elif task_name in operators:
                 [S_c, Q_t] = MCTS_OperatorEvlt(S_c, task, root_nodes[task_ind], 1, "ROLLOUT")
             if task == tasks[0]:
-                Q[index] += Q_t
+                Q[index] += ( Q_t -Q[index])
                 N[index] += 1
-            print("s")
     # sort Q and N in descending order
     index = best_med(Q, N)
     #DEBUG printing
@@ -411,10 +412,10 @@ def MCTS_Task(S_c, task, node, d, indicator,NumSim):
             node.fully_expanded = True
     [S_c, Q_m] = MCTS_Method(S_c, task, med, newnode, d,NumSim) # Exactly according to the paper
     #newnode.Q+=Q_m #add
-    node.children[index].Q += Q_m
+    #node.children[index].Q += Q_m - reduced line
     node.N += 1
     node.Q = avg_q(node)
-    return S_c, index, node.Q
+    return S_c, index, node.children[index].Q
 
 def MCTS_Method(S_c, task, med, node,d,NumSIm):
     S_c.debug_method+=1
@@ -443,7 +444,7 @@ def MCTS_Method(S_c, task, med, node,d,NumSIm):
                 newnode = TreeNode(subtask[0], 'task', node)  # first arg subtask? # task to subtask
                 node.children.append(newnode)
             [S_c, index, Q_o] = MCTS_Task(S_c, subtask, newnode, d + 1, False,NumSIm)  # inserted subtask instead of task
-            node.children[-1].Q += Q_o
+            #node.children[-1].Q += Q_o ###reduced line
         elif subtask[0] in operators:
             # if subtask has been simulated then:
             if is_child_simulated(node, subtask[0],par=None):
@@ -577,21 +578,34 @@ def calValue(state,subtask):
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
         #     subtask[0]) + ", retval is: " + str(ret_val))
     elif subtask[0]=='e_continue_as_usual_op':
-        ret_val=0.00001
-    elif subtask[0]=='e_shoot_op':
-        ret_val=1
+        ret_val=70
+    elif subtask[0]=='e_move_to_closest_cover_op':
+        ret_val=np.random.normal(35,1)
+    elif subtask[0] == 'e_wait_in_cover_op':
+        ret_val=np.random.normal(40,1)
+    elif subtask[0] == 'e_shoot_op':
+        ret_val=np.random.normal(5,10)
+    elif subtask[0] == 'e_wait_in_position_op':
+        ret_val=100
     if ret_val==0:
         ret_val=0.00001
+    if ret_val>100:
+        ret_val=100
     return ret_val
 
 
 def avg_q(node):
     # average Q of children
     Q_children = 0
+    number_of_different_futures=0
     for child in node.children:
         Q_children += child.Q
+        if child.type=='method':
+            number_of_different_futures+=1
+    if number_of_different_futures==0:
+        number_of_different_futures=1
     try:
-        return Q_children/len(node.children)  # devision by 0
+        return Q_children#/len(node.children)  # devision by 0
     except: #not in use
         return 0
 
@@ -616,14 +630,14 @@ def next_child(node, child_name,par):
 
 
 # selection_med function:
-# input = node. output= index of children node of input node with maximum  Q_c (according to UCB1)
+# input = node. output= index of children node of input node with maximum  Q_c (according to UCB1) - edited
 def Selection_Med(node):
-    c = 2
+    c = 20 # exploration value
     children = node.children
     Q_c = []
     for child in children:
         try:
-            q = child.Q + c*math.sqrt(math.log(node.N) / child.N)
+            q = child.Q/child.N + c*math.sqrt(math.log(node.N) / child.N)
         except:  # case of division by 0
             q = 0
         Q_c.append(q)
@@ -631,11 +645,11 @@ def Selection_Med(node):
     return index
 
 def best_med(Q, N):
-    c = 2
+    c = 20 # exploration value
     Q_c = []
     for k in range(len(Q)):
         try:
-            q = Q[k] + c*math.sqrt(math.log(sum(N)) / N[k])
+            q = Q[k]/N[k] + c*math.sqrt(math.log(sum(N)) / N[k])
         except:
             q = 0
         # q = child.Q/child.N + c*math.sqrt(math.log(node.N) / child.N)
