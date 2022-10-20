@@ -231,15 +231,15 @@ class RFAScenarioManager:
                                                                  self.AccuracyConfiguration)))
                             print(current_entity.enemies_relative_direction)
                             print("--------------")
-                            htnEmergencyModel.findplan(self.config,
-                                                       self.basicRanges,
-                                                       self.squadPosture,
-                                                       self.enemyDimensions,
-                                                       self.AccuracyConfiguration,
-                                                       current_entity.current_location,
-                                                       current_entity.enemies_relative_direction,
-                                                       copy.deepcopy(self.blue_entity_list_HTN),
-                                                       self.intervisibility_polygoins)
+                            # htnEmergencyModel.findplan(self.config,
+                            #                            self.basicRanges,
+                            #                            self.squadPosture,
+                            #                            self.enemyDimensions,
+                            #                            self.AccuracyConfiguration,
+                            #                            current_entity.current_location,
+                            #                            current_entity.enemies_relative_direction,
+                            #                            copy.deepcopy(self.blue_entity_list_HTN),
+                            #                            self.intervisibility_polygoins)
                         "plan new plan - can't plan if one or more entites is at fire position"
                         if current_entity.COA==[]:
                             fire_bool=0
@@ -251,7 +251,6 @@ class RFAScenarioManager:
                                 current_entity.planBool=1
                         "Plan new plan if COA is empty and planbool = 1"
                         if current_entity.planBool==1 and current_entity.COA==[]:
-                            print(current_entity.scanState)
                             current_entity.planBool=0
                             current_entity.COA=htnModel.findplan(self.basicRanges,
                                                                       self.squadPosture,
@@ -398,7 +397,7 @@ class RFAScenarioManager:
         # LOS:
         elif entity_next_state_and_action.scan_for_enemy == 1:
             # Basic functionality - next step is to use LOS between point and entity:
-            logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face))
+            logging.debug("Squad is scanning for enemies from Attack position: " + str(current_entity.face) +". "+ str("scan range is: ") + str(self.basicRanges['squad_view_range']) +" meters")
             current_entity.scanState=isScan.yes
             current_entity.scanDetectionList=[]
             current_entity.taskTime=time.time()
@@ -621,8 +620,9 @@ class RFAScenarioManager:
             if currTime - current_entity.taskTime > self.config['scan_time'] or breakBool==1:
                 #logging.debug(str(current_entity.squad) +": Scan Timeout")
                 if len(current_entity.scanDetectionList) == 0:
-                    logging.debug("No enemy has been detected within " + str(self.config['scan_time']) + " seconds of scanning")
+                    logging.debug("No enemy has been detected within " + str(self.config['scan_time']) + " seconds of scanning - Aborting scan")
                 else:
+                    logging.debug("Aborting scan - due to enemy detection within range")
                     reduced_scanned_names_list=[]
                     [reduced_scanned_names_list.append([enemy.unit_name, enemy.is_alive]) for enemy in current_entity.scanDetectionList if [enemy.unit_name, enemy.is_alive] not in reduced_scanned_names_list]
                     print_list=[]

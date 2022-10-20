@@ -52,7 +52,7 @@ def scan_for_enemy_and_assess_exposure_op(state,a):
 
     # Exposure Assesment part:
     state_copy = deepcopy(state)
-    knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration)
+    knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration,'observation')
     if knownEnemies > 0:
         totalprobability = 1
         for accuracy in accuracyVec:

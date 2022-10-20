@@ -516,12 +516,12 @@ def asses_waiting_time_in_waiting_location(config,waiting_location,bluelist,enem
         if len(waiting_times)>0:
             waiting_time=sum(waiting_times)/len(waiting_times) #average waiting time * safety factor - not configured
         else:
-            waiting_time=0
+            waiting_time=float(config['basic_cover_waiting_time'])
     else:
-        waiting_time=config.basic_cover_waiting_time
+        waiting_time=float(config['basic_cover_waiting_time'])
     return waiting_time
 
-def asses_intersection_time_with_fastest_target(config,waiting_location,bluelist,enemies_relative_direction):
+def asses_intersection_time_with_fastest_target(basicRanges,config,waiting_location,bluelist,enemies_relative_direction):
     # waiting_point - is the desired waiting point
     # enemies_relative_direction - relative direction from enemies to current location.
     waiting_times=[]
@@ -537,9 +537,9 @@ def asses_intersection_time_with_fastest_target(config,waiting_location,bluelist
         if len(waiting_times) > 0:
             waiting_time=min(waiting_times)
         else:
-            waiting_time=0
+            waiting_time=float(basicRanges['squad_eyes_range'])/float(config['default_enemy_speed']) #all the enemies are in opposite direction to me.
     else:
-        waiting_time=config['squad_eyes_range']/config['default_enemy_speed'] #case we cant see enemy
+        waiting_time=float(basicRanges['squad_eyes_range'])/float(config['default_enemy_speed']) #case we cant see enemy
     return waiting_time
 
 def first_order_time_estimator(distance,velocity):
@@ -583,3 +583,17 @@ def estimate_enemies_location_in_t_seconds_from_now(bluelist,time):
         else:
             pass
     return bluelist_copy
+
+def get_unitvalue_for_scanning_evaluation(state):
+    Eitan_number = 0
+    Ohez_number = 0
+    for enemy in state.assesedBlues:
+        if enemy.classification == EntityTypeEnum.EITAN:
+            Eitan_number += 1
+        elif (enemy.classification == EntityTypeEnum.OHEZ) or \
+                (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                (enemy.classification == EntityTypeEnum.UNKNOWN):
+            Ohez_number += 1
+    sum = (state.weights['ohez_val']) * Ohez_number + (state.weights['eitan_val']) * Eitan_number
+    x = 100 / sum  # value for each evaluation unit
+    return x

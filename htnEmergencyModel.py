@@ -82,7 +82,7 @@ def e_go_to_cover_m(state,a):
     return [('e_be_in_cover',a)]
 
 def e_shoot_from_position_m(state,a):
-    state.estimated_intersection_time=asses_intersection_time_with_fastest_target(state.config,state.loc,state.assesedBlues,state.enemies_relative_direction)
+    state.estimated_intersection_time=asses_intersection_time_with_fastest_target(state.basicRanges,state.config,state.loc,state.assesedBlues,state.enemies_relative_direction)
     return [('e_shoot_thread_from_current_position',a)]
 
 pyhop.declare_methods('high_exposure_protocol', e_continue_as_usual_m,e_go_to_cover_m,e_shoot_from_position_m)
@@ -125,7 +125,12 @@ def findplan(config,basicRanges,squadPosture,enemyDimensions,AccuracyConfigurati
 
     # updateSpecificConfigs
     init_state.config['exploration_value'] = float(htnConfig.at['exploration_value', 'value'])
+    init_state.config['treshold_time'] = float(htnConfig.at['treshold_time', 'value'])
 
+    init_state.weights = {}
+    init_state.weights['e_move_to_closest_cover_op'] = float(htnConfig.at['e_move_to_closest_cover_op', 'value'])
+    init_state.weights['eitan_val'] = float(init_state.htnConfig.at['eitan_val', 'value'])
+    init_state.weights['ohez_val'] = float(init_state.htnConfig.at['ohez_val', 'value'])
     #HTN
     init_state.loc = loc
     init_state.enemies_relative_direction=enemies_relative_direction

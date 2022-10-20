@@ -522,18 +522,7 @@ def calValue(state,subtask):
         "Value relative to scanning"
         "value of unit of evaluation"
         "supports only in Eitan , Ohez, SUECIDE_DRONE and UNknown"
-        Eitan_number=0
-        Ohez_number=0
-        for enemy in state.assesedBlues:
-            if enemy.classification == EntityTypeEnum.EITAN:
-                Eitan_number+=1
-            elif (enemy.classification == EntityTypeEnum.OHEZ) or \
-                 (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or\
-                 (enemy.classification==EntityTypeEnum.UNKNOWN):
-                Ohez_number+=1
-        sum=(state.weights['ohez_val'])*Ohez_number+(state.weights['eitan_val'])*Eitan_number
-        x=100/sum #value for each evaluation unit
-
+        x=ext_funs.get_unitvalue_for_scanning_evaluation(state)
         #evaluation:
         ret_val_scan=0
         for enemy in state.assesedBlues:
@@ -548,7 +537,7 @@ def calValue(state,subtask):
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is: scan'  + ", retval is: " + str(ret_val_scan))
         "Value relative to Exposure"
         state_copy=deepcopy(state)
-        knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration)
+        knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration,'observation')
         if knownEnemies > 0:
             totalprobability = 1
             for accuracy in accuracyVec:
@@ -592,8 +581,12 @@ def calValue(state,subtask):
     elif subtask[0]=='e_continue_as_usual_op':
         ret_val=70
     elif subtask[0]=='e_move_to_closest_cover_op':
-        ret_val=np.random.normal(35,1)
+        p=((state.config['treshold_time'] - state.estimated_time_to_cover)/state.config['treshold_time'])*100
+        if p<0:
+            p=0
+        ret_val=state.weights['e_move_to_closest_cover_op']*p
     elif subtask[0] == 'e_wait_in_cover_op':
+
         ret_val=np.random.normal(40,1)
     elif subtask[0] == 'e_shoot_op':
         ret_val=np.random.normal(5,10)
