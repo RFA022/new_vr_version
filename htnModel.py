@@ -235,6 +235,9 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.weights['eitan_val'] = float(init_state.htnConfig.at['eitan_val', 'value'])
     init_state.weights['ohez_val'] = float(init_state.htnConfig.at['ohez_val', 'value'])
 
+    init_state.config = {}
+    init_state.config['exploration_value'] = float(init_state.htnConfig.at['exploration_value', 'value'])
+
     # Weapons Accuracy Data:
     init_state.AccuracyConfiguration=AccuracyConfiguration
 

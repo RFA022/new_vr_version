@@ -350,6 +350,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     Q = [0] * length2measure
     N = [0] * length2measure
     NumSim = 40 #was 400
+    ucb1_exploration_value=initial_state.config['exploration_value']
     ### initiation lines:
     print("________________________choose method index________________________")
     root_nodes = []
@@ -365,29 +366,41 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
         for task_ind, task in enumerate(tasks):
             task_name=task[0]
             if task_name in methods:
-                [S_c, index, Q_t] = MCTS_Task(S_c, task, root_nodes[task_ind], 1, True,i)
+                [S_c, index, Q_t] = MCTS_Task(S_c, task, root_nodes[task_ind], 1, True,i,ucb1_exploration_value)
             elif task_name in operators:
                 [S_c, Q_t] = MCTS_OperatorEvlt(S_c, task, root_nodes[task_ind], 1, "ROLLOUT")
             if task == tasks[0]:
                 Q[index] += ( Q_t -Q[index])
                 N[index] += 1
     # sort Q and N in descending order
-    index = best_med(Q, N)
+    index = best_med(Q, N,ucb1_exploration_value)
     #DEBUG printing
     if debug_level>=1:
-        print(Q)
-        print(N)
-        print(index)
+        print('Q - vector for methods is:' + str(Q))
+        print('N - vector for methods is:' + str(N))
+        print('Q over N - vector for methods is:' + str(get_mean_score(Q,N)))
+        print('UCB1 - vector for methods is:' + str(get_ucb1_vector(Q,N,ucb1_exploration_value)))
+        print('chosen index is:' +str(index))
     return index
 
-def MCTS_Task(S_c, task, node, d, indicator,NumSim):
+def get_mean_score(Q,N):
+    mean_score_vec=[0]*len(Q)
+    for k in range ( len(Q)):
+        mean_score_vec[k]=Q[k]/N[k]
+    return mean_score_vec
+
+def get_UCB1(Q,N):
+
+    return
+
+def MCTS_Task(S_c, task, node, d, indicator,NumSim,ucb1_exploration_value):
     relevant = methods[task[0]]
     if indicator==False:
         S_c.debug_task += 1
     # if all methods in relevant have been simulated
      #default value in order to not return null
     if node.fully_expanded: #means that all the children has been visited
-        index = Selection_Med(node)             #good
+        index = Selection_Med(node,ucb1_exploration_value)#good
         med = relevant[index]
         newnode = node.children[index]          #good
     else:
@@ -410,14 +423,14 @@ def MCTS_Task(S_c, task, node, d, indicator,NumSim):
         node.children.append(newnode)
         if len(node.children) == len(relevant):
             node.fully_expanded = True
-    [S_c, Q_m] = MCTS_Method(S_c, task, med, newnode, d,NumSim) # Exactly according to the paper
+    [S_c, Q_m] = MCTS_Method(S_c, task, med, newnode, d,NumSim,ucb1_exploration_value) # Exactly according to the paper
     #newnode.Q+=Q_m #add
     #node.children[index].Q += Q_m - reduced line
     node.N += 1
     node.Q = avg_q(node)
     return S_c, index, node.children[index].Q
 
-def MCTS_Method(S_c, task, med, node,d,NumSIm):
+def MCTS_Method(S_c, task, med, node,d,NumSIm,ucb1_exploration_value):
     S_c.debug_method+=1
     par=node.par #parameter of parent node
     d_max = 30  # maximum depth - arbitrary number
@@ -443,7 +456,7 @@ def MCTS_Method(S_c, task, med, node,d,NumSIm):
             else:
                 newnode = TreeNode(subtask[0], 'task', node)  # first arg subtask? # task to subtask
                 node.children.append(newnode)
-            [S_c, index, Q_o] = MCTS_Task(S_c, subtask, newnode, d + 1, False,NumSIm)  # inserted subtask instead of task
+            [S_c, index, Q_o] = MCTS_Task(S_c, subtask, newnode, d + 1, False,NumSIm,ucb1_exploration_value)  # inserted subtask instead of task
             #node.children[-1].Q += Q_o ###reduced line
         elif subtask[0] in operators:
             # if subtask has been simulated then:
@@ -467,7 +480,6 @@ def MCTS_OperatorEvlt(S_c, subtask, node, d, sender):
     S_c = operator(copy.deepcopy(S_c), *subtask[1:])
     Q_o = calValue(S_c,subtask)
     return S_c, Q_o
-
 
 def calValue(state,subtask):
     ret_val = 0
@@ -496,7 +508,6 @@ def calValue(state,subtask):
         "value relative to distance to BluePolygon center"
         relation = ((state.position_exposure_level[subtask[1]]) / max(state.position_exposure_level))
         val_percent_exposure_polygon = 100 * relation
-
 
         ret_val=state.weights['choose_position_op_dist_from_position']*val_squad_to_Position +\
                 abs(state.weights['choose_position_op_dist_from_polygon'])*val_squad_to_PolygonCenter+\
@@ -593,7 +604,6 @@ def calValue(state,subtask):
         ret_val=100
     return ret_val
 
-
 def avg_q(node):
     # average Q of children
     Q_children = 0
@@ -608,7 +618,6 @@ def avg_q(node):
         return Q_children#/len(node.children)  # devision by 0
     except: #not in use
         return 0
-
 
 def is_child_simulated(node, child_name,par):
     is_simulated = False
@@ -631,8 +640,8 @@ def next_child(node, child_name,par):
 
 # selection_med function:
 # input = node. output= index of children node of input node with maximum  Q_c (according to UCB1) - edited
-def Selection_Med(node):
-    c = 20 # exploration value
+def Selection_Med(node,ucb1_exploration_value):
+    c = ucb1_exploration_value # exploration value
     children = node.children
     Q_c = []
     for child in children:
@@ -644,8 +653,8 @@ def Selection_Med(node):
     index = Q_c.index(max(Q_c))
     return index
 
-def best_med(Q, N):
-    c = 20 # exploration value
+def best_med(Q, N,ucb1_exploration_value):
+    c = ucb1_exploration_value # exploration value
     Q_c = []
     for k in range(len(Q)):
         try:
@@ -656,3 +665,15 @@ def best_med(Q, N):
         Q_c.append(q)
     index = Q_c.index(max(Q_c))
     return index
+
+def get_ucb1_vector(Q, N,ucb1_exploration_value):
+    c = ucb1_exploration_value  # exploration value
+    Q_c = []
+    for k in range(len(Q)):
+        try:
+            q = Q[k] / N[k] + c * math.sqrt(math.log(sum(N)) / N[k])
+        except:
+            q = 0
+        # q = child.Q/child.N + c*math.sqrt(math.log(node.N) / child.N)
+        Q_c.append(q)
+    return Q_c

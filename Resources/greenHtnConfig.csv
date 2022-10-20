@@ -1,3 +1,4 @@
 Name,value
 waiting_time_mean,20
 waiting_time_std,10
+exploration_value,5

@@ -116,6 +116,13 @@ def findplan(config,basicRanges,squadPosture,enemyDimensions,AccuracyConfigurati
     init_state.intervisibility_polygoins=intervisibility_polygoins
     init_state.AccuracyConfiguration=AccuracyConfiguration
 
+    htnConfig = pd.read_csv('Resources\HighExplorationHtnConfig.csv',
+                                       header=[0],
+                                       index_col=[0])
+
+    # updateSpecificConfigs
+    init_state.config['exploration_value'] = float(htnConfig.at['exploration_value', 'value'])
+
     #HTN
     init_state.loc = loc
     init_state.enemies_relative_direction=enemies_relative_direction
