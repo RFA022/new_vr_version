@@ -586,7 +586,7 @@ def calValue(state,subtask):
             p=0
         ret_val=state.weights['e_move_to_closest_cover_op']*p
     elif subtask[0] == 'e_wait_in_cover_op':
-
+        print
         ret_val=np.random.normal(40,1)
     elif subtask[0] == 'e_shoot_op':
         ret_val=np.random.normal(5,10)

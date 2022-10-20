@@ -230,23 +230,28 @@ def getPolygonCentroid(polygon) -> float:
         return centroid
 
 "HTN FUNCTION ONLY"
-def getAccumulatedHitProbability(state,AccuracyConfiguration):
+def getAccumulatedHitProbability(state,AccuracyConfiguration,criteria):
     totalAccuracy = 0
     knownEnemies = 0
     accuracyVec=[]
     for k, enemy in enumerate(state.assesedBlues):
-        if enemy.is_alive == True and enemy.observed == True:
-            classification = enemy.classification.name
-            maxRange = float(state.AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
-            blueDistance = state.distance_from_assesedBlues[k]
-            if blueDistance==None: #Ignore None Distance
-                #if enemy has been observed statistically we assume its in the middle of the polygon
-                blueDistance=getMetriDistance(state.loc, state.BluePolygonCentroid)
-            else:
-                blueAccuracy = getAccuracy(AccuracyConfiguration,blueDistance,maxRange,classification)
-                totalAccuracy += blueAccuracy
-                knownEnemies += 1
-                accuracyVec.append(blueAccuracy)
+        if enemy.is_alive == True:
+            if criteria == 'observation':
+                answer=enemy.observed
+            if criteria == 'enemies_relative_direction':
+                answer= any(item['unit_name'] == enemy.unit_name for item in state.enemies_relative_direction)
+            if answer:
+                classification = enemy.classification.name
+                maxRange = float(state.AccuracyConfiguration.at[str(classification), 'MAX_RANGE'])
+                blueDistance = state.distance_from_assesedBlues[k]
+                if blueDistance==None: #Ignore None Distance
+                    #if enemy has been observed statistically we assume its in the middle of the polygon
+                    blueDistance=getMetriDistance(state.loc, state.BluePolygonCentroid)
+                else:
+                    blueAccuracy = getAccuracy(AccuracyConfiguration,blueDistance,maxRange,classification)
+                    totalAccuracy += blueAccuracy
+                    knownEnemies += 1
+                    accuracyVec.append(blueAccuracy)
     return (knownEnemies,totalAccuracy,accuracyVec)
 
 "HTN FUNCTION ONLY"

@@ -36,6 +36,7 @@ def e_wait_in_cover_op(state,estimated_cover_waiting_time):
     state.assesedBlues=ext_funs.estimate_enemies_location_in_t_seconds_from_now(state.assesedBlues,estimated_cover_waiting_time)
     state.enemies_relative_direction=ext_funs.update_enemies_relative_direction(state.loc,state.assesedBlues,copy.deepcopy(state.enemies_relative_direction))
     state.vulnerability = ext_funs.assess_vulnerability(state.loc, state.enemies_relative_direction,state.assesedBlues, state.AccuracyConfiguration)
+    state.distance_from_assesedBlues = ext_funs.update_distance_from_blues(state.loc, state.assesedBlues)
     return state
 
 def e_wait_in_position_op(state,estimated_time_to_wait):
@@ -49,6 +50,7 @@ def e_wait_in_position_op(state,estimated_time_to_wait):
     state.assesedBlues = ext_funs.estimate_enemies_location_in_t_seconds_from_now(state.assesedBlues,estimated_time_to_wait)
     state.enemies_relative_direction = ext_funs.update_enemies_relative_direction(state.loc, state.assesedBlues,copy.deepcopy(state.enemies_relative_direction))
     state.vulnerability = ext_funs.assess_vulnerability(state.loc, state.enemies_relative_direction, state.assesedBlues,state.AccuracyConfiguration)
+    state.distance_from_assesedBlues = ext_funs.update_distance_from_blues(state.loc, state.assesedBlues)
     return state
 
 def e_shoot_op(state,a):
@@ -129,8 +131,9 @@ def findplan(config,basicRanges,squadPosture,enemyDimensions,AccuracyConfigurati
 
     init_state.weights = {}
     init_state.weights['e_move_to_closest_cover_op'] = float(htnConfig.at['e_move_to_closest_cover_op', 'value'])
-    init_state.weights['eitan_val'] = float(init_state.htnConfig.at['eitan_val', 'value'])
-    init_state.weights['ohez_val'] = float(init_state.htnConfig.at['ohez_val', 'value'])
+    init_state.weights['eitan_val'] = float(htnConfig.at['eitan_val', 'value'])
+    init_state.weights['ohez_val'] = float(htnConfig.at['ohez_val', 'value'])
+
     #HTN
     init_state.loc = loc
     init_state.enemies_relative_direction=enemies_relative_direction
