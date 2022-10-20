@@ -21,27 +21,34 @@ def e_move_to_closest_cover_op(state,a):
     state.estimated_mission_time += state.estimated_time_to_cover
     return state
 
-def e_wait_in_cover_op(state,estimated_time_to_cover):
+def e_wait_in_cover_op(state,estimated_cover_waiting_time):
     #print("e_wait_in_cover_op")
     #not taking in account the movement of enemies
-    #update static position variables:
+    #update squad state:
     state.entity_state="wait_in_cover"
     state.loc = state.closest_cover_point
+    state.in_cover = ext_funs.is_inside_polygon(state.loc, state.cover_polygon)
+    state.distance_from_positions = ext_funs.update_distance_from_positions(state.loc, state.positions)
+    state.estimated_mission_time += estimated_cover_waiting_time
+    state.estimated_distance_to_cover = 0
+    state.estimated_time_to_cover = 0
+    #update enemies state:
+    state.assesedBlues=ext_funs.estimate_enemies_location_in_t_seconds_from_now(state.assesedBlues,estimated_cover_waiting_time)
     state.enemies_relative_direction=ext_funs.update_enemies_relative_direction(state.loc,state.assesedBlues,copy.deepcopy(state.enemies_relative_direction))
     state.vulnerability = ext_funs.assess_vulnerability(state.loc, state.enemies_relative_direction,state.assesedBlues, state.AccuracyConfiguration)
-    state.estimated_mission_time+=estimated_time_to_cover
-    state.estimated_distance_to_cover=0
-    state.estimated_time_to_cover=0
-    state.in_cover =ext_funs.is_inside_polygon(state.loc,state.cover_polygon)
-    state.distance_from_positions = ext_funs.update_distance_from_positions(state.loc, state.positions)
     return state
 
 def e_wait_in_position_op(state,estimated_time_to_wait):
     #print("e_wait_in_position_op")
     #not taking in account the movement of enemies
-    #update static position variables:
+    #update squad state:
     state.entity_state="wait_in_position"
     state.estimated_mission_time+=estimated_time_to_wait
+
+    #update enemies state:
+    state.assesedBlues = ext_funs.estimate_enemies_location_in_t_seconds_from_now(state.assesedBlues,estimated_time_to_wait)
+    state.enemies_relative_direction = ext_funs.update_enemies_relative_direction(state.loc, state.assesedBlues,copy.deepcopy(state.enemies_relative_direction))
+    state.vulnerability = ext_funs.assess_vulnerability(state.loc, state.enemies_relative_direction, state.assesedBlues,state.AccuracyConfiguration)
     return state
 
 def e_shoot_op(state,a):
@@ -84,12 +91,8 @@ pyhop.declare_original_methods('high_exposure_protocol', e_continue_as_usual_m,e
 def e_wait_in_cover_m(state,a):
         return [('e_move_to_closest_cover_op', a), ('e_wait_in_cover_op', state.estimated_cover_waiting_time)]
 
-
 pyhop.declare_methods('e_be_in_cover', e_wait_in_cover_m)
 pyhop.declare_original_methods('e_be_in_cover', e_wait_in_cover_m)
-
-
-
 
 def e_shoot_immediately_m(state,a):
         return [('e_shoot_op',a)]

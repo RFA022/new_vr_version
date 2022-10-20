@@ -230,7 +230,7 @@ class RFAScenarioManager:
                             print("total vulnerability :" +str(ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
                                                                  self.AccuracyConfiguration)))
                             print(current_entity.enemies_relative_direction)
-                            # print("--------------")
+                            print("--------------")
                             htnEmergencyModel.findplan(self.config,
                                                        self.basicRanges,
                                                        self.squadPosture,

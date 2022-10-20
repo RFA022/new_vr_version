@@ -513,7 +513,10 @@ def asses_waiting_time_in_waiting_location(config,waiting_location,bluelist,enem
                     enemy_velocity_norm=np.linalg.norm([enemy.velocity['east'],enemy.velocity['north'],enemy.velocity['up']])
                     enemy_distance=getMetriDistance(enemy.location,waiting_location)
                     waiting_times.append(first_order_time_estimator(enemy_distance,enemy_velocity_norm))
-        waiting_time=sum(waiting_times)/len(waiting_times) #average waiting time * safety factor - not configured
+        if len(waiting_times)>0:
+            waiting_time=sum(waiting_times)/len(waiting_times) #average waiting time * safety factor - not configured
+        else:
+            waiting_time=0
     else:
         waiting_time=config.basic_cover_waiting_time
     return waiting_time
@@ -531,7 +534,10 @@ def asses_intersection_time_with_fastest_target(config,waiting_location,bluelist
                     enemy_velocity_norm=np.linalg.norm([enemy.velocity['east'],enemy.velocity['north'],enemy.velocity['up']])
                     enemy_distance=getMetriDistance(enemy.location,waiting_location)
                     waiting_times.append(first_order_time_estimator(enemy_distance,enemy_velocity_norm))
-        waiting_time=min(waiting_times)
+        if len(waiting_times) > 0:
+            waiting_time=min(waiting_times)
+        else:
+            waiting_time=0
     else:
         waiting_time=config['squad_eyes_range']/config['default_enemy_speed'] #case we cant see enemy
     return waiting_time
@@ -540,3 +546,40 @@ def first_order_time_estimator(distance,velocity):
     time=distance/velocity
     return time
 
+#HTN FUNCTION - WORKS WITH HTN_BLUE_LIST TYPE
+def estimate_enemies_location_in_t_seconds_from_now(bluelist,time):
+    communicator = CommunicatorSingleton().obj
+    #assesment happens for all enemies with simple first order equation
+    bluelist_copy=copy.deepcopy(bluelist)
+    for enemy in bluelist:
+        if enemy.velocity['east'] != None and \
+                enemy.velocity['north'] != None and \
+                enemy.velocity['up'] != None:
+            enemy_velocity_norm = math.sqrt(
+                enemy.velocity['east'] ** 2 + enemy.velocity['north'] ** 2)
+            if enemy_velocity_norm!=0:
+                enemy_unit_vector_velocity = {
+                    "east": enemy.velocity["east"] / enemy_velocity_norm,
+                    "north": enemy.velocity["north"] / enemy_velocity_norm
+                }
+                enemy_location_utm = utm.from_latlon(enemy.location['latitude'], enemy.location['longitude'])
+                enemy_predicted_location_utm= {"east": None, "north": None, }
+                enemy_predicted_location_utm['east']=enemy_location_utm[0]+enemy_unit_vector_velocity['east']*time*enemy_velocity_norm
+                enemy_predicted_location_utm['north']=enemy_location_utm[1]+enemy_unit_vector_velocity['north']*time*enemy_velocity_norm
+                enemy_predicted_location_lat_lon = utm.to_latlon(enemy_predicted_location_utm['east'], enemy_predicted_location_utm['north'], enemy_location_utm[2], enemy_location_utm[3])
+                alt = communicator.getHeightAboveSeaLevel(enemy_predicted_location_lat_lon[0], enemy_predicted_location_lat_lon[1])
+                return_location = {
+                    'latitude': enemy_predicted_location_lat_lon[0],
+                    'longitude': enemy_predicted_location_lat_lon[1],
+                    'altitude': alt
+                }
+                enemy_to_change = next(x for x in bluelist_copy if x.unit_name == enemy.unit_name)
+                enemy_to_change.location=return_location
+            # print(enemy.unit_name)
+            # print(enemy.velocity)
+            # print(enemy.location)
+            # print(enemy_predicted_location_lat_lon)
+            # print(enemy_to_change.location)
+        else:
+            pass
+    return bluelist_copy

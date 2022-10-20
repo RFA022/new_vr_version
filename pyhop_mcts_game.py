@@ -376,11 +376,12 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     index = best_med(Q, N,ucb1_exploration_value)
     #DEBUG printing
     if debug_level>=1:
-        print('Q - vector for methods is:' + str(Q))
-        print('N - vector for methods is:' + str(N))
-        print('Q over N - vector for methods is:' + str(get_mean_score(Q,N)))
-        print('UCB1 - vector for methods is:' + str(get_ucb1_vector(Q,N,ucb1_exploration_value)))
-        print('chosen index is:' +str(index))
+        print('Q - vector for methods is: ' + str(Q))
+        print('N - vector for methods is: ' + str(N))
+        print('Q over N - vector for methods is: ' + str(get_mean_score(Q,N)))
+        print('UCB1 - vector for methods is: ' + str(get_ucb1_vector(Q,N,ucb1_exploration_value)))
+        print('UCB1 exploration calue is: ' + str(ucb1_exploration_value))
+        print('chosen index is: ' +str(index))
     return index
 
 def get_mean_score(Q,N):
