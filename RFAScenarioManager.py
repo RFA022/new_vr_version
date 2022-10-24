@@ -231,15 +231,6 @@ class RFAScenarioManager:
                                                                  self.AccuracyConfiguration)))
                             print(current_entity.enemies_relative_direction)
                             print("--------------")
-                            htnEmergencyModel.findplan(self.config,
-                                                       self.basicRanges,
-                                                       self.squadPosture,
-                                                       self.enemyDimensions,
-                                                       self.AccuracyConfiguration,
-                                                       current_entity.current_location,
-                                                       current_entity.enemies_relative_direction,
-                                                       copy.deepcopy(self.blue_entity_list_HTN),
-                                                       self.intervisibility_polygoins)
                         "plan new plan - can't plan if one or more entites is at fire position"
                         if current_entity.COA==[]:
                             fire_bool=0
