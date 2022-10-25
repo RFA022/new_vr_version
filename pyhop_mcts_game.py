@@ -485,30 +485,58 @@ def MCTS_OperatorEvlt(S_c, subtask, node, d, sender):
 def calValue(state,subtask):
     ret_val = 0
     if subtask[0]=='choose_position_op':
-
         "value relative to distance to position"
-        if state.distance_from_positions[subtask[1]] == min(state.distance_from_positions): #suppose catch when both zero or equal
-            relation=1
-        else:
-             if min(state.distance_from_positions)<0.001:
-                 minDistanceFromPositions = 0.001
-             else:
-                 minDistanceFromPositions = min(state.distance_from_positions)
-             relation=((state.distance_from_positions[subtask[1]])/minDistanceFromPositions)
-
-        val_squad_to_Position= 100/relation
-
+        minDistanceFromPositions = min(state.distance_from_positions)
+        if min(state.distance_from_positions) < 1:  # i if you are already in attack position minimum distance becomes second minimum
+            minDistanceFromPositions = sorted(state.distance_from_positions)[1]
+        if isinstance(subtask[1], int):
+            if state.distance_from_positions[subtask[1]] == min(state.distance_from_positions):
+                relation=(100/110) # means that if we are in a position this position recieave 110 in score instead of 100.
+            else:
+                relation=((state.distance_from_positions[subtask[1]])/minDistanceFromPositions)
+        elif isinstance(subtask[1], str):
+            if subtask[1]=='current_position':
+                relation=(100/110)
+            elif subtask[1]=='nearest_cover_position':
+                relation = (state.estimated_distance_to_position / minDistanceFromPositions)
+                if relation<1:
+                    relation=1
+        val_squad_to_Position = 100 / relation
+        print("next position is " + str(state.nextPositionIndex))
+        print("min distance is " + str(minDistanceFromPositions))
+        print("relation is " + str(relation))
+        print("value is " + str(val_squad_to_Position))
+        print("----------------------------------------")
         "value relative to distance to BluePolygon center"
-        if state.weights['choose_position_op_dist_from_polygon']>=0:
-            relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / max(state.distance_positions_from_BluePolygonCentroid))
-            val_squad_to_PolygonCenter = 100*relation
-        elif state.weights['choose_position_op_dist_from_polygon']<0:
-            relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / min(state.distance_positions_from_BluePolygonCentroid))
-            val_squad_to_PolygonCenter=100/relation
-
+        if isinstance(subtask[1], int):
+            if state.weights['choose_position_op_dist_from_polygon']>=0:
+                relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / max(state.distance_positions_from_BluePolygonCentroid))
+                val_squad_to_PolygonCenter = 100*relation
+            elif state.weights['choose_position_op_dist_from_polygon']<0:
+                relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / min(state.distance_positions_from_BluePolygonCentroid))
+        elif isinstance(subtask[1], str):
+            if state.weights['choose_position_op_dist_from_polygon'] >= 0:
+                relation = (ext_funs.getMetriDistance(state.loc,state.BluePolygonCentroid)/ max(state.distance_positions_from_BluePolygonCentroid))
+            elif state.weights['choose_position_op_dist_from_polygon'] < 0:
+                relation = (ext_funs.getMetriDistance(state.loc,state.BluePolygonCentroid) / min(state.distance_positions_from_BluePolygonCentroid))
+        val_squad_to_PolygonCenter = 100 / relation
+        print("relation is" + str(relation))
+        print("value is " + str(val_squad_to_PolygonCenter))
+        print("----------------------------------------")
         "value relative to distance to BluePolygon center"
-        relation = ((state.position_exposure_level[subtask[1]]) / max(state.position_exposure_level))
+        if isinstance(subtask[1], int):
+            relation = ((state.position_exposure_level[subtask[1]]) / max(state.position_exposure_level))
+        elif isinstance(subtask[1], str):
+            #only long range case for now
+            dist_from_blue_centroid=ext_funs.getMetriDistance(state.loc,state.BluePolygonCentroid)
+            if dist_from_blue_centroid < (state.basicRanges['javelin_range'])/2:
+                relation =1
+            else:
+                relation=(1.5*(state.basicRanges['javelin_range'])-(dist_from_blue_centroid - (state.basicRanges['javelin_range'])/2))/(1.5*(state.basicRanges['javelin_range']))
         val_percent_exposure_polygon = 100 * relation
+        print("relation is" + str(relation))
+        print("value is " + str(val_percent_exposure_polygon))
+        print("----------------------------------------")
 
         ret_val=state.weights['choose_position_op_dist_from_position']*val_squad_to_Position +\
                 abs(state.weights['choose_position_op_dist_from_polygon'])*val_squad_to_PolygonCenter+\

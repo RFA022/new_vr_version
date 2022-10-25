@@ -88,16 +88,14 @@ def aim_op(state,a):
             state.aim_list_names.append(name)
     return state
 
-def null_op(state,a):
+def abort_op(state,a):
     return state
 
 def shoot_op(state,a):
     state.shoot=1
     return state
 
-pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,null_op,aim_op,shoot_op)
-
-
+pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,abort_op,aim_op,shoot_op)
 
 
 def end_mission_m(state,a):
@@ -117,26 +115,51 @@ pyhop.declare_methods('attack', attack_from_position_m,end_mission_m)
 pyhop.declare_original_methods('attack', attack_from_position_m,end_mission_m)
 
 
-def choose_position_m(state,param,a):
+def choose_attack_position_m(state,param,a):
     nextPosition=param
     return [('choose_position_op',nextPosition),('move_to_position',a)]
 
-pyhop.declare_methods('choose_position', choose_position_m)
-pyhop.declare_original_methods('choose_position', choose_position_m)
+def choose_cover_position_m(state,a):
+    #find clocest cover point
+    min_distance_to_cover = float('inf')
+    minimum_polygon = None
+    for polygon in state.intervisibility_polygoins:
+        for vertex in polygon:
+            distance_to_cover = ext_funs.getMetriDistance(vertex, state.loc)
+            if distance_to_cover < min_distance_to_cover:
+                min_distance_to_cover = distance_to_cover
+                state.estimated_distance_to_cover = min_distance_to_cover
+                state.closest_cover_point = vertex
+                minimum_polygon = polygon
+    minimum_polygon_centroid = ext_funs.getPolygonCentroid(minimum_polygon)
+    state.cover_polygon = minimum_polygon
+    state.closest_cover_point = ext_funs.generate_interior_polygon_point(state.closest_cover_point,
+                                                                         minimum_polygon_centroid, minimum_polygon)
+    state.estimated_distance_to_position = ext_funs.getMetriDistance(state.loc, state.closest_cover_point)
+    state.estimated_time_to_position = ext_funs.first_order_time_estimator(state.estimated_distance_to_cover,
+                                                                      float(state.config['squad_speed']))
 
-def move_to_position_m(state,a):
+    return [('choose_position_op',"nearest_cover_position"), ('move_to_position', a)]
+
+def choose_current_position_m(state,a):
+    return [('choose_position_op','current_position'),('move_to_position',a)]
+
+pyhop.declare_methods('choose_position', choose_attack_position_m,choose_cover_position_m,choose_current_position_m)
+pyhop.declare_original_methods('choose_position', choose_attack_position_m,choose_cover_position_m,choose_current_position_m)
+
+def move_to_position_by_foot_m(state,a):
     return [('move_to_position_op',a),('locate_at_position_op',a),('scan_for_enemy',a)]
 
-pyhop.declare_methods('move_to_position', move_to_position_m)
-pyhop.declare_original_methods('move_to_position', move_to_position_m)
+pyhop.declare_methods('move_to_position', move_to_position_by_foot_m)
+pyhop.declare_original_methods('move_to_position', move_to_position_by_foot_m)
 
 def scan_for_enemy_m(state,a):
-    return [('scan_for_enemy_and_assess_exposure_op', a),('continue_task',a)]
+    return [('scan_for_enemy_and_assess_exposure_op', a),('aim_and_shoot',a)]
 
 pyhop.declare_methods('scan_for_enemy', scan_for_enemy_m)
 pyhop.declare_original_methods('scan_for_enemy', scan_for_enemy_m)
 
-def attack_from_another_position_m(state,a):
+def abort_m(state,a):
     #agent still did not reach the target
     observedAndalive_count=0
     for enemy in state.assesedBlues:
@@ -146,7 +169,7 @@ def attack_from_another_position_m(state,a):
             return False
     if (observedAndalive_count!=0):
             return False
-    return [('null_op',a)]
+    return [('abort_op',a)]
 
 def aim_and_shoot_m(state,a):
     observedAndalive_count = 0
@@ -157,8 +180,8 @@ def aim_and_shoot_m(state,a):
             return False
     return [('aim_op', a),('shoot',a)]
 
-pyhop.declare_methods('continue_task',aim_and_shoot_m, attack_from_another_position_m)
-pyhop.declare_original_methods('continue_task',aim_and_shoot_m, attack_from_another_position_m)
+pyhop.declare_methods('aim_and_shoot',aim_and_shoot_m, abort_m)
+pyhop.declare_original_methods('aim_and_shoot',aim_and_shoot_m, abort_m)
 
 def shoot_m(state,a):
     return [('shoot_op',str(state.aim_list[0].unit_name))]
@@ -171,27 +194,44 @@ pyhop.declare_original_methods('shoot',shoot_m)
 pyhop.update_method_list()
 #####----------------------------------------#####
 
-def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration,bluePolygon):
+def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration,bluePolygon):
     init_state = pyhop.State('init_state')
     #VRF configs:
+    init_state.intervisibility_polygoins=intervisibility_polygoins
     init_state.squadPosture=squadPosture
     init_state.enemyDimensions=enemyDimensions
     init_state.basicRanges=basicRanges
+    init_state.config=config
     #HTN
-    init_state.nextPositionIndex = []
-    init_state.currentPositionIndex=[]
+    init_state.nextPositionIndex = [] #both can be index or string-> 'cover', 'current_position'
+    init_state.currentPositionIndex = []
     init_state.assesedBlues = []
     init_state.enemy_number = None
     init_state.positions = []
     init_state.squad_state = 'stand'
     init_state.distance_from_positions = []
+    init_state.aim_list = []
+    init_state.aim_list_names=[]
+
+    #Cover point related state attributes
+    init_state.cover_polygon=None
+    init_state.closest_cover_point=None
+    #next position
+    init_state.estimated_distance_to_position=None
+    init_state.estimated_time_to_position=None
+    #intersection time with targert
+    init_state.estimated_intersection_time=None
+
+    #Scoring and Times
+    init_state.MissionTime=0
+    init_state.positiveHits=[]
+    init_state.negativeHitsProbability=[]
+
+    #Debug Data:
     init_state.debug_task = 0
     init_state.debug_method = 0
     init_state.debug_ope = 0
-    init_state.aim_list = []
-    init_state.aim_list_names=[]
-    init_state.positiveHits=[]
-    init_state.negativeHitsProbability=[]
+
     # Scenario Data:
     init_state.BluePolygonCentroid = BluePolygonCentroid
     init_state.bluePolygon=bluePolygon
@@ -235,7 +275,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
     init_state.weights['eitan_val'] = float(init_state.htnConfig.at['eitan_val', 'value'])
     init_state.weights['ohez_val'] = float(init_state.htnConfig.at['ohez_val', 'value'])
 
-    init_state.config = {}
+    #add more things to basic config
     init_state.config['exploration_value'] = float(init_state.htnConfig.at['exploration_value', 'value'])
 
     # Weapons Accuracy Data:
@@ -247,6 +287,7 @@ def findplan(basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCe
         print("init state is:")
         pyhop.print_state_simple(init_state)
     print("Begin Planning Red:")
+
     plan = pyhop.shop_m(init_state, [('attack', 'me')],debug_level) #third parameter is debug mode
     print(plan)
     return plan

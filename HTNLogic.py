@@ -61,10 +61,10 @@ class HTNLogic:
                     entity_next_state_and_action.shoot = True
                     logging.debug(str(entity_current_state.squad) +
                         ": Next Primitive Task - Fire the first enemy in the target list. According to HTN: " + str(entity_next_state_and_action.HTN_target))
-                if entity_current_state.COA[0][0] == 'null_op':
+                if entity_current_state.COA[0][0] == 'abort_op':
                     entity_next_state_and_action.null = True
                     logging.debug(str(entity_current_state.squad) +
-                        ": Next Primitive Task: null")
+                        ": Next Primitive Task: abort plan")
 
                 "---------Green HTN---------:"
                 if entity_current_state.COA[0][0]=='green_choose_random_position_op':

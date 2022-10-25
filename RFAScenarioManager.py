@@ -243,7 +243,9 @@ class RFAScenarioManager:
                         "Plan new plan if COA is empty and planbool = 1"
                         if current_entity.planBool==1 and current_entity.COA==[]:
                             current_entity.planBool=0
-                            current_entity.COA=htnModel.findplan(self.basicRanges,
+                            current_entity.COA=htnModel.findplan(     self.config,
+                                                                      self.intervisibility_polygoins,
+                                                                      self.basicRanges,
                                                                       self.squadPosture,
                                                                       self.enemyDimensions,
                                                                       current_entity.current_location,
