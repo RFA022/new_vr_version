@@ -323,8 +323,12 @@ def seek_mcts_plan(state, tasks, plan, depth,debug_level):
             subtasks = method(state, *task1[1:])
         elif len(original_methods[task1[0]])!=len(relevant_methods): #lifted method case
             method = relevant_methods[index] #method=[lifted method, parameter]
-            par = method[1]
-            subtasks = method[0](S_c,par, *task1[1:])
+            if isinstance(method, list):
+                par = method[1]
+                subtasks = method[0](S_c,par, *task1[1:])
+            else:
+                method = methods[task1[0]][index]
+                subtasks = method(state, *task1[1:])
         ###print('depth {} new tasks: {}'.format(depth, subtasks))
         if subtasks != False:
              solution = seek_mcts_plan(state, subtasks + tasks[1:], plan, depth + 1,debug_level)
@@ -349,7 +353,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
-    NumSim = 40 #was 400
+    NumSim = 50 #was 400
     ucb1_exploration_value=initial_state.config['exploration_value']
     ### initiation lines:
     print("________________________choose method index________________________")
@@ -499,21 +503,21 @@ def calValue(state,subtask):
         elif isinstance(subtask[1], str):
             if subtask[1]=='current_position':
                 if min(state.distance_from_positions)<state.config['choose_position_op_position_bound']: # if we are actually inside combat position - location prive is 100
-                    relation =1
+                    relation =1#correct to 1
                 else:
-                    relation=(100/110)
+                    relation=100/110
             elif subtask[1]=='nearest_cover_position':
                 relation = (state.estimated_distance_to_position / minDistanceFromPositions)
                 if relation<1:
                     relation=1
         val_squad_to_Position = 100 / relation
-        print("__________________________________________________________")
-        print("next position is " + str(state.nextPositionIndex))
-        print("__________________________________________________________")
-        print("min distance is " + str(minDistanceFromPositions))
-        print("relation is " + str(relation))
-        print("value is " + str(val_squad_to_Position))
-        print("----------------------------------------")
+        # print("__________________________________________________________")
+        # print("next position is " + str(state.nextPositionIndex))
+        # print("__________________________________________________________")
+        # print("min distance is " + str(minDistanceFromPositions))
+        # print("relation is " + str(relation))
+        # print("value is " + str(val_squad_to_Position))
+        # print("----------------------------------------")
         "value relative to distance to BluePolygon center"
         if isinstance(subtask[1], int):
             if state.weights['choose_position_op_dist_from_polygon']>=0:
@@ -533,9 +537,9 @@ def calValue(state,subtask):
                 # if relation<1:
                 #     relation=1
                 val_squad_to_PolygonCenter = 100 / relation
-        print("relation is" + str(relation))
-        print("value is " + str(val_squad_to_PolygonCenter))
-        print("----------------------------------------")
+        # print("relation is" + str(relation))
+        # print("value is " + str(val_squad_to_PolygonCenter))
+        # print("----------------------------------------")
         "value relative to distance to BluePolygon center"
         if isinstance(subtask[1], int):
             relation = ((state.position_exposure_level[subtask[1]]) / max(state.position_exposure_level))
@@ -553,9 +557,9 @@ def calValue(state,subtask):
             if subtask[1]=='nearest_cover_position':
                 relation=relation*state.config['choose_position_op_cover_exposure_factor']
         val_percent_exposure_polygon = 100 * relation
-        print("relation is" + str(relation))
-        print("value is " + str(val_percent_exposure_polygon))
-        print("----------------------------------------")
+        # print("relation is" + str(relation))
+        # print("value is " + str(val_percent_exposure_polygon))
+        # print("----------------------------------------")
 
         ret_val=state.weights['choose_position_op_dist_from_position']*val_squad_to_Position +\
                 abs(state.weights['choose_position_op_dist_from_polygon'])*val_squad_to_PolygonCenter+\

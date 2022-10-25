@@ -14,7 +14,7 @@ from copy import deepcopy
 
 def locate_at_position_op(state,a):
     state.loc = ext_funs.getLocation(state, state.nextPositionIndex)
-    state.squad_state = ext_funs.getSquadState(state)
+    state.squad_state = ext_funs.getSquadState(state,state.nextPositionIndex)
     # Index exchange:
     state.currentPositionIndex = state.nextPositionIndex
     state.nextPositionIndex = []
@@ -23,9 +23,9 @@ def locate_at_position_op(state,a):
     state.distance_from_assesedBlues = ext_funs.update_distance_from_blues(state.loc, state.assesedBlues)
     #Add time to mission time
     if state.squad_state=='attack_position':
-        state.missionTime+=state.confing['attack_position_deployment_mean_time']
+        state.missionTime+= float(state.config['attack_position_deployment_mean_time'])
     elif state.squad_state=='cover_position' or  state.squad_state=='open_position':
-        state.missionTime += state.confing['open_position_deployment_mean_time']
+        state.missionTime += float(state.config['open_position_deployment_mean_time'])
     return state
 
 def choose_position_op(state,nextPosition):
@@ -123,7 +123,7 @@ pyhop.declare_original_methods('attack', attack_from_position_m,end_mission_m)
 
 def choose_attack_position_m(state,param,a):
     nextPosition=param
-    state.estimated_distance_to_position = ext_funs.getMetriDistance(state.loc, state.distance_from_positions[nextPosition])
+    state.estimated_distance_to_position = state.distance_from_positions[nextPosition]
     state.estimated_time_to_position = ext_funs.first_order_time_estimator(state.estimated_distance_to_position,
                                                                            float(state.config['squad_speed']))
     return [('choose_position_op',nextPosition),('move_to_position',a)]

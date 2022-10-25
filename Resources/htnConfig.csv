@@ -1,10 +1,10 @@
 Name,value
-choose_position_op,0.2
+choose_position_op,0.20
 move_to_position_op,0
-locate_at_position_op,0.15
-scan_for_enemy_op,0.15
+locate_at_position_op,0.00
+scan_for_enemy_op,0.30
 bda_op,0
-shoot_enemy_op,0.5
+shoot_enemy_op,0.50
 sum_ops,0
 basic_detection_probability,0.3
 choose_position_op_dist_from_position,0.5
@@ -12,6 +12,6 @@ choose_position_op_dist_from_polygon,-0.25
 choose_position_op_percent_exposure,0.25
 eitan_val,9
 ohez_val,1
-exploration_value,5
+exploration_value,2
 choose_position_op_cover_exposure_factor,0.5
 choose_position_op_position_bound,5
