@@ -487,22 +487,29 @@ def calValue(state,subtask):
     if subtask[0]=='choose_position_op':
         "value relative to distance to position"
         minDistanceFromPositions = min(state.distance_from_positions)
-        if min(state.distance_from_positions) < 1:  # i if you are already in attack position minimum distance becomes second minimum
+        if min(state.distance_from_positions) < state.config['choose_position_op_position_bound']:  # i if you are already in attack position minimum distance becomes second minimum
             minDistanceFromPositions = sorted(state.distance_from_positions)[1]
         if isinstance(subtask[1], int):
             if state.distance_from_positions[subtask[1]] == min(state.distance_from_positions):
-                relation=(100/110) # means that if we are in a position this position recieave 110 in score instead of 100.
+                relation=1
+                if state.distance_from_positions[subtask[1]] < state.config['choose_position_op_position_bound']:# means that if we are in a position this position recieave 110 in score instead of 100.
+                    relation=100/110
             else:
                 relation=((state.distance_from_positions[subtask[1]])/minDistanceFromPositions)
         elif isinstance(subtask[1], str):
             if subtask[1]=='current_position':
-                relation=(100/110)
+                if min(state.distance_from_positions)<state.config['choose_position_op_position_bound']: # if we are actually inside combat position - location prive is 100
+                    relation =1
+                else:
+                    relation=(100/110)
             elif subtask[1]=='nearest_cover_position':
                 relation = (state.estimated_distance_to_position / minDistanceFromPositions)
                 if relation<1:
                     relation=1
         val_squad_to_Position = 100 / relation
+        print("__________________________________________________________")
         print("next position is " + str(state.nextPositionIndex))
+        print("__________________________________________________________")
         print("min distance is " + str(minDistanceFromPositions))
         print("relation is " + str(relation))
         print("value is " + str(val_squad_to_Position))
@@ -514,12 +521,18 @@ def calValue(state,subtask):
                 val_squad_to_PolygonCenter = 100*relation
             elif state.weights['choose_position_op_dist_from_polygon']<0:
                 relation = ((state.distance_positions_from_BluePolygonCentroid[subtask[1]]) / min(state.distance_positions_from_BluePolygonCentroid))
+                val_squad_to_PolygonCenter = 100/relation
         elif isinstance(subtask[1], str):
             if state.weights['choose_position_op_dist_from_polygon'] >= 0:
                 relation = (ext_funs.getMetriDistance(state.loc,state.BluePolygonCentroid)/ max(state.distance_positions_from_BluePolygonCentroid))
+                # if relation>1:
+                #     relation=1
+                val_squad_to_PolygonCenter = 100 * relation
             elif state.weights['choose_position_op_dist_from_polygon'] < 0:
                 relation = (ext_funs.getMetriDistance(state.loc,state.BluePolygonCentroid) / min(state.distance_positions_from_BluePolygonCentroid))
-        val_squad_to_PolygonCenter = 100 / relation
+                # if relation<1:
+                #     relation=1
+                val_squad_to_PolygonCenter = 100 / relation
         print("relation is" + str(relation))
         print("value is " + str(val_squad_to_PolygonCenter))
         print("----------------------------------------")
@@ -532,7 +545,13 @@ def calValue(state,subtask):
             if dist_from_blue_centroid < (state.basicRanges['javelin_range'])/2:
                 relation =1
             else:
-                relation=(1.5*(state.basicRanges['javelin_range'])-(dist_from_blue_centroid - (state.basicRanges['javelin_range'])/2))/(1.5*(state.basicRanges['javelin_range']))
+                relation=(0.5*(state.basicRanges['javelin_range'])-(dist_from_blue_centroid - (state.basicRanges['javelin_range'])/2))/(0.5*(state.basicRanges['javelin_range']))
+                if relation<0:
+                    relation=0
+                if relation>1:
+                    relation=1
+            if subtask[1]=='nearest_cover_position':
+                relation=relation*state.config['choose_position_op_cover_exposure_factor']
         val_percent_exposure_polygon = 100 * relation
         print("relation is" + str(relation))
         print("value is " + str(val_percent_exposure_polygon))

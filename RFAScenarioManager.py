@@ -80,6 +80,14 @@ class RFAScenarioManager:
         self.config['mobility_avoidance_radius'] = str(self.configuration.at['mobility_avoidance_radius', 'value'])
         self.config['basic_cover_waiting_time'] = str(self.configuration.at['basic_cover_waiting_time', 'value'])
         self.config['default_enemy_speed'] = str(self.configuration.at['default_enemy_speed', 'value'])
+        self.config['attack_position_deployment_mean_time'] = str(self.configuration.at['attack_position_deployment_mean_time', 'value'])
+        self.config['attack_position_deployment_std_time'] = str(self.configuration.at['attack_position_deployment_std_time', 'value'])
+        self.config['open_position_deployment_mean_time'] = str(self.configuration.at['open_position_deployment_mean_time', 'value'])
+        self.config['open_position_deployment_std_time'] = str(self.configuration.at['open_position_deployment_std_time', 'value'])
+        self.config['position_deployment_mean_time'] = str(self.configuration.at['position_deployment_mean_time', 'value'])
+        self.config['position_deployment_std_time'] = str(self.configuration.at['position_deployment_std_time', 'value'])
+
+
         self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
         self.squadsData = pd.read_csv(self.squadsDatalocation,
                             header=[0],

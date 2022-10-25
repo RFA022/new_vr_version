@@ -13,14 +13,19 @@ from copy import deepcopy
 
 
 def locate_at_position_op(state,a):
-    state.squad_state = 'at_position'
     state.loc = ext_funs.getLocation(state, state.nextPositionIndex)
+    state.squad_state = ext_funs.getSquadState(state)
     # Index exchange:
     state.currentPositionIndex = state.nextPositionIndex
     state.nextPositionIndex = []
     # Updateting dynamic distances list:
     state.distance_from_positions = ext_funs.update_distance_from_positions(state.loc, state.positions)
     state.distance_from_assesedBlues = ext_funs.update_distance_from_blues(state.loc, state.assesedBlues)
+    #Add time to mission time
+    if state.squad_state=='attack_position':
+        state.missionTime+=state.confing['attack_position_deployment_mean_time']
+    elif state.squad_state=='cover_position' or  state.squad_state=='open_position':
+        state.missionTime += state.confing['open_position_deployment_mean_time']
     return state
 
 def choose_position_op(state,nextPosition):
@@ -28,7 +33,8 @@ def choose_position_op(state,nextPosition):
     return state
 
 def move_to_position_op(state,a):
-    state.squad_state = 'move'
+    state.squad_state = a
+    state.missionTime+= state.estimated_time_to_position
     return state
 
 def scan_for_enemy_and_assess_exposure_op(state,a):
@@ -117,6 +123,9 @@ pyhop.declare_original_methods('attack', attack_from_position_m,end_mission_m)
 
 def choose_attack_position_m(state,param,a):
     nextPosition=param
+    state.estimated_distance_to_position = ext_funs.getMetriDistance(state.loc, state.distance_from_positions[nextPosition])
+    state.estimated_time_to_position = ext_funs.first_order_time_estimator(state.estimated_distance_to_position,
+                                                                           float(state.config['squad_speed']))
     return [('choose_position_op',nextPosition),('move_to_position',a)]
 
 def choose_cover_position_m(state,a):
@@ -128,27 +137,28 @@ def choose_cover_position_m(state,a):
             distance_to_cover = ext_funs.getMetriDistance(vertex, state.loc)
             if distance_to_cover < min_distance_to_cover:
                 min_distance_to_cover = distance_to_cover
-                state.estimated_distance_to_cover = min_distance_to_cover
+                state.estimated_distance_to_position = min_distance_to_cover
                 state.closest_cover_point = vertex
                 minimum_polygon = polygon
     minimum_polygon_centroid = ext_funs.getPolygonCentroid(minimum_polygon)
     state.cover_polygon = minimum_polygon
     state.closest_cover_point = ext_funs.generate_interior_polygon_point(state.closest_cover_point,
                                                                          minimum_polygon_centroid, minimum_polygon)
-    state.estimated_distance_to_position = ext_funs.getMetriDistance(state.loc, state.closest_cover_point)
-    state.estimated_time_to_position = ext_funs.first_order_time_estimator(state.estimated_distance_to_cover,
+    state.estimated_time_to_position = ext_funs.first_order_time_estimator(state.estimated_distance_to_position,
                                                                       float(state.config['squad_speed']))
 
     return [('choose_position_op',"nearest_cover_position"), ('move_to_position', a)]
 
 def choose_current_position_m(state,a):
+    state.estimated_distance_to_position = 0
+    state.estimated_time_to_position = 0
     return [('choose_position_op','current_position'),('move_to_position',a)]
 
-pyhop.declare_methods('choose_position', choose_attack_position_m,choose_cover_position_m,choose_current_position_m)
-pyhop.declare_original_methods('choose_position', choose_attack_position_m,choose_cover_position_m,choose_current_position_m)
+pyhop.declare_methods('choose_position', choose_attack_position_m,choose_current_position_m,choose_cover_position_m)
+pyhop.declare_original_methods('choose_position', choose_attack_position_m,choose_current_position_m,choose_cover_position_m)
 
 def move_to_position_by_foot_m(state,a):
-    return [('move_to_position_op',a),('locate_at_position_op',a),('scan_for_enemy',a)]
+    return [('move_to_position_op','move_by_foot'),('locate_at_position_op',a),('scan_for_enemy',a)]
 
 pyhop.declare_methods('move_to_position', move_to_position_by_foot_m)
 pyhop.declare_original_methods('move_to_position', move_to_position_by_foot_m)
@@ -223,7 +233,7 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.estimated_intersection_time=None
 
     #Scoring and Times
-    init_state.MissionTime=0
+    init_state.missionTime=0
     init_state.positiveHits=[]
     init_state.negativeHitsProbability=[]
 
@@ -277,6 +287,9 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
 
     #add more things to basic config
     init_state.config['exploration_value'] = float(init_state.htnConfig.at['exploration_value', 'value'])
+    init_state.config['choose_position_op_cover_exposure_factor'] = float(init_state.htnConfig.at['choose_position_op_cover_exposure_factor', 'value'])
+    init_state.config['choose_position_op_position_bound'] = float(init_state.htnConfig.at['choose_position_op_position_bound', 'value'])
+
 
     # Weapons Accuracy Data:
     init_state.AccuracyConfiguration=AccuracyConfiguration

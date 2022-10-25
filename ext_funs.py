@@ -57,7 +57,13 @@ def calculate_blue_distance(loc,enemy):
     return dist
 #helper functions
 def simple_getLocation(state,index):
-    return [state.positions[index][0],state.positions[index][1]]
+    if isinstance(index, int):
+        return [state.positions[index][0],state.positions[index][1]]
+    elif isinstance(index, str):
+        if index =='current_position':
+            return[state.loc[0],state.loc[1]]
+        if index == 'nearest_cover_position':
+            return[state.[0],state.loc[1]]
 
 #HTN function only
 def getLocation(state,index):
@@ -493,7 +499,7 @@ def generate_interior_polygon_point(vertex,centroid,polygon):
 
     # communicator.CreateEntitySimple('vertex', vertex, 2, '16:0:0:1:0:0:0')
     # communicator.CreateEntitySimple('centroid_swiched', centroid_swiched, 2, '16:0:0:1:0:0:0')
-    # communicator.CreateEntitySimple('interior pt', interior_point, 2, '16:0:0:1:0:0:0')
+    communicator.CreateEntitySimple('interior pt', interior_point, 2, '16:0:0:1:0:0:0')
     return interior_point
 
 def is_interior_point_valid_related_to_its_vertex(vertex,point): #Assume flat surface
@@ -602,3 +608,12 @@ def get_unitvalue_for_scanning_evaluation(state):
     sum = (state.weights['ohez_val']) * Ohez_number + (state.weights['eitan_val']) * Eitan_number
     x = 100 / sum  # value for each evaluation unit
     return x
+
+def getSquadState(state):
+    if min(state.distance_from_positions)<state.config['choose_position_op_position_bound']:
+        return ('attack_position')
+    for polygon in state.intervisibility_polygoins:
+        answer = is_inside_polygon(state.loc, polygon)
+        if answer == True:
+            return('cover_position')
+    return ('open_position')

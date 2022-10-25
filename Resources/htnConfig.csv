@@ -13,3 +13,5 @@ choose_position_op_percent_exposure,0.25
 eitan_val,9
 ohez_val,1
 exploration_value,5
+choose_position_op_cover_exposure_factor,0.5
+choose_position_op_position_bound,5
