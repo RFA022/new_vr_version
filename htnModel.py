@@ -28,7 +28,7 @@ def locate_at_position_op(state,a):
         state.missionTime += float(state.config['open_position_deployment_mean_time'])
     return state
 
-def choose_position_op(state,nextPosition):
+def choose_position_op(state,nextPosition,nextLoc):
     state.nextPositionIndex=nextPosition
     return state
 
@@ -127,11 +127,11 @@ def choose_attack_position_m(state,param,a):
     state.estimated_distance_to_position = state.distance_from_positions[nextPosition]
     state.estimated_time_to_position = ext_funs.first_order_time_estimator(state.estimated_distance_to_position,
                                                                            float(state.config['squad_speed']))
-    return [('choose_position_op',nextPosition),('move_to_position',a)]
+    return [('choose_position_op',nextPosition,nextLoc),('move_to_position',a)]
 
 def choose_cover_position_m(state,a):
     nextPosition="nearest_cover_position"
-    nextLoc = ext_funs.getLocation(state, nextPosition)
+
     #find clocest cover point
     min_distance_to_cover = float('inf')
     minimum_polygon = None
@@ -149,14 +149,15 @@ def choose_cover_position_m(state,a):
                                                                          minimum_polygon_centroid, minimum_polygon)
     state.estimated_time_to_position = ext_funs.first_order_time_estimator(state.estimated_distance_to_position,
                                                                       float(state.config['squad_speed']))
-    return [('choose_position_op',nextPosition), ('move_to_position', a)]
+    nextLoc = ext_funs.getLocation(state, nextPosition)
+    return [('choose_position_op',nextPosition,nextLoc), ('move_to_position', a)]
 
 def choose_current_position_m(state,a):
     nextPosition='current_position'
     nextLoc=ext_funs.getLocation(state,nextPosition)
     state.estimated_distance_to_position = 0
     state.estimated_time_to_position = 0
-    return [('choose_position_op',nextPosition),('move_to_position',a)]
+    return [('choose_position_op',nextPosition,nextLoc),('move_to_position',a)]
 
 pyhop.declare_methods('choose_position', choose_attack_position_m,choose_current_position_m,choose_cover_position_m)
 pyhop.declare_original_methods('choose_position', choose_attack_position_m,choose_current_position_m,choose_cover_position_m)

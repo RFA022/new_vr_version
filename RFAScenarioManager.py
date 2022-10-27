@@ -316,6 +316,7 @@ class RFAScenarioManager:
         # Change nextPos:
         if entity_next_state_and_action.nextPos != None:
             current_entity.face = entity_next_state_and_action.nextPos
+            current_entity.nextLocation=entity_next_state_and_action.nextLocation
             if current_entity.hostility==Hostility.OPPOSING:
                 logging.debug("Next destination has been changed to: " + str(current_entity.face))
 
@@ -699,6 +700,7 @@ class RFAScenarioManager:
             current_entity.classification   = live_unit.classification
             current_entity.COA              = entity_previous_list[k].COA
             current_entity.face             = entity_previous_list[k].face
+            current_entity.nextLocation             = entity_previous_list[k].nextLocation
             current_entity.planBool         = entity_previous_list[k].planBool
             current_entity.state            = entity_previous_list[k].state
             current_entity.fireState        = entity_previous_list[k].fireState

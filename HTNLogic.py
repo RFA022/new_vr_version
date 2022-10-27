@@ -30,15 +30,16 @@ class HTNLogic:
                 "---------Red HTN---------"
                 if entity_current_state.COA[0][0]=='choose_position_op':
                     entity_next_state_and_action.nextPos=entity_current_state.COA[0][1]
+                    entity_next_state_and_action.nextLocation=entity_current_state.COA[0][2]
                     logging.debug(str(entity_current_state.squad) +
                         ": Next Primitive Action - Change next destination to Attack Position "+ str(entity_current_state.COA[0][1]))
                 if entity_current_state.COA[0][0]=='move_to_position_op':
                     entity_next_state_and_action.move_pos = True
                     new_position_location = {
                         "location_id": -1,
-                        "latitude": AttackPos[entity_current_state.face]['latitude'],
-                        "longitude": AttackPos[entity_current_state.face]['longitude'],
-                        "altitude": AttackPos[entity_current_state.face]['altitude'],
+                        "latitude": entity_current_state.nextLocation['latitude'],
+                        "longitude": entity_current_state.nextLocation['longitude'],
+                        "altitude": entity_current_state.nextLocation['altitude'],
                     }
                     entity_next_state_and_action.SetPosition(PositionType.MOVE_TO_OP, new_position_location)
                     entity_next_state_and_action.positionType="Attack"

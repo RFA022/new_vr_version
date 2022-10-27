@@ -12,6 +12,7 @@ class EntityNextStateAndAction:
         self.move_pos = False
         self.takeAction = 0
         self.nextPos = None
+        self.nextLocation=None
         self.nextPosture = None
         self.scan_for_enemy=None
         self.aim=False

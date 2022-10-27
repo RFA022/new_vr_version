@@ -55,6 +55,7 @@ class EntityCurrentState: #red entities
 
         self.COA=[]
         self.face=None
+        self.nextLocation=None
         self.HTNtarget=None
         self.HTNbluesFrozen=[]
         self.planBool=0
