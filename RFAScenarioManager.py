@@ -84,9 +84,11 @@ class RFAScenarioManager:
         self.config['attack_position_deployment_std_time'] = str(self.configuration.at['attack_position_deployment_std_time', 'value'])
         self.config['open_position_deployment_mean_time'] = str(self.configuration.at['open_position_deployment_mean_time', 'value'])
         self.config['open_position_deployment_std_time'] = str(self.configuration.at['open_position_deployment_std_time', 'value'])
-        self.config['position_deployment_mean_time'] = str(self.configuration.at['position_deployment_mean_time', 'value'])
-        self.config['position_deployment_std_time'] = str(self.configuration.at['position_deployment_std_time', 'value'])
-
+        self.config['attack_position_departure_mean_time'] = str(self.configuration.at['attack_position_departure_mean_time', 'value'])
+        self.config['attack_position_departure_std_time'] = str(self.configuration.at['attack_position_departure_std_time', 'value'])
+        self.config['open_position_departure_mean_time'] = str(self.configuration.at['open_position_departure_mean_time', 'value'])
+        self.config['open_position_departure_std_time'] = str(self.configuration.at['open_position_departure_std_time', 'value'])
+        self.config['shooting_time'] = str(self.configuration.at['shooting_time', 'value'])
 
         self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
         self.squadsData = pd.read_csv(self.squadsDatalocation,

@@ -11,6 +11,13 @@ import pandas as pd
 import logging
 from copy import deepcopy
 
+def depart_position_op(state,a):
+    if state.squad_state=='attack_position':
+        state.missionTime+= float(state.config['attack_position_departure_mean_time'])
+    elif state.squad_state=='nearest_cover_position' or  state.squad_state=='current_position':
+        state.missionTime += float(state.config['open_position_departure_mean_time'])
+    state.squad_state = 'depart_from_position'
+    return state
 
 def locate_at_position_op(state,a):
     state.loc = ext_funs.getLocation(state, state.nextPositionIndex)
@@ -24,7 +31,7 @@ def locate_at_position_op(state,a):
     #Add time to mission time
     if state.squad_state=='attack_position':
         state.missionTime+= float(state.config['attack_position_deployment_mean_time'])
-    elif state.squad_state=='cover_position' or  state.squad_state=='open_position':
+    elif state.squad_state=='nearest_cover_position' or  state.squad_state=='current_position':
         state.missionTime += float(state.config['open_position_deployment_mean_time'])
     return state
 
@@ -38,6 +45,7 @@ def move_to_position_op(state,a):
     return state
 
 def scan_for_enemy_and_assess_exposure_op(state,a):
+    state.missionTime+=state.config['scan_time']
     #Scan part:
     for enemy in state.assesedBlues:
         #if location is not known:
@@ -99,9 +107,10 @@ def abort_op(state,a):
 
 def shoot_op(state,a):
     state.shoot=1
+    state.missionTime+=state.config['shooting_time']
     return state
 
-pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,abort_op,aim_op,shoot_op)
+pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,abort_op,aim_op,shoot_op,depart_position_op)
 
 
 def end_mission_m(state,a):
@@ -131,7 +140,6 @@ def choose_attack_position_m(state,param,a):
 
 def choose_cover_position_m(state,a):
     nextPosition="nearest_cover_position"
-
     #find clocest cover point
     min_distance_to_cover = float('inf')
     minimum_polygon = None
@@ -159,14 +167,21 @@ def choose_current_position_m(state,a):
     state.estimated_time_to_position = 0
     return [('choose_position_op',nextPosition,nextLoc),('move_to_position',a)]
 
+
 pyhop.declare_methods('choose_position', choose_attack_position_m,choose_current_position_m,choose_cover_position_m)
 pyhop.declare_original_methods('choose_position', choose_attack_position_m,choose_current_position_m,choose_cover_position_m)
 
 def move_to_position_by_foot_m(state,a):
-    return [('move_to_position_op','move_by_foot'),('locate_at_position_op',a),('scan_for_enemy',a)]
+    return [('move_to_position_op','move_by_foot'),('deploy_at_position',a)]
 
 pyhop.declare_methods('move_to_position', move_to_position_by_foot_m)
 pyhop.declare_original_methods('move_to_position', move_to_position_by_foot_m)
+
+def full_firing_deployment_m(state,a):
+    return([('locate_at_position_op',a),('scan_for_enemy',a)])
+
+pyhop.declare_methods('deploy_at_position', full_firing_deployment_m)
+pyhop.declare_original_methods('deploy_at_position', full_firing_deployment_m)
 
 def scan_for_enemy_m(state,a):
     return [('scan_for_enemy_and_assess_exposure_op', a),('aim_and_shoot',a)]
@@ -184,7 +199,7 @@ def abort_m(state,a):
             return False
     if (observedAndalive_count!=0):
             return False
-    return [('abort_op',a)]
+    return [('abort_op',a,),('depart_position_op',a)]
 
 def aim_and_shoot_m(state,a):
     observedAndalive_count = 0
@@ -193,7 +208,7 @@ def aim_and_shoot_m(state,a):
             observedAndalive_count += 1
     if (observedAndalive_count==0):
             return False
-    return [('aim_op', a),('shoot',a)]
+    return [('aim_op', a),('shoot',a),('depart_position_op',a)]
 
 pyhop.declare_methods('aim_and_shoot',aim_and_shoot_m, abort_m)
 pyhop.declare_original_methods('aim_and_shoot',aim_and_shoot_m, abort_m)
@@ -228,7 +243,6 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.distance_from_positions = []
     init_state.aim_list = []
     init_state.aim_list_names=[]
-
     #Cover point related state attributes
     init_state.cover_polygon=None
     init_state.closest_cover_point=None
@@ -256,6 +270,13 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.positions = ext_funs.get_positions_fromCSV('Resources\RedAttackPos.csv')
     init_state.loc = loc
     init_state.distance_from_positions = ext_funs.update_distance_from_positions(init_state.loc,init_state.positions)
+    init_state.approximated_max_mission_time=\
+    max(init_state.distance_from_positions)/float(init_state.config['squad_speed']) +\
+    +float(init_state.config['attack_position_deployment_mean_time']) +\
+    +float(init_state.config['scan_time']) +\
+    +float(init_state.config['shooting_time'])+\
+    +float(init_state.config['attack_position_departure_mean_time'])
+
     "edit blueList - append fake location to unknown blues"
     for blue in blueList:
         blue.observed=False
