@@ -123,12 +123,15 @@ pyhop.declare_original_methods('attack', attack_from_position_m,end_mission_m)
 
 def choose_attack_position_m(state,param,a):
     nextPosition=param
+    nextLoc=ext_funs.getLocation(state,nextPosition)
     state.estimated_distance_to_position = state.distance_from_positions[nextPosition]
     state.estimated_time_to_position = ext_funs.first_order_time_estimator(state.estimated_distance_to_position,
                                                                            float(state.config['squad_speed']))
     return [('choose_position_op',nextPosition),('move_to_position',a)]
 
 def choose_cover_position_m(state,a):
+    nextPosition="nearest_cover_position"
+    nextLoc = ext_funs.getLocation(state, nextPosition)
     #find clocest cover point
     min_distance_to_cover = float('inf')
     minimum_polygon = None
@@ -146,13 +149,14 @@ def choose_cover_position_m(state,a):
                                                                          minimum_polygon_centroid, minimum_polygon)
     state.estimated_time_to_position = ext_funs.first_order_time_estimator(state.estimated_distance_to_position,
                                                                       float(state.config['squad_speed']))
-
-    return [('choose_position_op',"nearest_cover_position"), ('move_to_position', a)]
+    return [('choose_position_op',nextPosition), ('move_to_position', a)]
 
 def choose_current_position_m(state,a):
+    nextPosition='current_position'
+    nextLoc=ext_funs.getLocation(state,nextPosition)
     state.estimated_distance_to_position = 0
     state.estimated_time_to_position = 0
-    return [('choose_position_op','current_position'),('move_to_position',a)]
+    return [('choose_position_op',nextPosition),('move_to_position',a)]
 
 pyhop.declare_methods('choose_position', choose_attack_position_m,choose_current_position_m,choose_cover_position_m)
 pyhop.declare_original_methods('choose_position', choose_attack_position_m,choose_current_position_m,choose_cover_position_m)
@@ -215,6 +219,7 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     #HTN
     init_state.nextPositionIndex = [] #both can be index or string-> 'cover', 'current_position'
     init_state.currentPositionIndex = []
+    init_state.loc=None
     init_state.assesedBlues = []
     init_state.enemy_number = None
     init_state.positions = []
@@ -295,7 +300,7 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.AccuracyConfiguration=AccuracyConfiguration
 
     #pyhop.print_state_simple(init_state)
-    debug_level = 0
+    debug_level = 1
     if debug_level >= 2:
         print("init state is:")
         pyhop.print_state_simple(init_state)

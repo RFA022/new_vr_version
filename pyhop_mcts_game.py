@@ -353,7 +353,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
-    NumSim = 50 #was 400
+    NumSim = 60 #was 400
     ucb1_exploration_value=initial_state.config['exploration_value']
     ### initiation lines:
     print("________________________choose method index________________________")
