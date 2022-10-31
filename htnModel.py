@@ -107,7 +107,7 @@ def abort_op(state,a):
 
 def shoot_op(state,a):
     state.shoot=1
-    state.missionTime+=state.config['shooting_time']
+    state.missionTime+=float(state.config['shooting_time'])
     return state
 
 pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,abort_op,aim_op,shoot_op,depart_position_op)

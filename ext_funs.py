@@ -57,20 +57,22 @@ def calculate_blue_distance(loc,enemy):
     return dist
 #helper functions
 def simple_getLocation(state,index):
-    if isinstance(index, int):
-        return [state.positions[index][0],state.positions[index][1]]
-    elif isinstance(index, str):
-        if index =='current_position':
-            return[state.loc[0],state.loc[1]]
-        if index == 'nearest_cover_position':
-            return[state.[0],state.loc[1]]
+    return [state.positions[index][0],state.positions[index][1]]
 
 #HTN function only
 def getLocation(state,index):
     #float casting of location because altitude somehow automated casted to be str
-    loc={'latitude':(state.positions[index]['latitude']),
-         'longitude':(state.positions[index]['longitude']),
-         'altitude':(state.positions[index]['altitude'])}
+    if isinstance(index, int):
+        loc={'latitude':float(state.positions[index]['latitude']),
+             'longitude':float(state.positions[index]['longitude']),
+             'altitude':float(state.positions[index]['altitude'])}
+    elif isinstance(index, str):
+        if index=='nearest_cover_position':
+            loc = {'latitude': float(state.closest_cover_point['latitude']),
+                   'longitude':float (state.closest_cover_point['longitude']),
+                   'altitude': float(state.closest_cover_point['altitude'])}
+        elif index == 'current_position':
+            loc=state.loc
     return loc
 
 def getMetriDistance(loc1,loc2):
@@ -453,10 +455,11 @@ def generate_interior_polygon_point(vertex,centroid,polygon):
 
     finish_bool=0
     counter=0
+    max_counter=5
     while finish_bool==0:
             centroid_utm_copy = copy.deepcopy(centroid_utm)
-            random_centroid_movement_x_meter = np.random.normal(0,15)
-            random_centroid_movement_y_meter = np.random.normal(0,15)
+            random_centroid_movement_x_meter = np.random.normal(0,40)
+            random_centroid_movement_y_meter = np.random.normal(0,40)
             centroid_utm_copy=list(centroid_utm_copy)
             centroid_utm_copy[0] += random_centroid_movement_x_meter
             centroid_utm_copy[1] += random_centroid_movement_y_meter
@@ -471,7 +474,7 @@ def generate_interior_polygon_point(vertex,centroid,polygon):
                 "north": utm_vector_vertex_to_centroid["north"] / utm_vector_vertex_to_centroid_norm
             }
             interior_point_utm= {"east":None,"north":None,}
-            random_push_into_polygon_meter=np.random.normal(40,15)
+            random_push_into_polygon_meter=np.random.normal(40,5)*(1-counter/max_counter)
             interior_point_utm['east']=vertex_utm[0] + random_push_into_polygon_meter * utm_unit_vector_vertex_to_centroid_norm['east']
             interior_point_utm['north'] = vertex_utm[1] + random_push_into_polygon_meter  * utm_unit_vector_vertex_to_centroid_norm['north']
 
@@ -483,10 +486,17 @@ def generate_interior_polygon_point(vertex,centroid,polygon):
                 'longitude': interior_point_LatLong[1],
                 'altitude': alt
             }
-            if (is_interior_point_valid_related_to_its_vertex(vertex,interior_point) and is_inside_polygon(interior_point,polygon)) or counter>30:
+            if (is_interior_point_valid_related_to_its_vertex(vertex,interior_point) and is_inside_polygon(interior_point,polygon)) :
                 finish_bool=1
-                if counter>10: #could not find good cover point
-                    interior_point=vertex
+
+            if counter > max_counter:  # could not find good cover point
+                finish_bool=1
+                vertex_height = communicator.getHeightAboveSeaLevel(vertex['latitude'], vertex['longitude'])
+                interior_point = {
+                'latitude': vertex['latitude'],
+                'longitude': vertex['longitude'],
+                'altitude': vertex_height
+                }
             counter+=1
 
             # centroid_copy_swiched_LatLong=utm.to_latlon(centroid_utm_copy[0], centroid_utm_copy[1], centroid_utm_copy[2], centroid_utm_copy[3])
@@ -497,19 +507,21 @@ def generate_interior_polygon_point(vertex,centroid,polygon):
             #     'altitude': cent_alt
             # }
 
-    # communicator.CreateEntitySimple('vertex', vertex, 2, '16:0:0:1:0:0:0')
+    #communicator.CreateEntitySimple('vertex', vertex, 2, '16:0:0:1:0:0:0')
     # communicator.CreateEntitySimple('centroid_swiched', centroid_swiched, 2, '16:0:0:1:0:0:0')
-    communicator.CreateEntitySimple('interior pt', interior_point, 2, '16:0:0:1:0:0:0')
+    #communicator.CreateEntitySimple('interior pt', interior_point, 2, '16:0:0:1:0:0:0')
     return interior_point
 
 def is_interior_point_valid_related_to_its_vertex(vertex,point): #Assume flat surface
     communicator = CommunicatorSingleton().obj
     vertex_height = communicator.getHeightAboveSeaLevel(vertex['latitude'], vertex['longitude'])
     point_height = communicator.getHeightAboveSeaLevel(point['latitude'], point['longitude'])
-    if abs(vertex_height-point_height)> 1.5: #resonable tree height in meter - not configured
+    if abs(vertex_height-point_height)>0.5: #resonable tree height in meter - not configured
         return False
     else:
         return True
+
+
 
 def asses_waiting_time_in_waiting_location(config,waiting_location,bluelist,enemies_relative_direction):
     # waiting_point - is the desired waiting point
@@ -609,11 +621,8 @@ def get_unitvalue_for_scanning_evaluation(state):
     x = 100 / sum  # value for each evaluation unit
     return x
 
-def getSquadState(state):
-    if min(state.distance_from_positions)<state.config['choose_position_op_position_bound']:
+def getSquadState(state,index):
+    if isinstance(index, int):
         return ('attack_position')
-    for polygon in state.intervisibility_polygoins:
-        answer = is_inside_polygon(state.loc, polygon)
-        if answer == True:
-            return('cover_position')
-    return ('open_position')
+    elif isinstance(index, str):
+        return index
