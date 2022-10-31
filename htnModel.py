@@ -11,11 +11,16 @@ import pandas as pd
 import logging
 from copy import deepcopy
 
+def evaluate_HTN_subPlan_survivability_op(state,a):
+    return state
+
 def depart_position_op(state,a):
     if state.squad_state=='attack_position':
-        state.missionTime+= float(state.config['attack_position_departure_mean_time'])
+        state.missionTime  += float(state.config['attack_position_departure_mean_time'])
+        state.positionTime += float(state.config['attack_position_departure_mean_time'])
     elif state.squad_state=='nearest_cover_position' or  state.squad_state=='current_position':
-        state.missionTime += float(state.config['open_position_departure_mean_time'])
+        state.missionTime  += float(state.config['open_position_departure_mean_time'])
+        state.positionTime += float(state.config['open_position_departure_mean_time'])
     state.squad_state = 'depart_from_position'
     return state
 
@@ -28,11 +33,20 @@ def locate_at_position_op(state,a):
     # Updateting dynamic distances list:
     state.distance_from_positions = ext_funs.update_distance_from_positions(state.loc, state.positions)
     state.distance_from_assesedBlues = ext_funs.update_distance_from_blues(state.loc, state.assesedBlues)
+
+    #state location
+    state.estimated_distance_to_position = 0
+    state.estimated_time_to_position = 0
+
     #Add time to mission time
     if state.squad_state=='attack_position':
-        state.missionTime+= float(state.config['attack_position_deployment_mean_time'])
+        state.missionTime  += float(state.config['attack_position_deployment_mean_time'])
+        state.positionTime += float(state.config['attack_position_deployment_mean_time'])
+
     elif state.squad_state=='nearest_cover_position' or  state.squad_state=='current_position':
-        state.missionTime += float(state.config['open_position_deployment_mean_time'])
+        state.missionTime  += float(state.config['open_position_deployment_mean_time'])
+        state.positionTime += float(state.config['open_position_deployment_mean_time'])
+
     return state
 
 def choose_position_op(state,nextPosition,nextLoc):
@@ -41,11 +55,13 @@ def choose_position_op(state,nextPosition,nextLoc):
 
 def move_to_position_op(state,a):
     state.squad_state = a
-    state.missionTime+= state.estimated_time_to_position
+    state.missionTime+= float(state.estimated_time_to_position) #added only for mission time and not to position time
     return state
 
 def scan_for_enemy_and_assess_exposure_op(state,a):
-    state.missionTime+=state.config['scan_time']
+    state.missionTime  += state.config['scan_time']
+    state.positionTime += state.config['scan_time']
+
     #Scan part:
     for enemy in state.assesedBlues:
         #if location is not known:
@@ -107,7 +123,8 @@ def abort_op(state,a):
 
 def shoot_op(state,a):
     state.shoot=1
-    state.missionTime+=float(state.config['shooting_time'])
+    state.missionTime  += float(state.config['shooting_time'])
+    state.positionTime += float(state.config['shooting_time'])
     return state
 
 pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,abort_op,aim_op,shoot_op,depart_position_op)
@@ -253,7 +270,8 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.estimated_intersection_time=None
 
     #Scoring and Times
-    init_state.missionTime=0
+    init_state.missionTime=0  #Time counting for the complete mission
+    init_state.positionTime=0 #Time counting for position related tasks
     init_state.positiveHits=[]
     init_state.negativeHitsProbability=[]
 
@@ -276,6 +294,11 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     +float(init_state.config['scan_time']) +\
     +float(init_state.config['shooting_time'])+\
     +float(init_state.config['attack_position_departure_mean_time'])
+    init_state.approximated_max_position_time= \
+        +float(init_state.config['open_position_deployment_mean_time']) + \
+        +float(init_state.config['scan_time']) + \
+        +float(init_state.config['shooting_time']) + \
+        +float(init_state.config['open_position_departure_mean_time'])
 
     "edit blueList - append fake location to unknown blues"
     for blue in blueList:

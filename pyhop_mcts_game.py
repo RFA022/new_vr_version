@@ -632,7 +632,7 @@ def calValue(state,subtask):
         elif knownEnemies==0:
             ret_val_exposure = state.weights['locate_at_position_op']*100 #means that Agent dont know about any enemies
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is: exposure' + ", retval is: " + str(
-        #     ret_val_exposure))
+        #     ret_val_exposure))#
         ret_val=ret_val_scan+ret_val_exposure
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
         #     subtask[0]) + ", retval is: " + str(ret_val))
