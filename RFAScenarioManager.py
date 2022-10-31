@@ -167,6 +167,7 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
+                        print(current_entity.vulnerability)
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
@@ -237,8 +238,10 @@ class RFAScenarioManager:
                             # print("relative vector is: "+str(current_entity.enemies_relative_direction))
                             # #check vulnerability:
                             # print("--vulnerability assesment function--")
-                            print("total vulnerability :" +str(ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
-                                                                 self.AccuracyConfiguration)))
+                            current_entity.vulnerability=ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
+                                                                 self.AccuracyConfiguration)
+                            # print("total vulnerability :" +str(ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
+                            #                                      self.AccuracyConfiguration)))
                             print(current_entity.enemies_relative_direction)
                             print("--------------")
                         "plan new plan - can't plan if one or more entites is at fire position"
@@ -324,6 +327,7 @@ class RFAScenarioManager:
 
         # Move entity:
         elif entity_next_state_and_action.move_pos:
+            print(entity_next_state_and_action.position_location)
             # print("current location is: " + str(current_entity.current_location))
             # print("current destination is: "+ str(entity_next_state_and_action.position_location) )
             if current_entity.role=='co':
@@ -710,6 +714,7 @@ class RFAScenarioManager:
             current_entity.scanDetectionList        = entity_previous_list[k].scanDetectionList
             current_entity.waitState        = entity_previous_list[k].waitState
             current_entity.waitTime        = entity_previous_list[k].waitTime
+            current_entity.vulnerability   =entity_previous_list[k].vulnerability
 
             current_entity.aim_list         = entity_previous_list[k].aim_list
             current_entity.preGameBool      = entity_previous_list[k].preGameBool

@@ -51,6 +51,9 @@ def locate_at_position_op(state,a):
 
 def choose_position_op(state,nextPosition,nextLoc):
     state.nextPositionIndex=nextPosition
+    "reset observation of enemies - before beggining of moving to another positions"
+    for enemy in state.assesedBlues:
+        enemy.observed=False
     return state
 
 def move_to_position_op(state,a):
@@ -79,7 +82,6 @@ def scan_for_enemy_and_assess_exposure_op(state,a):
             if losRespose['distance'][0][0] < state.basicRanges['squad_view_range']:
                  if losRespose['los'][0][0] == True:
                     enemy.observed = True
-
     # Exposure Assesment part:
     state_copy = deepcopy(state)
     knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration,'observation')
@@ -107,7 +109,6 @@ def aim_op(state,a):
             aim_list.append(enemy)
         else:
             enemy.distFromSquad = None
-        enemy.observed = False # parameter is down
     #sort: observed list by classification when Eitan comes before Ohez needed to add distance classification.
     if aim_list != []:
         # sort by value - next sort by value and then by distance
@@ -127,7 +128,7 @@ def shoot_op(state,a):
     state.positionTime += float(state.config['shooting_time'])
     return state
 
-pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,abort_op,aim_op,shoot_op,depart_position_op)
+pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,abort_op,aim_op,shoot_op,depart_position_op,evaluate_HTN_subPlan_survivability_op)
 
 
 def end_mission_m(state,a):
@@ -216,7 +217,7 @@ def abort_m(state,a):
             return False
     if (observedAndalive_count!=0):
             return False
-    return [('abort_op',a,),('depart_position_op',a)]
+    return [('abort_op',a,),('depart',a)]
 
 def aim_and_shoot_m(state,a):
     observedAndalive_count = 0
@@ -225,7 +226,7 @@ def aim_and_shoot_m(state,a):
             observedAndalive_count += 1
     if (observedAndalive_count==0):
             return False
-    return [('aim_op', a),('shoot',a),('depart_position_op',a)]
+    return [('aim_op', a),('shoot',a),('depart',a)]
 
 pyhop.declare_methods('aim_and_shoot',aim_and_shoot_m, abort_m)
 pyhop.declare_original_methods('aim_and_shoot',aim_and_shoot_m, abort_m)
@@ -235,6 +236,13 @@ def shoot_m(state,a):
 
 pyhop.declare_methods('shoot',shoot_m)
 pyhop.declare_original_methods('shoot',shoot_m)
+
+def depart_m(state,a):
+    return [('depart_position_op',a),('evaluate_HTN_subPlan_survivability_op',a)]
+
+pyhop.declare_methods('depart',depart_m)
+pyhop.declare_original_methods('depart',depart_m)
+
 
 #After defining all tasks - updating method list#
 #####----------------------------------------#####
@@ -324,7 +332,7 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.weights = {}
     init_state.weights['choose_position_op'] = float(init_state.htnConfig.at['choose_position_op', 'value'])
     init_state.weights['move_to_position_op'] = float(init_state.htnConfig.at['move_to_position_op', 'value'])
-    init_state.weights['locate_at_position_op'] = float(init_state.htnConfig.at['locate_at_position_op', 'value'])
+    init_state.weights['evaluate_HTN_subPlan_survivability_op'] = float(init_state.htnConfig.at['evaluate_HTN_subPlan_survivability_op', 'value'])
     init_state.weights['scan_for_enemy_op'] = float(init_state.htnConfig.at['scan_for_enemy_op', 'value'])
     init_state.weights['bda_op'] = float(init_state.htnConfig.at['bda_op', 'value'])
     init_state.weights['shoot_enemy_op'] = float(init_state.htnConfig.at['shoot_enemy_op', 'value'])
@@ -335,10 +343,15 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.weights['eitan_val'] = float(init_state.htnConfig.at['eitan_val', 'value'])
     init_state.weights['ohez_val'] = float(init_state.htnConfig.at['ohez_val', 'value'])
 
+
     #add more things to basic config
     init_state.config['exploration_value'] = float(init_state.htnConfig.at['exploration_value', 'value'])
     init_state.config['choose_position_op_cover_exposure_factor'] = float(init_state.htnConfig.at['choose_position_op_cover_exposure_factor', 'value'])
     init_state.config['choose_position_op_position_bound'] = float(init_state.htnConfig.at['choose_position_op_position_bound', 'value'])
+    init_state.config['attack_position_survivability_factor'] = float(init_state.htnConfig.at['attack_position_survivability_factor', 'value'])
+    init_state.config['open_position_survivability_factor'] = float(init_state.htnConfig.at['open_position_survivability_factor', 'value'])
+    init_state.config['cover_position_survivability_factor'] = float(init_state.htnConfig.at['cover_position_survivability_factor', 'value'])
+    init_state.config['evaluate_HTN_subPlan_survivability_op_time_importance'] = float(init_state.htnConfig.at['evaluate_HTN_subPlan_survivability_op_time_importance', 'value'])
 
 
     # Weapons Accuracy Data:

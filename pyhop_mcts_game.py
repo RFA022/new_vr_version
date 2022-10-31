@@ -617,23 +617,7 @@ def calValue(state,subtask):
                     ret_val_scan += x * (state.weights['ohez_val'])
         ret_val_scan=state.weights['scan_for_enemy_op']*ret_val_scan
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is: scan'  + ", retval is: " + str(ret_val_scan))
-        "Value relative to Exposure"
-        state_copy=deepcopy(state)
-        knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration,'observation')
-        if knownEnemies > 0:
-            totalprobability = 1
-            for accuracy in accuracyVec:
-                totalprobability = totalprobability * (1 - accuracy)
-            probabilityToGetHit = (1 - totalprobability)
-            ret_val_exposure=state.weights['locate_at_position_op']*100*(1-probabilityToGetHit)
-            #OLD-ret_val=state.weights['locate_at_position_op']*(100/knownEnemies)*(knownEnemies-totalAccuracy)
-
-            "If we dont know any of the enemies location we return exposure scan 100"
-        elif knownEnemies==0:
-            ret_val_exposure = state.weights['locate_at_position_op']*100 #means that Agent dont know about any enemies
-        # print('position is: ' + str(state.currentPositionIndex) + ', operator name is: exposure' + ", retval is: " + str(
-        #     ret_val_exposure))#
-        ret_val=ret_val_scan+ret_val_exposure
+        ret_val=ret_val_scan
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
         #     subtask[0]) + ", retval is: " + str(ret_val))
     elif subtask[0] == 'shoot_op':
@@ -660,8 +644,40 @@ def calValue(state,subtask):
         #     subtask[0]) + " " + "blueDistance is: " + str(blueDistance) + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
         # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
         #     subtask[0]) + ", retval is: " + str(ret_val))
-    elif subtask[0]=='e_continue_as_usual_op':
-        ret_val=70
+    elif subtask[0]=='evaluate_HTN_subPlan_survivability_op':
+        "Value relative to survivability"
+        state_copy=deepcopy(state)
+        knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration,'observation')
+        if knownEnemies > 0:
+            totalprobability = 1
+            for accuracy in accuracyVec:
+                totalprobability = totalprobability * (1 - accuracy)
+            probabilityToGetHit = (1 - totalprobability)
+            ret_val=state.weights['evaluate_HTN_subPlan_survivability_op']*100*(1-probabilityToGetHit)
+            "If we dont know any of the enemies location we return exposure scan 100"
+        elif knownEnemies==0:
+            ret_val = state.weights['evaluate_HTN_subPlan_survivability_op']*100 #means that Agent dont know about any enemies
+        positionTypeFactor=1.0
+        "determine factor by position type"
+        if isinstance(state.currentPositionIndex, int):
+            positionTypeFactor=float(state.config['attack_position_survivability_factor'])
+        elif isinstance(state.currentPositionIndex, str):
+            if state.currentPositionIndex == 'current_position':
+                positionTypeFactor=float(state.config['open_position_survivability_factor'])
+            if state.currentPositionIndex == 'nearest_cover_position':
+                positionTypeFactor = float(state.config['cover_position_survivability_factor'])
+        time_importance=(1/state.config['evaluate_HTN_subPlan_survivability_op_time_importance'])
+        time_factor=((time_importance*state.approximated_max_position_time)-state.positionTime)/(time_importance*state.approximated_max_position_time)
+        ret_val=ret_val*positionTypeFactor*time_factor
+        # print("__________")
+        # print(state.currentPositionIndex)
+        # print("accuracy vec" + str(accuracyVec))
+        # print("probabilityToGetHit" + str(probabilityToGetHit))
+        # print("time importance" + str(time_importance))
+        # print("position time" + str(state.positionTime))
+        # print("max position time" + str(state.approximated_max_position_time))
+        # print("time factor" + str(time_factor))
+        # print(ret_val)
     elif subtask[0]=='e_move_to_closest_cover_op':
         p=((state.config['treshold_time'] - state.estimated_time_to_cover)/state.config['treshold_time'])*100
         if p<0:

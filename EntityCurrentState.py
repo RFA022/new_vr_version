@@ -52,6 +52,7 @@ class EntityCurrentState: #red entities
         self.scanDetectionList=[]
         self.waitState = isWait.no
         self.waitTime  = None # In the use of green entities
+        self.vulnerability = 0
 
         self.COA=[]
         self.face=None
