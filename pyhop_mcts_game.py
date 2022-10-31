@@ -513,8 +513,8 @@ def calValue(state,subtask):
         #         if relation<1:
         #             relation=1
         # val_squad_to_Position = 100 / relation
-        # # print("__________________________________________________________")
-        # # print("next position is " + str(state.nextPositionIndex))
+        # print("__________________________________________________________")
+        # print("next position is " + str(state.nextPositionIndex))
         # # print("__________________________________________________________")
         # # print("min distance is " + str(minDistanceFromPositions))
         # # print("relation is " + str(relation))
@@ -571,35 +571,34 @@ def calValue(state,subtask):
         # print('position is: ' +str(subtask[1]) + ', operator name is:' + str(
         #     subtask[0]) + ", retval is: " + str(ret_val))
     elif subtask[0]=='move_to_position_op':
-        ret_val = 0
         minDistanceFromPositions = min(state.distance_from_positions)
         if min(state.distance_from_positions) < state.config['choose_position_op_position_bound']:  #if you are already in attack position minimum distance becomes second minimum
             minDistanceFromPositions = sorted(state.distance_from_positions)[1]
-        if isinstance(subtask[1], int):
-            if state.distance_from_positions[subtask[1]] == min(state.distance_from_positions):
+        if isinstance(state.nextPositionIndex, int):
+            if state.distance_from_positions[state.nextPositionIndex] == min(state.distance_from_positions):
                 relation = 1
-                if state.distance_from_positions[subtask[1]] < state.config[
+                if state.distance_from_positions[state.nextPositionIndex] < state.config[
                     'choose_position_op_position_bound']:  # means that if we are in a position this position recieave 110 in score instead of 100.
                     relation = 100 / 110
             else:
-                relation = ((state.distance_from_positions[subtask[1]]) / minDistanceFromPositions)
-        elif isinstance(subtask[1], str):
-            if subtask[1] == 'current_position':
+                relation = ((state.distance_from_positions[state.nextPositionIndex]) / minDistanceFromPositions)
+        elif isinstance(state.nextPositionIndex, str):
+            if state.nextPositionIndex == 'current_position':
                 if min(state.distance_from_positions) < state.config['choose_position_op_position_bound']:  # if we are actually inside combat position - location prive is 100
                     relation = 1  # correct to 1
                 else:
                     relation = 100 / 110
-            elif subtask[1] == 'nearest_cover_position':
+            elif state.nextPositionIndex == 'nearest_cover_position':
                 relation = (state.estimated_distance_to_position / minDistanceFromPositions)
                 if relation < 1:
                     relation = 1
-        ret_val = (100 / relation)*state.weights['move_to_position']
+        ret_val = (100 / relation)*state.weights['move_to_position_op']
         # print("__________________________________________________________")
         # print("next position is " + str(state.nextPositionIndex))
         # print("__________________________________________________________")
         # print("min distance is " + str(minDistanceFromPositions))
         # print("relation is " + str(relation))
-        # print("value is " + str(val_squad_to_Position))
+        # print("value is " + str(ret_val))
         # print("----------------------------------------")
     elif subtask[0]=='scan_for_enemy_and_assess_exposure_op':
         "Value relative to scanning"
