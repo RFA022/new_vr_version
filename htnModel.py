@@ -264,10 +264,11 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.assesedBlues = []
     init_state.enemy_number = None
     init_state.positions = []
-    init_state.squad_state = 'stand'
+    init_state.squad_state = 'starting_position' # attack_position,current_position,nearest_cover_position
     init_state.distance_from_positions = []
     init_state.aim_list = []
     init_state.aim_list_names=[]
+    init_state.deployment_style=None #full_anti_tank, rapid
     #Cover point related state attributes
     init_state.cover_polygon=None
     init_state.closest_cover_point=None
