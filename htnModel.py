@@ -24,9 +24,10 @@ def depart_position_op(state,a):
     state.squad_state = 'depart_from_position'
     return state
 
-def locate_at_position_op(state,a):
+def locate_at_position_op(state,deployment_style):
     state.loc = ext_funs.getLocation(state, state.nextPositionIndex)
     state.squad_state = ext_funs.getSquadState(state,state.nextPositionIndex)
+    state.deployment_style=deployment_style
     # Index exchange:
     state.currentPositionIndex = state.nextPositionIndex
     state.nextPositionIndex = []
@@ -39,13 +40,14 @@ def locate_at_position_op(state,a):
     state.estimated_time_to_position = 0
 
     #Add time to mission time
-    if state.squad_state=='attack_position':
-        state.missionTime  += float(state.config['attack_position_deployment_mean_time'])
-        state.positionTime += float(state.config['attack_position_deployment_mean_time'])
+    if state.deployment_style=='full_anti_tank':
+        if state.squad_state=='attack_position':
+            state.missionTime  += float(state.config['attack_position_deployment_mean_time'])
+            state.positionTime += float(state.config['attack_position_deployment_mean_time'])
 
-    elif state.squad_state=='nearest_cover_position' or  state.squad_state=='current_position':
-        state.missionTime  += float(state.config['open_position_deployment_mean_time'])
-        state.positionTime += float(state.config['open_position_deployment_mean_time'])
+        elif state.squad_state=='nearest_cover_position' or  state.squad_state=='current_position':
+            state.missionTime  += float(state.config['open_position_deployment_mean_time'])
+            state.positionTime += float(state.config['open_position_deployment_mean_time'])
 
     return state
 
@@ -195,11 +197,16 @@ def move_to_position_by_foot_m(state,a):
 pyhop.declare_methods('move_to_position', move_to_position_by_foot_m)
 pyhop.declare_original_methods('move_to_position', move_to_position_by_foot_m)
 
-def full_firing_deployment_m(state,a):
-    return([('locate_at_position_op',a),('scan_for_enemy',a)])
+def full_anti_tank_deployment_m(state,a):
+    deployment_style='full_anti_tank'
+    return([('locate_at_position_op',deployment_style),('scan_for_enemy',a)])
 
-pyhop.declare_methods('deploy_at_position', full_firing_deployment_m)
-pyhop.declare_original_methods('deploy_at_position', full_firing_deployment_m)
+def rapid_deployment_m(state,a):
+    deployment_style='rapid'
+    return([('locate_at_position_op',deployment_style),('scan_for_enemy',a)])
+
+pyhop.declare_methods('deploy_at_position', full_anti_tank_deployment_m,rapid_deployment_m)
+pyhop.declare_original_methods('deploy_at_position', full_anti_tank_deployment_m,rapid_deployment_m)
 
 def scan_for_enemy_m(state,a):
     return [('scan_for_enemy_and_assess_exposure_op', a),('aim_and_shoot',a)]
