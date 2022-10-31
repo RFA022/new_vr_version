@@ -95,8 +95,8 @@ def findplan(loc):
     init_state.config = {}
     init_state.config['waiting_time_mean'] = float(htnConfig.at['waiting_time_mean', 'value'])
     init_state.config['waiting_time_std']  = float(htnConfig.at['waiting_time_std', 'value'])
-    init_state.config['exploration_value'] = float(htnConfig.at['exploration_value', 'value'])
-
+    init_state.config['exploration_value_rollout'] = float(htnConfig.at['exploration_value', 'value'])
+    init_state.config['exploration_value_nextmove'] = float(htnConfig.at['exploration_value', 'value'])
 
     init_state.debug_task = 0
     init_state.debug_method = 0

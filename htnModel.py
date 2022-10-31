@@ -345,7 +345,8 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
 
 
     #add more things to basic config
-    init_state.config['exploration_value'] = float(init_state.htnConfig.at['exploration_value', 'value'])
+    init_state.config['exploration_value_rollout'] = float(init_state.htnConfig.at['exploration_value_rollout', 'value'])
+    init_state.config['exploration_value_nextmove'] = float(init_state.htnConfig.at['exploration_value_nextmove', 'value'])
     init_state.config['choose_position_op_cover_exposure_factor'] = float(init_state.htnConfig.at['choose_position_op_cover_exposure_factor', 'value'])
     init_state.config['choose_position_op_position_bound'] = float(init_state.htnConfig.at['choose_position_op_position_bound', 'value'])
     init_state.config['attack_position_survivability_factor'] = float(init_state.htnConfig.at['attack_position_survivability_factor', 'value'])

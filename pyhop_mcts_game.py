@@ -354,9 +354,12 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     Q = [0] * length2measure
     N = [0] * length2measure
     NumSim = 60 #was 400
-    ucb1_exploration_value=initial_state.config['exploration_value']
+    ucb1_exploration_value_rollout=initial_state.config['exploration_value_rollout']
+    ucb1_exploration_value_nextmove=initial_state.config['exploration_value_nextmove']
+
     ### initiation lines:
-    print("________________________choose method index________________________")
+    if debug_level>0:
+        print("________________________choose method index________________________")
     root_nodes = []
     for task in tasks:
         task_name = task[0]
@@ -370,21 +373,23 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
         for task_ind, task in enumerate(tasks):
             task_name=task[0]
             if task_name in methods:
-                [S_c, index, Q_t] = MCTS_Task(S_c, task, root_nodes[task_ind], 1, True,i,ucb1_exploration_value)
+                [S_c, index, Q_t] = MCTS_Task(S_c, task, root_nodes[task_ind], 1, True,i,ucb1_exploration_value_rollout)
             elif task_name in operators:
                 [S_c, Q_t] = MCTS_OperatorEvlt(S_c, task, root_nodes[task_ind], 1, "ROLLOUT")
             if task == tasks[0]:
                 Q[index] += ( Q_t -Q[index])
                 N[index] += 1
     # sort Q and N in descending order
-    index = best_med(Q, N,ucb1_exploration_value)
+    index = best_med(Q, N,ucb1_exploration_value_nextmove)
     #DEBUG printing
     if debug_level>=1:
         print('Q - vector for methods is: ' + str(Q))
         print('N - vector for methods is: ' + str(N))
         print('Q over N - vector for methods is: ' + str(get_mean_score(Q,N)))
-        print('UCB1 - vector for methods is: ' + str(get_ucb1_vector(Q,N,ucb1_exploration_value)))
-        print('UCB1 exploration calue is: ' + str(ucb1_exploration_value))
+        print('UCB1 - vector for methods is - exploration value rollout: ' + str(get_ucb1_vector(Q,N,ucb1_exploration_value_rollout)))
+        print('UCB1 exploration calue is: ' + str(ucb1_exploration_value_rollout))
+        print('UCB1 - vector for methods is - exploration value next move: ' + str(get_ucb1_vector(Q, N, ucb1_exploration_value_nextmove)))
+        print('UCB1 exploration calue is: ' + str(ucb1_exploration_value_nextmove))
         print('chosen index is: ' +str(index))
     return index
 

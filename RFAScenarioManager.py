@@ -76,19 +76,22 @@ class RFAScenarioManager:
         self.config['scan_time'] = float(self.configuration.at['scan_time', 'value'])
         self.config['shoot_timeout_time'] = float(self.configuration.at['shoot_timeout_time', 'value'])
         self.config['move_type'] = str(self.configuration.at['move_type', 'value'])
-        self.config['squad_speed'] = str(self.configuration.at['squad_speed', 'value'])
-        self.config['mobility_avoidance_radius'] = str(self.configuration.at['mobility_avoidance_radius', 'value'])
-        self.config['basic_cover_waiting_time'] = str(self.configuration.at['basic_cover_waiting_time', 'value'])
-        self.config['default_enemy_speed'] = str(self.configuration.at['default_enemy_speed', 'value'])
-        self.config['attack_position_deployment_mean_time'] = str(self.configuration.at['attack_position_deployment_mean_time', 'value'])
-        self.config['attack_position_deployment_std_time'] = str(self.configuration.at['attack_position_deployment_std_time', 'value'])
-        self.config['open_position_deployment_mean_time'] = str(self.configuration.at['open_position_deployment_mean_time', 'value'])
-        self.config['open_position_deployment_std_time'] = str(self.configuration.at['open_position_deployment_std_time', 'value'])
-        self.config['attack_position_departure_mean_time'] = str(self.configuration.at['attack_position_departure_mean_time', 'value'])
-        self.config['attack_position_departure_std_time'] = str(self.configuration.at['attack_position_departure_std_time', 'value'])
-        self.config['open_position_departure_mean_time'] = str(self.configuration.at['open_position_departure_mean_time', 'value'])
-        self.config['open_position_departure_std_time'] = str(self.configuration.at['open_position_departure_std_time', 'value'])
-        self.config['shooting_time'] = str(self.configuration.at['shooting_time', 'value'])
+        self.config['squad_speed'] = float(self.configuration.at['squad_speed', 'value'])
+        self.config['mobility_avoidance_radius'] = float(self.configuration.at['mobility_avoidance_radius', 'value'])
+        self.config['basic_cover_waiting_time'] = float(self.configuration.at['basic_cover_waiting_time', 'value'])
+        self.config['default_enemy_speed'] = float(self.configuration.at['default_enemy_speed', 'value'])
+        self.config['attack_position_deployment_mean_time'] = float(self.configuration.at['attack_position_deployment_mean_time', 'value'])
+        self.config['attack_position_deployment_std_time'] = float(self.configuration.at['attack_position_deployment_std_time', 'value'])
+        self.config['open_position_deployment_mean_time'] = float(self.configuration.at['open_position_deployment_mean_time', 'value'])
+        self.config['open_position_deployment_std_time'] = float(self.configuration.at['open_position_deployment_std_time', 'value'])
+        self.config['attack_position_departure_mean_time'] = float(self.configuration.at['attack_position_departure_mean_time', 'value'])
+        self.config['attack_position_departure_std_time'] = float(self.configuration.at['attack_position_departure_std_time', 'value'])
+        self.config['open_position_departure_mean_time'] = float(self.configuration.at['open_position_departure_mean_time', 'value'])
+        self.config['open_position_departure_std_time'] = float(self.configuration.at['open_position_departure_std_time', 'value'])
+        self.config['shooting_time'] = float(self.configuration.at['shooting_time', 'value'])
+        self.config['vulnerability_threshold'] = float(self.configuration.at['vulnerability_threshold', 'value'])
+
+
 
         self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
         self.squadsData = pd.read_csv(self.squadsDatalocation,
@@ -143,7 +146,7 @@ class RFAScenarioManager:
                             current_entity.planBool = 1
                         if current_entity.planBool == 1 and current_entity.COA == []:
                             current_entity.planBool = 0
-                            # current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
+                            #current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
                             #logging.debug("New Plan has been given to " + str(current_entity.unit_name))
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos, self.spawnPos)
@@ -167,7 +170,6 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
-                        print(current_entity.vulnerability)
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
@@ -234,16 +236,16 @@ class RFAScenarioManager:
                                         current_entity.movement_task_success = False
                                         current_entity.COA = []
 
-                            # print("----vulnerability----")
-                            # print("relative vector is: "+str(current_entity.enemies_relative_direction))
-                            # #check vulnerability:
-                            # print("--vulnerability assesment function--")
+                            "Update vulnerability:"
                             current_entity.vulnerability=ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
                                                                  self.AccuracyConfiguration)
+                            # print("----vulnerability----")
+                            # print("relative vector is: "+str(current_entity.enemies_relative_direction))
+                            # print("--vulnerability assesment function--")
                             # print("total vulnerability :" +str(ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
                             #                                      self.AccuracyConfiguration)))
-                            print(current_entity.enemies_relative_direction)
-                            print("--------------")
+                            # print(current_entity.enemies_relative_direction)
+                            # print("--------------")
                         "plan new plan - can't plan if one or more entites is at fire position"
                         if current_entity.COA==[]:
                             fire_bool=0
@@ -327,7 +329,7 @@ class RFAScenarioManager:
 
         # Move entity:
         elif entity_next_state_and_action.move_pos:
-            print(entity_next_state_and_action.position_location)
+            # print(entity_next_state_and_action.position_location)
             # print("current location is: " + str(current_entity.current_location))
             # print("current destination is: "+ str(entity_next_state_and_action.position_location) )
             if current_entity.role=='co':
@@ -430,7 +432,7 @@ class RFAScenarioManager:
                     if (enemy.classification == EntityTypeEnum.OHEZ) or \
                      (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                      (enemy.classification==EntityTypeEnum.UNKNOWN):
-                        if enemy.distFromSquad<self.basicRanges['ak47_range']:
+                        if enemy.distFromSquad<self.basicRanges['ak47_range'] and current_entity.vulnerability>self.config['vulnerability_threshold']:
                             aim_list.remove(enemy)
                             aim_list.insert(0,enemy)
                             logging.debug("Drone type enemy has been pushed to the top of the aim list due to an emergency situation")
