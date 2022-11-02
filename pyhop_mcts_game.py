@@ -494,6 +494,8 @@ def MCTS_OperatorEvlt(S_c, subtask, node, d, sender):
 def calValue(state,subtask):
     ret_val = 0
     if subtask[0]=='choose_position_op':
+        print("s")
+        "last commit with this section"
         ####first part not in use - moved to be related to move_to_position_op#####
         ###########################################################################
         # "value relative to distance to position"
