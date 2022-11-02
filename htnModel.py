@@ -250,13 +250,16 @@ def aim_and_shoot_m(state,a):
             observedAndalive_count += 1
     if (observedAndalive_count==0):
             return False
-    return [('aim_op', a),('shoot',a),('depart',a)]
+    return [('aim_op', state.deployment_style),('shoot',state.deployment_style),('depart',a)]
 
 pyhop.declare_methods('aim_and_shoot',aim_and_shoot_m, abort_m)
 pyhop.declare_original_methods('aim_and_shoot',aim_and_shoot_m, abort_m)
 
 def shoot_m(state,a):
-    return [('shoot_op',str(state.aim_list[0].unit_name))]
+    if len(state.aim_list)>0:
+        return [('shoot_op',str(state.aim_list[0].unit_name))]
+    else:
+        return [('shoot_op', "none")]
 
 pyhop.declare_methods('shoot',shoot_m)
 pyhop.declare_original_methods('shoot',shoot_m)

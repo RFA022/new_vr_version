@@ -353,7 +353,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
-    NumSim = 100 #was 400
+    NumSim = 80 #was 400
     ucb1_exploration_value_rollout=initial_state.config['exploration_value_rollout']
     ucb1_exploration_value_nextmove=initial_state.config['exploration_value_nextmove']
 
@@ -583,9 +583,9 @@ def calValue(state,subtask):
         for enemy in state.assesedBlues:
             if (enemy.observed == True) and (enemy.is_alive==True): #value only for alive observed entites of blue
                 if enemy.classification==EntityTypeEnum.EITAN:
-                    if state.deplyoment_style=='full_anti_tank':
+                    if state.deployment_style=='full_anti_tank':
                         ret_val_scan += x * (state.weights['eitan_val'])
-                    elif state.deplyoment_style=='rapid':
+                    elif state.deployment_style=='rapid':
                         pass
                 elif (enemy.classification == EntityTypeEnum.OHEZ) or \
                      (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
@@ -598,29 +598,31 @@ def calValue(state,subtask):
         #     subtask[0]) + ", retval is: " + str(ret_val))
     elif subtask[0] == 'shoot_op':
         flag=0
-        enemy=state.aim_list[0]
-        blueDistance=ext_funs.calculate_blue_distance(state.loc,enemy)
-        if blueDistance == None:
-             blueDistance = ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
-             flag=1
-        if enemy.classification==EntityTypeEnum.EITAN:
-             shooterClassification="LONG_RANGE_ANTI_TANK"
-             ratio=1
-        elif (enemy.classification == EntityTypeEnum.OHEZ) or \
-             (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
-             (enemy.classification == EntityTypeEnum.UNKNOWN):
-             shooterClassification = "SOLDIER"
-             ratio=(state.weights['ohez_val'])/(state.weights['ohez_val']+state.weights['eitan_val'])
-        maxRange = float(state.AccuracyConfiguration.at[str(shooterClassification), 'MAX_RANGE'])
-        accuracy = ext_funs.getAccuracy(state.AccuracyConfiguration, blueDistance, maxRange, shooterClassification)
-        ret_val = state.weights['shoot_enemy_op']*100*accuracy*ratio
+        ret_val=0
+        if len(state.aim_list)>0:
+            enemy=state.aim_list[0]
+            blueDistance=ext_funs.calculate_blue_distance(state.loc,enemy)
+            if blueDistance == None:
+                 blueDistance = ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
+                 flag=1
+            if enemy.classification==EntityTypeEnum.EITAN:
+                 shooterClassification="LONG_RANGE_ANTI_TANK"
+                 ratio=1
+            elif (enemy.classification == EntityTypeEnum.OHEZ) or \
+                 (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                 (enemy.classification == EntityTypeEnum.UNKNOWN):
+                 shooterClassification = "SOLDIER"
+                 ratio=(state.weights['ohez_val'])/(state.weights['eitan_val'])
+            maxRange = float(state.AccuracyConfiguration.at[str(shooterClassification), 'MAX_RANGE'])
+            accuracy = ext_funs.getAccuracy(state.AccuracyConfiguration, blueDistance, maxRange, shooterClassification)
+            ret_val = state.weights['shoot_enemy_op']*100*accuracy*ratio
         if flag ==1:
-             ret_val=0.00001
-        # print("position is: " + str(state.currentPositionIndex) + " " + "operator is " + str(
+             ret_val=0.00000
+        # print("position is: " + str(state.currentPositionIndex) +str("deployment style is:") + str(state.deployment_style) +  " " + "operator is " + str(
         #     subtask[0]) + " " + "blueDistance is: " + str(blueDistance) + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
-        # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
-        #     subtask[0]) + ", retval is: " + str(ret_val))
     elif subtask[0]=='evaluate_HTN_subPlan_survivability_op':
+        print(state.currentPositionIndex)
+        print(state.deployment_style)
         "Value relative to survivability"
         state_copy=deepcopy(state)
         knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration,'observation')
@@ -632,6 +634,7 @@ def calValue(state,subtask):
             ret_val=state.weights['evaluate_HTN_subPlan_survivability_op']*100*(1-probabilityToGetHit)
             "If we dont know any of the enemies location we return exposure scan 100"
         elif knownEnemies==0:
+            probabilityToGetHit=None
             ret_val = state.weights['evaluate_HTN_subPlan_survivability_op']*100 #means that Agent dont know about any enemies
         positionTypeFactor=1.0
         "determine factor by position type"

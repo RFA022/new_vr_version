@@ -73,6 +73,7 @@ class RFAScenarioManager:
 
         self.config = {}
         self.config['rePlan_range'] = float(self.configuration.at['rePlan_range', 'value'])
+        self.config['rePlan_angle'] = float(self.configuration.at['rePlan_angle', 'value'])
         self.config['scan_time'] = float(self.configuration.at['scan_time', 'value'])
         self.config['shoot_timeout_time'] = float(self.configuration.at['shoot_timeout_time', 'value'])
         self.config['move_type'] = str(self.configuration.at['move_type', 'value'])
@@ -224,10 +225,13 @@ class RFAScenarioManager:
                                         current_entity.state = PositionType.AT_OP
                                         current_entity.movement_task_completed = 0
                                         current_entity.movement_task_success = False
-                                        current_entity.aim_list = []
-                                        current_entity.aim_list.append(enemy)
+                                        #replan procedure
                                         current_entity.COA = []
-                                        current_entity.COA.append((['shoot_op', str(enemy.unit_name)]))
+                                        #shoot procedure
+                                        # current_entity.aim_list = []
+                                        # current_entity.aim_list.append(enemy)
+                                        # current_entity.COA = []
+                                        # current_entity.COA.append((['shoot_op', str(enemy.unit_name)]))
                                     "-----------------LAV CASE----------------"
                                     if enemy.classification == EntityTypeEnum.EITAN:
                                         self.communicator.stopCommand(current_entity.unit_name)
