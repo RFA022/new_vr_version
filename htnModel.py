@@ -232,24 +232,28 @@ pyhop.declare_methods('scan_for_enemy', scan_for_enemy_m)
 pyhop.declare_original_methods('scan_for_enemy', scan_for_enemy_m)
 
 def abort_m(state,a):
+    # print("abort)")
+    # print(state.currentPositionIndex)
     #agent still did not reach the target
     observedAndalive_count=0
     for enemy in state.assesedBlues:
         if (enemy.observed == True) and (enemy.is_alive == True):
             observedAndalive_count+=1
-    if (state.enemy_number == 0):
+    if (observedAndalive_count>0):
             return False
-    if (observedAndalive_count!=0):
-            return False
+    # print(state.currentPositionIndex)
     return [('abort_op',a,),('depart',a)]
 
 def aim_and_shoot_m(state,a):
+    # print("aim)")
+    # print(state.currentPositionIndex)
     observedAndalive_count = 0
     for enemy in state.assesedBlues:
         if (enemy.observed == True) and (enemy.is_alive == True):
             observedAndalive_count += 1
     if (observedAndalive_count==0):
             return False
+    # print(state.currentPositionIndex)
     return [('aim_op', state.deployment_style),('shoot',state.deployment_style),('depart',a)]
 
 pyhop.declare_methods('aim_and_shoot',aim_and_shoot_m, abort_m)

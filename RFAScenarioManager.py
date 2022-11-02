@@ -226,12 +226,12 @@ class RFAScenarioManager:
                                         current_entity.movement_task_completed = 0
                                         current_entity.movement_task_success = False
                                         #replan procedure
-                                        current_entity.COA = []
+                                        #current_entity.COA = []
                                         #shoot procedure
-                                        # current_entity.aim_list = []
-                                        # current_entity.aim_list.append(enemy)
-                                        # current_entity.COA = []
-                                        # current_entity.COA.append((['shoot_op', str(enemy.unit_name)]))
+                                        current_entity.aim_list = []
+                                        current_entity.aim_list.append(enemy)
+                                        current_entity.COA = []
+                                        current_entity.COA.append((['shoot_op', str(enemy.unit_name)]))
                                     "-----------------LAV CASE----------------"
                                     if enemy.classification == EntityTypeEnum.EITAN:
                                         self.communicator.stopCommand(current_entity.unit_name)

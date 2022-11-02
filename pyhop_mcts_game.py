@@ -353,7 +353,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
-    NumSim = 80 #was 400
+    NumSim = 150 #was 400
     ucb1_exploration_value_rollout=initial_state.config['exploration_value_rollout']
     ucb1_exploration_value_nextmove=initial_state.config['exploration_value_nextmove']
 
@@ -540,9 +540,11 @@ def calValue(state,subtask):
         ret_val=abs(state.weights['choose_position_op_dist_from_polygon'])*val_squad_to_PolygonCenter+\
                 state.weights['choose_position_op_percent_exposure']*val_percent_exposure_polygon
         ret_val=state.weights['choose_position_op']*ret_val
-
-        # print('position is: ' +str(subtask[1]) + ', operator name is:' + str(
-        #     subtask[0]) + ", retval is: " + str(ret_val))
+        # print("__")
+        # print("op: " +str(subtask[0]))
+        # print("pos: " +str(state.nextPositionIndex))
+        # print("dep style: " + str(state.deployment_style))
+        # print(ret_val)
     elif subtask[0]=='move_to_position_op':
         minDistanceFromPositions = min(state.distance_from_positions)
         if min(state.distance_from_positions) < state.config['choose_position_op_position_bound']:  #if you are already in attack position minimum distance becomes second minimum
@@ -566,13 +568,11 @@ def calValue(state,subtask):
                 if relation < 1:
                     relation = 1
         ret_val = (100 / relation)*state.weights['move_to_position_op']
-        # print("__________________________________________________________")
-        # print("next position is " + str(state.nextPositionIndex))
-        # print("__________________________________________________________")
-        # print("min distance is " + str(minDistanceFromPositions))
-        # print("relation is " + str(relation))
-        # print("value is " + str(ret_val))
-        # print("----------------------------------------")
+        # print("__")
+        # print("op: " + str(subtask[0]))
+        # print("pos: " + str(state.nextPositionIndex))
+        # print("dep style: " + str(state.deployment_style))
+        # print(ret_val)
     elif subtask[0]=='scan_for_enemy_and_assess_exposure_op':
         "Value relative to scanning"
         "value of unit of evaluation"
@@ -592,13 +592,16 @@ def calValue(state,subtask):
                      (enemy.classification==EntityTypeEnum.UNKNOWN):
                     ret_val_scan += x * (state.weights['ohez_val'])
         ret_val_scan=state.weights['scan_for_enemy_op']*ret_val_scan
-        # print('position is: ' + str(state.currentPositionIndex) + ', operator name is: scan'  + ", retval is: " + str(ret_val_scan))
         ret_val=ret_val_scan
-        # print('position is: ' + str(state.currentPositionIndex) + ', operator name is:' + str(
-        #     subtask[0]) + ", retval is: " + str(ret_val))
+        # print("__")
+        # print("op: " + str(subtask[0]))
+        # print("pos: " + str(state.currentPositionIndex))
+        # print("dep style: " + str(state.deployment_style))
+        # print(ret_val)
     elif subtask[0] == 'shoot_op':
         flag=0
         ret_val=0
+        accuracy = 0
         if len(state.aim_list)>0:
             enemy=state.aim_list[0]
             blueDistance=ext_funs.calculate_blue_distance(state.loc,enemy)
@@ -618,11 +621,14 @@ def calValue(state,subtask):
             ret_val = state.weights['shoot_enemy_op']*100*accuracy*ratio
         if flag ==1:
              ret_val=0.00000
-        # print("position is: " + str(state.currentPositionIndex) +str("deployment style is:") + str(state.deployment_style) +  " " + "operator is " + str(
-        #     subtask[0]) + " " + "blueDistance is: " + str(blueDistance) + "score is: " + str(ret_val), " accuracy is: "+ str(accuracy), " maxRange is: "+ str(maxRange))
+        # print("__")
+        # print("op: " + str(subtask[0]))
+        # print("pos: " + str(state.currentPositionIndex))
+        # print("acc: " + str(accuracy))
+        # print("ratio: "+ str(ratio))
+        # print("dep style: " + str(state.deployment_style))
+        # print(ret_val)
     elif subtask[0]=='evaluate_HTN_subPlan_survivability_op':
-        print(state.currentPositionIndex)
-        print(state.deployment_style)
         "Value relative to survivability"
         state_copy=deepcopy(state)
         knownEnemies, totalAccuracy, accuracyVec = ext_funs.getAccumulatedHitProbability(state_copy,state_copy.AccuracyConfiguration,'observation')
@@ -648,14 +654,10 @@ def calValue(state,subtask):
         time_importance=(1/state.config['evaluate_HTN_subPlan_survivability_op_time_importance'])
         time_factor=((time_importance*state.approximated_max_position_time)-state.positionTime)/(time_importance*state.approximated_max_position_time)
         ret_val=ret_val*positionTypeFactor*time_factor
-        # print("__________")
-        # print(state.currentPositionIndex)
-        # print("accuracy vec" + str(accuracyVec))
-        # print("probabilityToGetHit" + str(probabilityToGetHit))
-        # print("time importance" + str(time_importance))
-        # print("position time" + str(state.positionTime))
-        # print("max position time" + str(state.approximated_max_position_time))
-        # print("time factor" + str(time_factor))
+        # print("__")
+        # print("op: " + str(subtask[0]))
+        # print("pos: " + str(state.currentPositionIndex))
+        # print("dep style: " + str(state.deployment_style))
         # print(ret_val)
     elif subtask[0]=='e_move_to_closest_cover_op':
         p=((state.config['treshold_time'] - state.estimated_time_to_cover)/state.config['treshold_time'])*100
@@ -729,7 +731,7 @@ def best_med(Q, N,ucb1_exploration_value):
     Q_c = []
     for k in range(len(Q)):
         try:
-            q = Q[k]/N[k] + c*math.sqrt(math.log(sum(N)) / N[k])
+            q = Q[k] / N[k] + c*math.sqrt(math.log(sum(N)) / N[k])
         except:
             q = 0
         # q = child.Q/child.N + c*math.sqrt(math.log(node.N) / child.N)
