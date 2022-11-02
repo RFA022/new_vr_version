@@ -494,39 +494,6 @@ def MCTS_OperatorEvlt(S_c, subtask, node, d, sender):
 def calValue(state,subtask):
     ret_val = 0
     if subtask[0]=='choose_position_op':
-        print("s")
-        "last commit with this section"
-        ####first part not in use - moved to be related to move_to_position_op#####
-        ###########################################################################
-        # "value relative to distance to position"
-        # minDistanceFromPositions = min(state.distance_from_positions)
-        # if min(state.distance_from_positions) < state.config['choose_position_op_position_bound']:  # i if you are already in attack position minimum distance becomes second minimum
-        #     minDistanceFromPositions = sorted(state.distance_from_positions)[1]
-        # if isinstance(subtask[1], int):
-        #     if state.distance_from_positions[subtask[1]] == min(state.distance_from_positions):
-        #         relation=1
-        #         if state.distance_from_positions[subtask[1]] < state.config['choose_position_op_position_bound']:# means that if we are in a position this position recieave 110 in score instead of 100.
-        #             relation=100/110
-        #     else:
-        #         relation=((state.distance_from_positions[subtask[1]])/minDistanceFromPositions)
-        # elif isinstance(subtask[1], str):
-        #     if subtask[1]=='current_position':
-        #         if min(state.distance_from_positions)<state.config['choose_position_op_position_bound']: # if we are actually inside combat position - location prive is 100
-        #             relation =1#correct to 1
-        #         else:
-        #             relation=100/110
-        #     elif subtask[1]=='nearest_cover_position':
-        #         relation = (state.estimated_distance_to_position / minDistanceFromPositions)
-        #         if relation<1:
-        #             relation=1
-        # val_squad_to_Position = 100 / relation
-        # print("__________________________________________________________")
-        # print("next position is " + str(state.nextPositionIndex))
-        # # print("__________________________________________________________")
-        # # print("min distance is " + str(minDistanceFromPositions))
-        # # print("relation is " + str(relation))
-        # # print("value is " + str(val_squad_to_Position))
-        # # print("----------------------------------------")
         "value relative to distance to BluePolygon center"
         if isinstance(subtask[1], int):
             if state.weights['choose_position_op_dist_from_polygon']>=0:
@@ -572,7 +539,6 @@ def calValue(state,subtask):
 
         ret_val=abs(state.weights['choose_position_op_dist_from_polygon'])*val_squad_to_PolygonCenter+\
                 state.weights['choose_position_op_percent_exposure']*val_percent_exposure_polygon
-        ###+state.weights['choose_position_op_dist_from_position'] * val_squad_to_Position
         ret_val=state.weights['choose_position_op']*ret_val
 
         # print('position is: ' +str(subtask[1]) + ', operator name is:' + str(
@@ -617,7 +583,10 @@ def calValue(state,subtask):
         for enemy in state.assesedBlues:
             if (enemy.observed == True) and (enemy.is_alive==True): #value only for alive observed entites of blue
                 if enemy.classification==EntityTypeEnum.EITAN:
-                    ret_val_scan += x * (state.weights['eitan_val'])
+                    if state.deplyoment_style=='full_anti_tank':
+                        ret_val_scan += x * (state.weights['eitan_val'])
+                    elif state.deplyoment_style=='rapid':
+                        pass
                 elif (enemy.classification == EntityTypeEnum.OHEZ) or \
                      (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
                      (enemy.classification==EntityTypeEnum.UNKNOWN):
