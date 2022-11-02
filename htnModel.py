@@ -15,13 +15,16 @@ def evaluate_HTN_subPlan_survivability_op(state,a):
     return state
 
 def depart_position_op(state,a):
-    if state.squad_state=='attack_position':
-        state.missionTime  += float(state.config['attack_position_departure_mean_time'])
-        state.positionTime += float(state.config['attack_position_departure_mean_time'])
-    elif state.squad_state=='nearest_cover_position' or  state.squad_state=='current_position':
-        state.missionTime  += float(state.config['open_position_departure_mean_time'])
-        state.positionTime += float(state.config['open_position_departure_mean_time'])
-    state.squad_state = 'depart_from_position'
+    if state.deployment_style=='full_anti_tank':
+        if state.squad_state=='attack_position':
+            state.missionTime  += float(state.config['attack_position_departure_mean_time'])
+            state.positionTime += float(state.config['attack_position_departure_mean_time'])
+        elif state.squad_state=='nearest_cover_position' or  state.squad_state=='current_position':
+            state.missionTime  += float(state.config['open_position_departure_mean_time'])
+            state.positionTime += float(state.config['open_position_departure_mean_time'])
+        state.squad_state = 'depart_from_position'
+    elif state.deployment_style=='rapid': #not adding any excesive time for rapid deployment
+        pass
     return state
 
 def locate_at_position_op(state,deployment_style):
@@ -48,7 +51,9 @@ def locate_at_position_op(state,deployment_style):
         elif state.squad_state=='nearest_cover_position' or  state.squad_state=='current_position':
             state.missionTime  += float(state.config['open_position_deployment_mean_time'])
             state.positionTime += float(state.config['open_position_deployment_mean_time'])
-
+    elif state.deployment_style=='rapid':
+        #means no time is added to mission time or position time
+        pass
     return state
 
 def choose_position_op(state,nextPosition,nextLoc):
@@ -66,7 +71,10 @@ def move_to_position_op(state,a):
 def scan_for_enemy_and_assess_exposure_op(state,a):
     state.missionTime  += state.config['scan_time']
     state.positionTime += state.config['scan_time']
-
+    if state.deployment_style=='full_anti_tank':
+        scan_range=state.basicRanges['squad_view_range']
+    elif state.deployment_style=='rapid':
+        scan_range=state.basicRanges['squad_eyes_range']
     #Scan part:
     for enemy in state.assesedBlues:
         #if location is not known:
@@ -81,7 +89,7 @@ def scan_for_enemy_and_assess_exposure_op(state,a):
         else:
             losRespose = ext_funs.losOperator(state.squadPosture,state.enemyDimensions,enemy,state.loc)
             #print(losRespose)
-            if losRespose['distance'][0][0] < state.basicRanges['squad_view_range']:
+            if losRespose['distance'][0][0] < scan_range:
                  if losRespose['los'][0][0] == True:
                     enemy.observed = True
     # Exposure Assesment part:
@@ -114,6 +122,15 @@ def aim_op(state,a):
     #sort: observed list by classification when Eitan comes before Ohez needed to add distance classification.
     if aim_list != []:
         # sort by value - next sort by value and then by distance
+        if state.deployment_style == 'full_anti_tank':
+            pass
+        elif state.deployment_style == 'rapid': #remove all EITANs from the list
+            index_remove_list=[]
+            for k , entity in enumerate(aim_list):
+                if entity.classification==EntityTypeEnum.EITAN:
+                    index_remove_list.append(k)
+            for index in sorted(index_remove_list, reverse=True):
+                del aim_list[index]
         aim_list = sorted(aim_list, key=lambda x: (x.val, -x.distFromSquad), reverse=True)
         state.aim_list = aim_list
         for entity in aim_list:
