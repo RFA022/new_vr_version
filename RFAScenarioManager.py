@@ -124,7 +124,7 @@ class RFAScenarioManager:
                 self.green_entity_list=self.CreateAndUpdateEntityList(self.green_entity_list)
                 #update Blue list from simulator and from last iteration (info about last seen location)
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
-
+                fustionReport=self.communicator.GetFusionReport()
                 "Check if Red won"
                 numberOfAliveBlues=getNumberofAliveEnemies(self.blue_entity_list)
                 if numberOfAliveBlues == 0:

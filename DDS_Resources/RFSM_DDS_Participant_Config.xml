@@ -96,6 +96,10 @@
     <domain_library name="RFSM_Domain_Library">
         <domain domain_id="3" name="RFSM_Domain">
             <!--MAK_Planner_Gateway-->
+
+            <register_type name="gw_dds_types::SensorOperationalModeCommandType" type_ref="gw_dds_types::SensorOperationalModeCommandType"/>
+            <register_type name="gw_dds_types::SensorDesignationRequest" type_ref="gw_dds_types::SensorDesignationRequest"/>
+            <register_type name="gw_dds_types::FusionReportType" type_ref="gw_dds_types::FusionReportType"/>
             <register_type name="gw_dds_types::LosQueryResponse" type_ref="gw_dds_types::LosQueryResponse"/>
             <register_type name="gw_dds_types::LosQueryRequest" type_ref="gw_dds_types::LosQueryRequest"/>
             <register_type name="gw_dds_types::GeoQueryResponse" type_ref="gw_dds_types::GeoQueryResponse"/>
@@ -133,6 +137,9 @@
             <register_type name="gw_dds_types::EntityFollowPathCommandType"
                            type_ref="gw_dds_types::EntityFollowPathCommandType"/>
 
+            <topic name="SensorOperationalModeCommand" register_type_ref="gw_dds_types::SensorOperationalModeCommandType"/>
+            <topic name="SensorDesignationRequest" register_type_ref="gw_dds_types::SensorDesignationRequest"/>
+            <topic name="FusionReport" register_type_ref="gw_dds_types::FusionReportType"/>
             <topic name="EntityFollowPathCommand" register_type_ref="gw_dds_types::EntityFollowPathCommandType"/>
             <topic name="LosToPolygonResponse" register_type_ref="gw_dds_types::LosToPolygonResponse"/>
             <topic name="LosToPolygonRequest" register_type_ref="gw_dds_types::LosToPolygonRequest"/>
@@ -190,6 +197,7 @@
                         </reliability>
                     </datareader_qos>
                 </data_reader>
+                <data_reader name="FusionReport_DR" topic_ref="FusionReport"/>
                 <data_reader name="HeightAboveTerrainResponse_DR" topic_ref="HeightAboveTerrainResponse"/>
                 <data_reader name="LosToPolygonResponse_DR" topic_ref="LosToPolygonResponse"/>
                 <data_reader name="GetAreasListResponse_DR" topic_ref="GetAreasListResponse"/>
@@ -228,6 +236,7 @@
 
             <publisher name="Publisher">
                 <publisher_qos/>
+                <data_writer name="SensorDesignationRequest_DW" topic_ref="SensorDesignationRequest"/>
                 <data_writer name="LosToPolygonRequest_DW" topic_ref="LosToPolygonRequest"/>
                 <data_writer name="GetAreasListRequest_DW" topic_ref="GetAreasListRequest"/>
                 <data_writer name="LosQueryRequest_DW" topic_ref="LosQueryRequest"/>
@@ -258,6 +267,7 @@
                 <data_writer name="NavigationPathPlanningRequest_DW" topic_ref="EntityNavigationPathPlanningRequest">
                     <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
                 </data_writer>
+                <data_writer name="SensorOperationalModeCommand_DW" topic_ref="SensorOperationalModeCommand"/>
                 <data_writer name="EntityFollowPathCommand_DW" topic_ref="EntityFollowPathCommand"/>
 
             </publisher>
