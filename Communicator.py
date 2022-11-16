@@ -17,7 +17,7 @@ class Communicator(CommunicatorInterface):
     GetAreasListResponse_DR = "GetAreasListResponse_DR"
     LosQueryResponse_DR = "LosQueryResponse_DR"
     GeoQueryResponse_DR = "GeoQueryResponse_DR"
-    NavigationPathPlanningResponse_DR="NavigationPathPlanningResponse_DR"
+    NavigationPathPlanningResponse_DR = "NavigationPathPlanningResponse_DR"
     EntityReport_DR = "EntityReport_DR"
     TickCounterReport_DR = "TickCounterReport_DR"
     AttackReport_DR = "AttackReport_DR"
@@ -29,7 +29,7 @@ class Communicator(CommunicatorInterface):
     GeoQueryRequest_DW = "GeoQueryRequest_DW"
     InitialEntitySnapshot_DW = "InitialEntitySnapshot_DW"
     SetEntityLocation_DW = "SetEntityLocation_DW"
-    SetEntityHeading_DW  = "SetEntityHeading_DW"
+    SetEntityHeading_DW = "SetEntityHeading_DW"
     AttackEntityCommand_DW = "AttackEntityCommand_DW"
     CreateEntity_DW = "CreateEntity_DW"
     EntityMoveCommand_DW = "EntityMoveCommand_DW"
@@ -37,11 +37,14 @@ class Communicator(CommunicatorInterface):
     EntityPosture_DW = "EntityPosture_DW"
     AimWeaponCommand_DW = "AimWeaponCommand_DW"
     StopTasksCommand_DW = "StopTasksCommand_DW"
-    LosToPolygonRequest_DW="LosToPolygonRequest_DW"
-    CreateTacticalGraphicCommand_DW="CreateTacticalGraphicCommand_DW"
+    LosToPolygonRequest_DW = "LosToPolygonRequest_DW"
+    CreateTacticalGraphicCommand_DW = "CreateTacticalGraphicCommand_DW"
     NavigationPathPlanningRequest_DW = "NavigationPathPlanningRequest_DW"
-    HeightAboveTerrainRequest_DW="HeightAboveTerrainRequest_DW"
-    EntityFollowPathCommand_DW="EntityFollowPathCommand_DW"
+    HeightAboveTerrainRequest_DW = "HeightAboveTerrainRequest_DW"
+    EntityFollowPathCommand_DW = "EntityFollowPathCommand_DW"
+    FusionReport_DR = "FusionReport_DR"
+    SensorDesignationRequest_DW = "SensorDesignationRequest_DW"
+    SensorOperationalModeCommand_DW = "SensorOperationalModeCommand"
 
     def __init__(self):
         super().__init__()
@@ -50,15 +53,16 @@ class Communicator(CommunicatorInterface):
                                                 url=file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
         except Exception as e:
             logging.error(e)
-            logging.error("connector fail !, url to file: " + file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
+            logging.error(
+                "connector fail !, url to file: " + file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
 
         try:
             self.Geo_connector = rti.Connector(config_name="RFSM_Participant_Library::Geo_Participant",
-                                                url=file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
+                                               url=file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
         except Exception as e:
             logging.error(e)
-            logging.error("connector fail !, url to file: " + file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
-
+            logging.error(
+                "connector fail !, url to file: " + file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
 
         self.publisher = "Publisher::"
         self.subscriber = "Subscriber::"
@@ -67,6 +71,39 @@ class Communicator(CommunicatorInterface):
         self.entity_counter = 0
         logging.debug(self.__class__.__name__ + " is initialized")
         self.current_status = ScenarioStatusEnum.NA
+
+    def SetSensorOperationalModeCommand(self, message: dict) -> None:
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.SensorOperationalModeCommand_DW)
+                current_DW.instance.set_dictionary(message)
+                current_DW.write()
+            except:
+                logging.error("writer " + self.SensorOperationalModeCommand_DW + " dont exist")
+
+    def SendSensorDesignationRequest(self, message: dict) -> None:
+        with self.lock_read_write:
+            try:
+                current_DW = self.RFSM_connector.getOutput(self.publisher + self.SensorDesignationRequest_DW)
+                current_DW.instance.set_dictionary(message)
+                current_DW.write()
+            except:
+                logging.error("writer " + self.SensorDesignationRequest_DW + " dont exist")
+
+    def GetFusionReport(self) -> list:
+        with self.lock_read_write:
+            try:
+                current_DR = self.RFSM_connector.getInput(self.subscriber + self.FusionReport_DR)
+                listOfMessage = []
+                current_DR.read()
+                for sample in current_DR.samples:
+                    if sample.valid_data:
+                        listOfMessage.append(sample.get_dictionary())
+                return listOfMessage
+
+            except:
+                logging.error("reader " + self.FusionReport_DR + " dont exist")
+                return listOfMessage
 
     def GetScenarioEntitiesInfo(self) -> list:
         """
@@ -555,7 +592,6 @@ class Communicator(CommunicatorInterface):
             current_DW.write()
             time.sleep(0.2)
 
-
     def stopCommand(self, entity_name):
         with self.lock_read_write:
             try:
@@ -568,8 +604,7 @@ class Communicator(CommunicatorInterface):
             })
             current_DW.write()
 
-
-    def getLosToPolygonQuery(self,sorce,polygon) -> list:
+    def getLosToPolygonQuery(self, sorce, polygon) -> list:
         responseList = []
         with self.lock_read_write:
             try:
@@ -577,12 +612,11 @@ class Communicator(CommunicatorInterface):
             except:
                 logging.error("writer " + self.LosToPolygonRequest_DW + " dont exist")
 
-
             current_DW.instance.set_dictionary({
-                    "requestId": 1,
-                    "losSrc": sorce,
-                    "polygon": polygon
-                },)
+                "requestId": 1,
+                "losSrc": sorce,
+                "polygon": polygon
+            }, )
             current_DW.write()
             print("Sent LosToPolygonRequest")
 
@@ -611,7 +645,7 @@ class Communicator(CommunicatorInterface):
                 logging.error("reader " + self.GetAreasListResponse_DR + " dont exist")
                 return responseList
 
-    def CreateTacticalGraphicCommand(self, TacticalGraphicName: str,tacticalGraphicKind: int, path) -> None:
+    def CreateTacticalGraphicCommand(self, TacticalGraphicName: str, tacticalGraphicKind: int, path) -> None:
 
         with self.lock_read_write:
             try:
@@ -621,14 +655,14 @@ class Communicator(CommunicatorInterface):
                 return
 
             current_DW.instance.set_dictionary({
-                    "TacticalGraphicName": TacticalGraphicName,
-                    "tacticalGraphicKind": tacticalGraphicKind,
-                    "path": path,
+                "TacticalGraphicName": TacticalGraphicName,
+                "tacticalGraphicKind": tacticalGraphicKind,
+                "path": path,
             })
             current_DW.write()
             # looks for "ak" and if it not find its fire with default weapon
 
-    def navigationPathPlan(self,origin,destination,locationToAvoid,avoidanceRadius,name,maximumNumberOfRoutes):
+    def navigationPathPlan(self, origin, destination, locationToAvoid, avoidanceRadius, name, maximumNumberOfRoutes):
         responseList = []
         with self.lock_read_write:
             try:
@@ -646,7 +680,7 @@ class Communicator(CommunicatorInterface):
                         "requestID": "1",
                         "avoidanceRadius": avoidanceRadius,
                         "vehicleID": name,
-                        "locationToAvoid":{
+                        "locationToAvoid": {
                             "latitude": locationToAvoid['latitude'],
                             "longitude": locationToAvoid['longitude'],
                             "altitude": locationToAvoid['altitude'],
@@ -701,7 +735,7 @@ class Communicator(CommunicatorInterface):
                     if sample.valid_data:
                         # first - print the sample.
                         responseList.append(sample.get_dictionary())
-                        #print(sample.get_dictionary())
+                        # print(sample.get_dictionary())
                     else:
                         print("Received non-valid message (Dispose)")
                 return responseList
@@ -709,9 +743,7 @@ class Communicator(CommunicatorInterface):
                 logging.error("reader " + self.NavigationPathPlanningResponse_DR + " dont exist")
                 return responseList
 
-
-
-    def getHeightAboveSeaLevel(self,lat,long)-> float:
+    def getHeightAboveSeaLevel(self, lat, long) -> float:
         response = 0
         with self.lock_read_write:
             try:
@@ -720,14 +752,14 @@ class Communicator(CommunicatorInterface):
                 logging.error("writer " + self.HeightAboveTerrainRequest_DW + " dont exist")
 
             current_DW.instance.set_dictionary({
-                    "HeightRequestedVector": [
-                        {
-                            "latitude": lat,
-                            "longitude": long,
-                            "altitude": 0,
-                        }
-                    ],
-                },)
+                "HeightRequestedVector": [
+                    {
+                        "latitude": lat,
+                        "longitude": long,
+                        "altitude": 0,
+                    }
+                ],
+            }, )
             current_DW.write()
         with self.lock_read_write:
             try:
@@ -742,9 +774,9 @@ class Communicator(CommunicatorInterface):
                 for sample in current_DR.samples:
                     if sample.valid_data:
                         # first - print the sample.
-                        request=sample.get_dictionary()
-                        lat=-request['HeightRequestedVector'][0][0]
-                        response=(lat)
+                        request = sample.get_dictionary()
+                        lat = -request['HeightRequestedVector'][0][0]
+                        response = (lat)
                     else:
                         print("Received non-valid message (Dispose)")
                 return response
@@ -752,7 +784,7 @@ class Communicator(CommunicatorInterface):
                 logging.error("reader " + self.GetAreasListResponse_DR + " dont exist")
                 return response
 
-    def followPathCommand(self, unit_name,path,ordered_speed):
+    def followPathCommand(self, unit_name, path, ordered_speed):
         with self.lock_read_write:
             try:
                 current_DW = self.RFSM_connector.getOutput(self.publisher + self.EntityFollowPathCommand_DW)
@@ -761,13 +793,14 @@ class Communicator(CommunicatorInterface):
                 return
             current_DW.instance.set_dictionary({
                 "unit_name": unit_name,
-                "path_id_or_full":{
+                "path_id_or_full": {
                     "full_path": path
-                } ,
+                },
                 "ordered_speed": ordered_speed,
             })
             current_DW.write()
+
+
 class CommunicatorSingleton(metaclass=Singleton):
     def __init__(self):
         self.obj = Communicator()
-
