@@ -664,7 +664,8 @@ class RFAScenarioManager:
             entity_info_list = self.CreateEntityInfoFromVrf(entity_info_list)
         for i in range(len(entity_info_list)):
             if entity_info_list[i].hostility == Hostility.FRIENDLY:
-                return_list.append(entity_info_list[i])
+                if entity_info_list[i].unit_name!='Observer 1':
+                    return_list.append(entity_info_list[i])
         #dealing with the previous list:
         if entity_previous_list!=[]:
             for k in range(len(return_list)):
