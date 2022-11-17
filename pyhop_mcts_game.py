@@ -601,23 +601,26 @@ def calValue(state,subtask):
     elif subtask[0] == 'shoot_op':
         flag = 0
         ret_val = 0
-        accuracy = 0
+        accuracy=0
+        accuracy_vec=[]
         if len(state.aim_list) > 0:
-            enemy = state.aim_list[0]
-            blueDistance = ext_funs.calculate_blue_distance(state.loc, enemy)
-            if blueDistance == None:
-                blueDistance = ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
-                flag = 1
-            if enemy.classification == EntityTypeEnum.EITAN:
-                shooterClassification = "LONG_RANGE_ANTI_TANK"
-                ratio = 1
-            elif (enemy.classification == EntityTypeEnum.OHEZ) or \
-                    (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
-                    (enemy.classification == EntityTypeEnum.UNKNOWN):
-                shooterClassification = "SOLDIER"
-                ratio = (state.weights['ohez_val']) / (state.weights['eitan_val'])
-            maxRange = float(state.AccuracyConfiguration.at[str(shooterClassification), 'MAX_RANGE'])
-            accuracy = ext_funs.getAccuracy(state.AccuracyConfiguration, blueDistance, maxRange, shooterClassification)
+            for enemy in state.aim_list:
+                blueDistance = ext_funs.calculate_blue_distance(state.loc, enemy)
+                if blueDistance == None:
+                    blueDistance = ext_funs.getMetriDistance(state.loc, state.BluePolygonCentroid)
+                    continue
+                else:
+                    if enemy.classification == EntityTypeEnum.EITAN:
+                        shooterClassification = "LONG_RANGE_ANTI_TANK"
+                        ratio = 1
+                    elif (enemy.classification == EntityTypeEnum.OHEZ) or \
+                            (enemy.classification == EntityTypeEnum.SUICIDE_DRONE) or \
+                            (enemy.classification == EntityTypeEnum.UNKNOWN):
+                        shooterClassification = "SOLDIER"
+                        ratio = (state.weights['ohez_val']) / (state.weights['eitan_val'])
+                        continue
+                maxRange = float(state.AccuracyConfiguration.at[str(shooterClassification), 'MAX_RANGE'])
+                accuracy_vec.append(ext_funs.getAccuracy(state.AccuracyConfiguration, blueDistance, maxRange, shooterClassification))
             ret_val = state.weights['shoot_enemy_op'] * 100 * accuracy * ratio
         if flag == 1:
             ret_val = 0.00000
