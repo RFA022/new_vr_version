@@ -147,7 +147,7 @@ class RFAScenarioManager:
                             current_entity.planBool = 1
                         if current_entity.planBool == 1 and current_entity.COA == []:
                             current_entity.planBool = 0
-                            #current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
+                            current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
                             #logging.debug("New Plan has been given to " + str(current_entity.unit_name))
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos, self.spawnPos)
@@ -225,13 +225,13 @@ class RFAScenarioManager:
                                         current_entity.state = PositionType.AT_OP
                                         current_entity.movement_task_completed = 0
                                         current_entity.movement_task_success = False
-                                        #replan procedure
-                                        #current_entity.COA = []
-                                        #shoot procedure
-                                        current_entity.aim_list = []
-                                        current_entity.aim_list.append(enemy)
+                                        # replan procedure
                                         current_entity.COA = []
-                                        current_entity.COA.append((['shoot_op', str(enemy.unit_name)]))
+                                        #shoot procedure
+                                        # current_entity.aim_list = []
+                                        # current_entity.aim_list.append(enemy)
+                                        # current_entity.COA = []
+                                        # current_entity.COA.append((['shoot_op', str(enemy.unit_name)]))
                                     "-----------------LAV CASE----------------"
                                     if enemy.classification == EntityTypeEnum.EITAN:
                                         self.communicator.stopCommand(current_entity.unit_name)
