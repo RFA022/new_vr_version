@@ -601,9 +601,16 @@ def calValue(state,subtask):
     elif subtask[0] == 'shoot_op':
         flag = 0
         ret_val = 0
+        totalProbabilityToMiss=1
         accuracy=0
-        accuracy_vec=[]
+        accuracyVec=[]
+        distanceVec=[]
+        realfakeVec=[]
         if len(state.aim_list) > 0:
+            """
+            current hueristic ignores drones when calculating hitting probability from position
+            not ignores drones if situation is dangerous
+            """
             for enemy in state.aim_list:
                 blueDistance = ext_funs.calculate_blue_distance(state.loc, enemy)
                 if blueDistance == None:
@@ -618,10 +625,22 @@ def calValue(state,subtask):
                             (enemy.classification == EntityTypeEnum.UNKNOWN):
                         shooterClassification = "SOLDIER"
                         ratio = (state.weights['ohez_val']) / (state.weights['eitan_val'])
-                        continue
+                        continue # not calculating accuracy
                 maxRange = float(state.AccuracyConfiguration.at[str(shooterClassification), 'MAX_RANGE'])
-                accuracy_vec.append(ext_funs.getAccuracy(state.AccuracyConfiguration, blueDistance, maxRange, shooterClassification))
-            ret_val = state.weights['shoot_enemy_op'] * 100 * accuracy * ratio
+                accuracyVec.append(ext_funs.getAccuracy(state.AccuracyConfiguration, blueDistance, maxRange, shooterClassification))
+                distanceVec.append(blueDistance)
+                realfakeVec.append(enemy.locationType)
+            for accuracy in accuracyVec:
+                totalProbabilityToMiss = totalProbabilityToMiss * (1 - accuracy)
+            probabilityToHit = (1 - totalProbabilityToMiss)
+            ret_val = state.weights['shoot_enemy_op'] * 100 * probabilityToHit
+            print(state.aim_list_names)
+            print("RealFake vec" +str(realfakeVec))
+            print("distance vec" +str(distanceVec))
+            print("accuracy vec:" +str(accuracyVec))
+            print("p2hit: " + str(probabilityToHit))
+            print("ret val:" +str(ret_val))
+            print("----")
         if flag == 1:
             ret_val = 0.00000
         # print("__")

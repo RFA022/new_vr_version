@@ -280,7 +280,7 @@ pyhop.declare_original_methods('depart',depart_m)
 pyhop.update_method_list()
 #####----------------------------------------#####
 
-def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration,bluePolygon):
+def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDimensions,loc,blueList,BluePolygonCentroid,AccuracyConfiguration,bluePolygon,vulnerability):
     init_state = pyhop.State('init_state')
     #VRF configs:
     init_state.intervisibility_polygoins=intervisibility_polygoins
@@ -300,6 +300,7 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.aim_list = []
     init_state.aim_list_names=[]
     init_state.deployment_style=None #full_anti_tank, rapid
+    init_state.vulnerability=vulnerability
     #Cover point related state attributes
     init_state.cover_polygon=None
     init_state.closest_cover_point=None
