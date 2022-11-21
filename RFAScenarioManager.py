@@ -240,16 +240,18 @@ class RFAScenarioManager:
                                         current_entity.movement_task_success = False
                                         current_entity.COA = []
 
-                            "Update vulnerability:"
-                            current_entity.vulnerability=ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
-                                                                 self.AccuracyConfiguration)
-                            # print("----vulnerability----")
-                            # print("relative vector is: "+str(current_entity.enemies_relative_direction))
-                            # print("--vulnerability assesment function--")
-                            # print("total vulnerability :" +str(ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
-                            #                                      self.AccuracyConfiguration)))
-                            # print(current_entity.enemies_relative_direction)
-                            # print("--------------")
+                        "Update vulnerability:"
+                        current_entity.vulnerability = ext_funs.assess_vulnerability(current_entity.current_location,
+                                                                                     current_entity.enemies_relative_direction,
+                                                                                     self.blue_entity_list_HTN,
+                                                                                     self.AccuracyConfiguration)
+                        # print("----vulnerability----")
+                        # print("relative vector is: "+str(current_entity.enemies_relative_direction))
+                        # print("--vulnerability assesment function--")
+                        # print("total vulnerability :" +str(ext_funs.assess_vulnerability(current_entity.current_location,current_entity.enemies_relative_direction,self.blue_entity_list_HTN,
+                        #                                      self.AccuracyConfiguration)))
+                        # print(current_entity.enemies_relative_direction)
+                        # print("--------------")
                         "plan new plan - can't plan if one or more entites is at fire position"
                         if current_entity.COA==[]:
                             fire_bool=0
@@ -271,7 +273,8 @@ class RFAScenarioManager:
                                                                       copy.deepcopy(self.blue_entity_list_HTN),
                                                                       self.BluePolygonCentroid,
                                                                       self.AccuracyConfiguration,
-                                                                      next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')['polygon'])
+                                                                      next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')['polygon'],
+                                                                      current_entity.vulnerability)
                             logging.debug("New Plan has been given to Squad")
                             "Update HTN target"
                             current_entity.HTNtarget=[]
@@ -615,6 +618,30 @@ class RFAScenarioManager:
                         enemy.last_seen_worldLocation = enemy.location
                         enemy.last_seen_velocity = enemy.velocity
                         current_entity.scanDetectionList.append(enemy)
+                        "update current entity list of scalar multiplication between enemies velocities to distance vector"
+                        if not any(item['unit_name'] == enemy.unit_name for item in
+                                   current_entity.enemies_relative_direction):
+                            current_entity.enemies_relative_direction.append({
+                                "unit_name": enemy.unit_name,
+                                "value": ext_funs.evaluate_relative_direction(
+                                    current_entity.current_location, enemy.last_seen_worldLocation,
+                                    enemy.last_seen_velocity)
+                            })
+                        else:
+                            item = next(x for x in current_entity.enemies_relative_direction if
+                                        x['unit_name'] == enemy.unit_name)
+                            item['value'] = ext_funs.evaluate_relative_direction(
+                                current_entity.current_location, enemy.last_seen_worldLocation,
+                                enemy.last_seen_velocity)
+
+                        if enemy.is_alive == True:
+                            pass
+                            # logging.debug("Alive enemy: " + str(
+                            #     enemy.unit_name) + " has been detected during motion")
+                        elif enemy.is_alive == False:
+                            pass
+                            # logging.debug("Destroyed enemy: " + str(
+                            #     enemy.unit_name) + " has been detected during motion")
                         "case of emergency drone detection:"
                         if enemy.is_alive==True:
                             if (enemy.classification == EntityTypeEnum.OHEZ) or \
@@ -628,6 +655,12 @@ class RFAScenarioManager:
                                 if losRespose_vec['distance'][0][response_index] < self.basicRanges['javelin_range']:
                                     logging.debug( "Good shooting Opporunity at Armored vehicle: " + str(enemy.unit_name))
                                     breakBool = 1
+                else:
+                    if any(item['unit_name'] == enemy.unit_name for item in
+                           current_entity.enemies_relative_direction):
+                        item = next(x for x in current_entity.enemies_relative_direction if
+                                    x['unit_name'] == enemy.unit_name)
+                        current_entity.enemies_relative_direction.remove(item)
             # updating HTN list which is used when shooting:
             self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
             currTime = time.time()
