@@ -171,6 +171,8 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
+                        print(current_entity.enemies_relative_direction)
+                        print(current_entity.vulnerability)
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
@@ -241,6 +243,7 @@ class RFAScenarioManager:
                                         current_entity.COA = []
 
                         "Update vulnerability:"
+                        print(current_entity.scanState)
                         current_entity.vulnerability = ext_funs.assess_vulnerability(current_entity.current_location,
                                                                                      current_entity.enemies_relative_direction,
                                                                                      self.blue_entity_list_HTN,

@@ -392,7 +392,7 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
     init_state.AccuracyConfiguration=AccuracyConfiguration
 
     #pyhop.print_state_simple(init_state)
-    debug_level = 1
+    debug_level = 0
     if debug_level >= 2:
         print("init state is:")
         pyhop.print_state_simple(init_state)

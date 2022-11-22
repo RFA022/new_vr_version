@@ -9,10 +9,10 @@ ak47_range,100,meter,
 eitan_cg_height,1.2,meter,
 rePlan_range,250,meter,
 rePlan_angle,15,deg,
-scan_time,3,second,
+scan_time,20,second,
 shoot_timeout_time,8,second,
 squad_speed,4.5,meter per second,
-move_type,path,type,destination / path
+move_type,destination,type,destination / path
 mobility_avoidance_radius,120,meter,
 basic_cover_waiting_time,15,second,
 default_enemy_speed,5,meter per second,

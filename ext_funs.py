@@ -644,3 +644,41 @@ def getSquadState(state,index):
         return ('attack_position')
     elif isinstance(index, str):
         return index
+
+def updateBlueEntitiesFromlosRespose_vec(rfa_scenario,current_entity,losRespose_vec):
+    for response_index in range(len(losRespose_vec['los'][0])):
+        enemy = rfa_scenario.blue_entity_list[response_index]
+        if losRespose_vec['distance'][0][response_index] < rfa_scenario.basicRanges['squad_eyes_range']:
+            if losRespose_vec['los'][0][response_index] == True:
+                enemy.last_seen_worldLocation = enemy.location
+                enemy.last_seen_velocity = enemy.velocity
+                "update current entity list of scalar multiplication between enemies velocities to distance vector"
+                if not any(item['unit_name'] == enemy.unit_name for item in
+                           current_entity.enemies_relative_direction):
+                    current_entity.enemies_relative_direction.append({
+                        "unit_name": enemy.unit_name,
+                        "value": evaluate_relative_direction(
+                            current_entity.current_location, enemy.last_seen_worldLocation,
+                            enemy.last_seen_velocity)
+                    })
+                else:
+                    item = next(x for x in current_entity.enemies_relative_direction if
+                                x['unit_name'] == enemy.unit_name)
+                    item['value'] = evaluate_relative_direction(
+                        current_entity.current_location, enemy.last_seen_worldLocation,
+                        enemy.last_seen_velocity)
+
+                if enemy.is_alive == True:
+                    pass
+                    # logging.debug("Alive enemy: " + str(
+                    #     enemy.unit_name) + " has been detected during motion")
+                elif enemy.is_alive == False:
+                    pass
+                    # logging.debug("Destroyed enemy: " + str(
+                    #     enemy.unit_name) + " has been detected during motion")
+        else:
+            if any(item['unit_name'] == enemy.unit_name for item in
+                   current_entity.enemies_relative_direction):
+                item = next(x for x in current_entity.enemies_relative_direction if
+                            x['unit_name'] == enemy.unit_name)
+                current_entity.enemies_relative_direction.remove(item)

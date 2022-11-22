@@ -634,13 +634,13 @@ def calValue(state,subtask):
                 totalProbabilityToMiss = totalProbabilityToMiss * (1 - accuracy)
             probabilityToHit = (1 - totalProbabilityToMiss)
             ret_val = state.weights['shoot_enemy_op'] * 100 * probabilityToHit
-            print(state.aim_list_names)
-            print("RealFake vec" +str(realfakeVec))
-            print("distance vec" +str(distanceVec))
-            print("accuracy vec:" +str(accuracyVec))
-            print("p2hit: " + str(probabilityToHit))
-            print("ret val:" +str(ret_val))
-            print("----")
+            # print(state.aim_list_names)
+            # print("RealFake vec" +str(realfakeVec))
+            # print("distance vec" +str(distanceVec))
+            # print("accuracy vec:" +str(accuracyVec))
+            # print("p2hit: " + str(probabilityToHit))
+            # print("ret val:" +str(ret_val))
+            # print("----")
         if flag == 1:
             ret_val = 0.00000
         # print("__")
