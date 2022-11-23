@@ -4,7 +4,7 @@ move_to_position_op,0.2,
 evaluate_HTN_subPlan_survivability_op,0.25,
 scan_for_enemy_op,0.15,
 bda_op,0,not in use
-shoot_enemy_op,1,
+shoot_enemy_op,0.35,
 sum_ops,0,
 basic_detection_probability,0.3,
 choose_position_op_dist_from_position,0,not in use

@@ -645,10 +645,10 @@ def getSquadState(state,index):
     elif isinstance(index, str):
         return index
 
-def updateBlueEntitiesFromlosRespose_vec(rfa_scenario,current_entity,losRespose_vec):
+def updateBlueEntitiesFromlosRespose_vec(rfa_scenario,current_entity,losRespose_vec,scan_range):
     for response_index in range(len(losRespose_vec['los'][0])):
         enemy = rfa_scenario.blue_entity_list[response_index]
-        if losRespose_vec['distance'][0][response_index] < rfa_scenario.basicRanges['squad_eyes_range']:
+        if losRespose_vec['distance'][0][response_index] < rfa_scenario.basicRanges[str(scan_range)]:
             if losRespose_vec['los'][0][response_index] == True:
                 enemy.last_seen_worldLocation = enemy.location
                 enemy.last_seen_velocity = enemy.velocity
@@ -669,13 +669,14 @@ def updateBlueEntitiesFromlosRespose_vec(rfa_scenario,current_entity,losRespose_
                         enemy.last_seen_velocity)
 
                 if enemy.is_alive == True:
+                    logging.debug("Alive enemy: " + str(
+                        enemy.unit_name) + " has been detected during motion")
                     pass
-                    # logging.debug("Alive enemy: " + str(
-                    #     enemy.unit_name) + " has been detected during motion")
                 elif enemy.is_alive == False:
                     pass
-                    # logging.debug("Destroyed enemy: " + str(
-                    #     enemy.unit_name) + " has been detected during motion")
+                    logging.debug("Destroyed enemy: " + str(
+                        enemy.unit_name) + " has been detected during motion")
+                pass
         else:
             if any(item['unit_name'] == enemy.unit_name for item in
                    current_entity.enemies_relative_direction):
