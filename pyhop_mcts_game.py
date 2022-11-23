@@ -353,7 +353,7 @@ def MCTS_HTN(initial_state, tasks,relevant_methods,debug_level):
     length2measure=len(relevant_methods)# returns real length of methods vector
     Q = [0] * length2measure
     N = [0] * length2measure
-    NumSim = 150 #was 400
+    NumSim = 50 #was 150
     ucb1_exploration_value_rollout=initial_state.config['exploration_value_rollout']
     ucb1_exploration_value_nextmove=initial_state.config['exploration_value_nextmove']
 
@@ -634,13 +634,14 @@ def calValue(state,subtask):
                 totalProbabilityToMiss = totalProbabilityToMiss * (1 - accuracy)
             probabilityToHit = (1 - totalProbabilityToMiss)
             ret_val = state.weights['shoot_enemy_op'] * 100 * probabilityToHit
-            # print(state.aim_list_names)
-            # print("RealFake vec" +str(realfakeVec))
-            # print("distance vec" +str(distanceVec))
-            # print("accuracy vec:" +str(accuracyVec))
-            # print("p2hit: " + str(probabilityToHit))
-            # print("ret val:" +str(ret_val))
-            # print("----")
+            print("current position is:" + str(state.currentPositionIndex))
+            print(state.aim_list_names)
+            print("RealFake vec" +str(realfakeVec))
+            print("distance vec" +str(distanceVec))
+            print("accuracy vec:" +str(accuracyVec))
+            print("p2hit: " + str(probabilityToHit))
+            print("ret val:" +str(ret_val))
+            print("----")
         if flag == 1:
             ret_val = 0.00000
         # print("__")

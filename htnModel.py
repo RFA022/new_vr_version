@@ -263,7 +263,7 @@ def shoot_m(state,a):
     if len(state.aim_list)>0:
         return [('shoot_op',str(state.aim_list[0].unit_name))]
     else:
-        return [('shoot_op', "none")]
+        return [('shoot_op', None)]
 
 pyhop.declare_methods('shoot',shoot_m)
 pyhop.declare_original_methods('shoot',shoot_m)

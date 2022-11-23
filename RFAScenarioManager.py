@@ -171,8 +171,9 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
-                        print(current_entity.enemies_relative_direction)
-                        print(current_entity.vulnerability)
+                        print("---------------------------------")
+                        print("enemies relative direction vector: " +str(current_entity.enemies_relative_direction))
+                        print("vulnerability status is: " +str(current_entity.vulnerability))
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
@@ -588,6 +589,19 @@ class RFAScenarioManager:
                 current_entity.enemies_relative_direction,
                 self.blue_entity_list_HTN,
                 self.AccuracyConfiguration)
+            for enemy in self.blue_entity_list_HTN:
+                if enemy.observed==True:
+                    current_entity.scanDetectionList.append(enemy)
+            "debug"
+            nameslist = []
+            if current_entity.scanDetectionList!=[]:
+                for enemy in current_entity.scanDetectionList:
+                    nameslist.append(enemy.unit_name)
+            print("scan detection list is: " + str(nameslist))
+            "finish debug"
+            for enemy in self.blue_entity_list_HTN:
+                if enemy.observed==True:
+                    print(str(enemy.unit_name) + " is observed from position")
             for enemy in self.blue_entity_list_HTN:
                 "case of emergency drone detection:"
                 if enemy.is_alive==True:

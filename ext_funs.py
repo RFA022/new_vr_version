@@ -652,6 +652,8 @@ def updateBlueEntitiesFromlosRespose_vec(rfa_scenario,current_entity,losRespose_
             if losRespose_vec['los'][0][response_index] == True:
                 enemy.last_seen_worldLocation = enemy.location
                 enemy.last_seen_velocity = enemy.velocity
+                if scan_range=="squad_view_range":
+                    enemy.observed=True
                 "update current entity list of scalar multiplication between enemies velocities to distance vector"
                 if not any(item['unit_name'] == enemy.unit_name for item in
                            current_entity.enemies_relative_direction):
