@@ -249,11 +249,12 @@ class RFAScenarioManager:
                             current_entity.HTNtarget=[]
                             for primitive_task in self.entity_list[i].COA:
                                 if primitive_task[0]=='shoot_op':
-                                    target= next(x for x in self.blue_entity_list_HTN if x.unit_name == (primitive_task[1]))
-                                    if calculate_blue_distance(current_entity.current_location,target)==None:
-                                        current_entity.HTNtarget.append([target.unit_name,"assesed"])
-                                    else:
-                                        current_entity.HTNtarget.append([target.unit_name,"real"])
+                                    if (primitive_task[1])!=None:
+                                        target= next(x for x in self.blue_entity_list_HTN if x.unit_name == (primitive_task[1]))
+                                        if calculate_blue_distance(current_entity.current_location,target)==None:
+                                            current_entity.HTNtarget.append([target.unit_name,"assesed"])
+                                        else:
+                                            current_entity.HTNtarget.append([target.unit_name,"real"])
                             # print(str(current_entity.HTNtarget))
                             "Update HTN frozen world view"
                             current_entity.HTNbluesFrozen=self.blue_entity_list_HTN
@@ -312,62 +313,62 @@ class RFAScenarioManager:
                 logging.debug(
                     "Squad started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(
                         current_entity.face))
-
-                if self.config['move_type']=="destination":
-                    self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
-                                                           entity_next_state_and_action.position_location,
-                                                           self.config['squad_speed'])
-                elif self.config['move_type']=="path":
-                    "generating pathes that avoid the closest blue:"
-                    enemies_location_list = []
-                    for enemy in self.blue_entity_list_HTN:
-                        if (enemy.location['latitude'] != None and
-                                enemy.location['longitude'] != None and
-                                enemy.location['altitude'] != None):
-                            if enemy.is_alive == True:
-                                # new atribute:
-                                enemy_copy = copy.deepcopy(enemy)
-                                enemy_copy.distFromSquad = ext_funs.getMetriDistance(current_entity.current_location,
-                                                                                     enemy.location)
-                                enemies_location_list.append(enemy_copy)
-                    # sort: observed list by classification when Eitan comes before Ohez
-                    if enemies_location_list != []:
-                        # sort by value - next sort by value and then by distance
-                        #enemies_location_list = sorted(enemies_location_list, key=lambda x: (x.val, -x.distFromSquad), reverse=True)
-                        enemies_location_list = sorted(enemies_location_list, key=lambda x: ( -x.distFromSquad), reverse=True)
-                        ignore_location=enemies_location_list[0].location
-                        logging.debug("mobility agent try to avoid enemy: " + str(enemies_location_list[0].unit_name))
-                        paths = self.communicator.navigationPathPlan(current_entity.current_location
-                                                                     , entity_next_state_and_action.position_location,
-                                                                     ignore_location, self.config['mobility_avoidance_radius'],
-                                                                     current_entity.unit_name, 2)
-                    else:
-                        logging.debug("mobility agent does not try to avoid any enemy: ")
-                        paths = self.communicator.navigationPathPlan(current_entity.current_location
-                                                                     , entity_next_state_and_action.position_location,
-                                                                     None,
-                                                                     self.config['mobility_avoidance_radius'],
-                                                                     current_entity.unit_name, 2)
-                    if paths==[]:
-                        print("case to check")
-                    if paths[0]['pathPlanningResponseVector']==[]:
-                        logging.debug("mobility agent failed to work")
+                if current_entity.face!="current_position":
+                    if self.config['move_type']=="destination":
                         self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
                                                                entity_next_state_and_action.position_location,
                                                                self.config['squad_speed'])
-                    else:
-                        if len(paths[0]['pathPlanningResponseVector'])==2:
-                            path=paths[0]['pathPlanningResponseVector'][1]['path']
-                            logging.debug("mobility agent route 2 follow")
-                            self.communicator.followPathCommand(current_entity.unit_name
-                                                                , path
-                                                                , self.config['squad_speed'])
-                        elif len(paths[0]['pathPlanningResponseVector'])==1:
-                            path=paths[0]['pathPlanningResponseVector'][0]['path']
-                            logging.debug("mobility agent route 1 follow")
-                            self.communicator.followPathCommand(current_entity.unit_name
-                                                                , path
-                                                                , self.config['squad_speed'])
+                    elif self.config['move_type']=="path":
+                        "generating pathes that avoid the closest blue:"
+                        enemies_location_list = []
+                        for enemy in self.blue_entity_list_HTN:
+                            if (enemy.location['latitude'] != None and
+                                    enemy.location['longitude'] != None and
+                                    enemy.location['altitude'] != None):
+                                if enemy.is_alive == True:
+                                    # new atribute:
+                                    enemy_copy = copy.deepcopy(enemy)
+                                    enemy_copy.distFromSquad = ext_funs.getMetriDistance(current_entity.current_location,
+                                                                                         enemy.location)
+                                    enemies_location_list.append(enemy_copy)
+                        # sort: observed list by classification when Eitan comes before Ohez
+                        if enemies_location_list != []:
+                            # sort by value - next sort by value and then by distance
+                            #enemies_location_list = sorted(enemies_location_list, key=lambda x: (x.val, -x.distFromSquad), reverse=True)
+                            enemies_location_list = sorted(enemies_location_list, key=lambda x: ( -x.distFromSquad), reverse=True)
+                            ignore_location=enemies_location_list[0].location
+                            logging.debug("mobility agent try to avoid enemy: " + str(enemies_location_list[0].unit_name))
+                            paths = self.communicator.navigationPathPlan(current_entity.current_location
+                                                                         , entity_next_state_and_action.position_location,
+                                                                         ignore_location, self.config['mobility_avoidance_radius'],
+                                                                         current_entity.unit_name, 2)
+                        else:
+                            logging.debug("mobility agent does not try to avoid any enemy: ")
+                            paths = self.communicator.navigationPathPlan(current_entity.current_location
+                                                                         , entity_next_state_and_action.position_location,
+                                                                         None,
+                                                                         self.config['mobility_avoidance_radius'],
+                                                                         current_entity.unit_name, 2)
+                        if paths[0]['pathPlanningResponseVector']==[]:
+                            logging.debug("mobility agent failed to work")
+                            self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
+                                                                   entity_next_state_and_action.position_location,
+                                                                   self.config['squad_speed'])
+                        else:
+                            if len(paths[0]['pathPlanningResponseVector'])==2:
+                                path=paths[0]['pathPlanningResponseVector'][1]['path']
+                                if path == []:
+                                    path= paths[0]['pathPlanningResponseVector'][0]['path']
+                                logging.debug("mobility agent route 2 follow")
+                                self.communicator.followPathCommand(current_entity.unit_name
+                                                                    , path
+                                                                    , self.config['squad_speed'])
+                            elif len(paths[0]['pathPlanningResponseVector'])==1:
+                                path=paths[0]['pathPlanningResponseVector'][0]['path']
+                                logging.debug("mobility agent route 1 follow")
+                                self.communicator.followPathCommand(current_entity.unit_name
+                                                                    , path
+                                                                    , self.config['squad_speed'])
             elif current_entity.role=='ci':
                 #logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,

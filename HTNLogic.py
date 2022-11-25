@@ -34,7 +34,8 @@ class HTNLogic:
                     logging.debug(str(entity_current_state.squad) +
                         ": Next Primitive Action - Change next destination to Attack Position "+ str(entity_current_state.COA[0][1]))
                 if entity_current_state.COA[0][0]=='move_to_position_op':
-                    entity_next_state_and_action.move_pos = True
+                    if entity_current_state.face!="current_position":
+                        entity_next_state_and_action.move_pos = True
                     new_position_location = {
                         "location_id": -1,
                         "latitude": entity_current_state.nextLocation['latitude'],
