@@ -82,3 +82,4 @@ class HTNentity:
         self.is_alive = None
         self.val=None
         self.velocity=[]
+        self.interception_time=None

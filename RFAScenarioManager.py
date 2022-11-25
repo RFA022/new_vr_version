@@ -51,7 +51,7 @@ class RFAScenarioManager:
         self.green_entity_list= []
         self.blue_entity_list = []
         self.blue_entity_list_HTN=[]
-
+        self.fusionReport=[]
         #General config data:
         self.configuration = pd.read_csv('Resources\Configuration.csv',
                                          header=[0],
@@ -77,6 +77,7 @@ class RFAScenarioManager:
         self.config['scan_time'] = float(self.configuration.at['scan_time', 'value'])
         self.config['shoot_timeout_time'] = float(self.configuration.at['shoot_timeout_time', 'value'])
         self.config['move_type'] = str(self.configuration.at['move_type', 'value'])
+        self.config['awareness_type'] = str(self.configuration.at['awareness_type', 'value'])
         self.config['squad_speed'] = float(self.configuration.at['squad_speed', 'value'])
         self.config['mobility_avoidance_radius'] = float(self.configuration.at['mobility_avoidance_radius', 'value'])
         self.config['basic_cover_waiting_time'] = float(self.configuration.at['basic_cover_waiting_time', 'value'])
@@ -92,6 +93,7 @@ class RFAScenarioManager:
         self.config['shooting_time'] = float(self.configuration.at['shooting_time', 'value'])
         self.config['vulnerability_threshold'] = float(self.configuration.at['vulnerability_threshold', 'value'])
 
+        self.dcounter=0
 
 
         self.squadsDatalocation=str(self.configuration.at['squadsDataLocation', 'value'])
@@ -124,7 +126,16 @@ class RFAScenarioManager:
                 self.green_entity_list=self.CreateAndUpdateEntityList(self.green_entity_list)
                 #update Blue list from simulator and from last iteration (info about last seen location)
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
-                fustionReport=self.communicator.GetFusionReport()
+                if self.config['awareness_type']=='sa':
+                    self.fusionReport=self.communicator.GetFusionReport()
+                    if len(self.fusionReport)>0:
+                        ext_funs.updateBlueEntitiesFromfusionReport(self.blue_entity_list,self.fusionReport)
+                        self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+                        for entity in self.fusionReport:
+                            print(str(entity['fusion_name']) + " has been observed with SA")
+                        pos = [self.blue_entity_list_HTN[0].location['latitude'], self.blue_entity_list_HTN[0].location['longitude'],self.blue_entity_list_HTN[0].location['altitude']]
+                        self.communicator.CreateEntitySimple('locp' + str(self.dcounter), pos, 3, '16:0:0:1:0:0:0')
+                        self.dcounter+=1
                 "Check if Red won"
                 numberOfAliveBlues=getNumberofAliveEnemies(self.blue_entity_list)
                 if numberOfAliveBlues == 0:
@@ -171,23 +182,39 @@ class RFAScenarioManager:
                         self.handle_move_fire_scan_wait(current_entity,task_status_list,fire_list)
                     #---#---get the next state and action---#---#
                     if current_entity.role=="co": #commander roll type
-                        print("---------------------------------")
-                        print("enemies relative direction vector: " +str(current_entity.enemies_relative_direction))
-                        print("vulnerability status is: " +str(current_entity.vulnerability))
-                        "scan for enemies if squad is on the move"
-                        if current_entity.state==PositionType.MOVE_TO_OP:
-                            losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
-                                                           current_entity.current_location)
-                            ext_funs.updateBlueEntitiesFromlosRespose_vec(self,current_entity,losRespose_vec,"squad_eyes_range")
-                            # updating HTN list which is used when shooting:
-                            self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
-                            #Update vulnerability
+                        "update enemies relative directions and vulnerability with sa mode"
+                        if self.config['awareness_type']=='sa':
+                            "update relative directions"
+                            current_entity.enemies_relative_direction=ext_funs.enemies_relative_directionFromFusionreport(current_entity,self.fusionReport)
+                            "update vulnerability"
                             current_entity.vulnerability = ext_funs.assess_vulnerability(
                                 current_entity.current_location,
                                 current_entity.enemies_relative_direction,
                                 self.blue_entity_list_HTN,
                                 self.AccuracyConfiguration)
-                                #replan check
+
+                        # "debug"
+                        # print("---------------------------------")
+                        # print("enemies relative direction vector: " +str(current_entity.enemies_relative_direction))
+                        # print("vulnerability status is: " +str(current_entity.vulnerability))
+                        # "finish debug"
+                        "scan for enemies if squad is on the move"
+                        if current_entity.state==PositionType.MOVE_TO_OP:
+                            if self.config['awareness_type']=='direct':
+                                losRespose_vec=losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
+                                                               current_entity.current_location)
+                                ext_funs.updateBlueEntitiesAndRelativeDirectionVecFromlosRespose_vec(self,current_entity,losRespose_vec,"squad_eyes_range")
+                                # updating HTN list which is used when shooting:
+                                self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+                                #Update vulnerability
+                                current_entity.vulnerability = ext_funs.assess_vulnerability(
+                                    current_entity.current_location,
+                                    current_entity.enemies_relative_direction,
+                                    self.blue_entity_list_HTN,
+                                    self.AccuracyConfiguration)
+                            elif self.config['awareness_type']=='sa':
+                                    pass
+                            #replan check
                             for enemy in self.blue_entity_list_HTN:
                                     if (ext_funs.checkIfWorldViewChangedEnough(enemy, current_entity, self.basicRanges,
                                                                                self.config)):
@@ -200,9 +227,9 @@ class RFAScenarioManager:
                                             current_entity.state = PositionType.AT_OP
                                             current_entity.movement_task_completed = 0
                                             current_entity.movement_task_success = False
-                                            # replan procedure
+                                            #__replan procedure__#
                                             current_entity.COA = []
-                                            #shoot procedure
+                                            #__shoot procedure__#
                                             # current_entity.aim_list = []
                                             # current_entity.aim_list.append(enemy)
                                             # current_entity.COA = []
@@ -579,30 +606,51 @@ class RFAScenarioManager:
                         self.communicator.stopCommand(current_entity.unit_name)
         if current_entity.scanState==isScan.yes:
             breakBool=0
-            losRespose_vec = losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
-                                             current_entity.current_location)
-            ext_funs.updateBlueEntitiesFromlosRespose_vec(self,current_entity,losRespose_vec,"squad_view_range")
-            # updating HTN list which is used when shooting:
-            self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
-            # Update vulnerability
-            current_entity.vulnerability = ext_funs.assess_vulnerability(
-                current_entity.current_location,
-                current_entity.enemies_relative_direction,
-                self.blue_entity_list_HTN,
-                self.AccuracyConfiguration)
-            for enemy in self.blue_entity_list_HTN:
-                if enemy.observed==True:
-                    current_entity.scanDetectionList.append(enemy)
-            "debug"
-            nameslist = []
-            if current_entity.scanDetectionList!=[]:
-                for enemy in current_entity.scanDetectionList:
-                    nameslist.append(enemy.unit_name)
-            print("scan detection list is: " + str(nameslist))
-            "finish debug"
-            for enemy in self.blue_entity_list_HTN:
-                if enemy.observed==True:
-                    print(str(enemy.unit_name) + " is observed from position")
+            if self.config['awareness_type']=='direct':
+                losRespose_vec = losOperatorlist(self.squadPosture, self.enemyDimensions, self.blue_entity_list,
+                                                 current_entity.current_location)
+                ext_funs.updateBlueEntitiesAndRelativeDirectionVecFromlosRespose_vec(self,current_entity,losRespose_vec,"squad_view_range")
+                # updating HTN list which is used when shooting:
+                self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+                # Update vulnerability
+                current_entity.vulnerability = ext_funs.assess_vulnerability(
+                    current_entity.current_location,
+                    current_entity.enemies_relative_direction,
+                    self.blue_entity_list_HTN,
+                    self.AccuracyConfiguration)
+                for enemy in self.blue_entity_list_HTN:
+                    if enemy.observed==True:
+                        current_entity.scanDetectionList.append(enemy)
+                # "debug"
+                # nameslist = []
+                # if current_entity.scanDetectionList!=[]:
+                #     for enemy in current_entity.scanDetectionList:
+                #         nameslist.append(enemy.unit_name)
+                # print("scan detection list is: " + str(nameslist))
+                # "finish debug"
+                for enemy in self.blue_entity_list_HTN:
+                    if enemy.observed==True:
+                        print(str(enemy.unit_name) + " is observed from position")
+            elif self.config['awareness_type'] == 'sa':
+                "update observation status for aim list:"
+                if len(self.fusionReport)>0:
+                    for fusion in self.fusionReport:
+                        enemy = next(x for x in self.blue_entity_list if
+                                     fusion['fusion_name'] == x.unit_name)
+                        if enemy.observed != True:
+                            enemy.observed=True
+                # massage={
+                #     "requestId": 1637321893,
+                #     "sensorId": 513,
+                #     "unit_name": "LAV",
+                #     "subSystemAction": 0,
+                #     "requesterName": "",
+                #     "aimType": {
+                #         "LLA": {
+                #             "latitude": 33.376384999999999,
+                #             "longitude": 35.495992000000001,
+                #             "altitude": 433.54287719726563,
+                #        }
             for enemy in self.blue_entity_list_HTN:
                 "case of emergency drone detection:"
                 if enemy.is_alive==True:
@@ -666,6 +714,7 @@ class RFAScenarioManager:
                         break
                 current_entity.last_seen_worldLocation=live_unit.last_seen_worldLocation
                 current_entity.last_seen_velocity=live_unit.last_seen_velocity
+                current_entity.interception_time=live_unit.interception_time
                 current_entity.observed=live_unit.observed
                 if current_entity.classification == EntityTypeEnum.EITAN:
                     current_entity.val = 1

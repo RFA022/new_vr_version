@@ -45,6 +45,7 @@ class EntityInfo: #Blue entites data structure
                     "longitude": None,
                     "altitude": None
                 }
+        self.interception_time=None
         # false not alive and true alive
         self.is_alive = True
         self.power = None

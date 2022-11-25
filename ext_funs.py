@@ -132,6 +132,7 @@ def getBluesDataFromVRFtoHTN(blueList):
         Newentity.classification=entity.classification
         Newentity.location=entity.last_seen_worldLocation
         Newentity.velocity = entity.last_seen_velocity
+        Newentity.interception_time=entity.interception_time
         Newentity.is_alive = entity.is_alive
         Newentity.val=val
         Newentity.observed=entity.observed
@@ -645,13 +646,15 @@ def getSquadState(state,index):
     elif isinstance(index, str):
         return index
 
-def updateBlueEntitiesFromlosRespose_vec(rfa_scenario,current_entity,losRespose_vec,scan_range):
+
+def updateBlueEntitiesAndRelativeDirectionVecFromlosRespose_vec(rfa_scenario,current_entity,losRespose_vec,scan_range):
     for response_index in range(len(losRespose_vec['los'][0])):
         enemy = rfa_scenario.blue_entity_list[response_index]
         if losRespose_vec['distance'][0][response_index] < rfa_scenario.basicRanges[str(scan_range)]:
             if losRespose_vec['los'][0][response_index] == True:
                 enemy.last_seen_worldLocation = enemy.location
                 enemy.last_seen_velocity = enemy.velocity
+                enemy.interception_time=time.time()
                 if scan_range=="squad_view_range":
                     enemy.observed=True
                 "update current entity list of scalar multiplication between enemies velocities to distance vector"
@@ -685,3 +688,22 @@ def updateBlueEntitiesFromlosRespose_vec(rfa_scenario,current_entity,losRespose_
                 item = next(x for x in current_entity.enemies_relative_direction if
                             x['unit_name'] == enemy.unit_name)
                 current_entity.enemies_relative_direction.remove(item)
+
+" fusion report"
+
+
+def updateBlueEntitiesFromfusionReport(blue_entity_list,fustionReport):
+    for fusion in fustionReport:
+        enemy = next(x for x in blue_entity_list if
+                    fusion['fusion_name'] == x.unit_name)
+        enemy.last_seen_worldLocation = fusion['worldLocation']['location']
+        enemy.last_seen_velocity = fusion['velocity']['ENUVelocityVector']
+        enemy.interception_time=time.time()
+
+def enemies_relative_directionFromFusionreport(current_entity,fusionReport):
+    enemies_relative_direction=[]
+    for fusion in fusionReport:
+        enemies_relative_direction.append({
+            "unit_name": fusion['fusion_name'] ,
+            "value": evaluate_relative_direction(current_entity.current_location, fusion['worldLocation']['location'],fusion['velocity']['ENUVelocityVector'])})
+    return enemies_relative_direction
