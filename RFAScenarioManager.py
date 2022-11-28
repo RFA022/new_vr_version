@@ -120,6 +120,9 @@ class RFAScenarioManager:
                 time.sleep(0.5) #sleep time between every iteration - CPU time
                 if self.start_scenario_time == 0:
                     self.start_scenario_time = time.time()
+                # "Debug threading check"
+                # for thread in threading.enumerate():
+                #     print(thread.name)
                 "Entites list update"
                 #update Red list from simulator and from last iteration
                 self.entity_list=self.CreateAndUpdateEntityList(self.entity_list)
@@ -141,9 +144,18 @@ class RFAScenarioManager:
                 for i in range(len(self.entity_list)):
                     Gui_entity = self.entity_list[i]
                     if Gui_entity.role == "co":
-                            gui_update_thread=threading.Thread(target=self.gui.updatemed, args=[str(Gui_entity.COA),str(Gui_entity.current_task)])
+                            coa_names=[]
+                            current_task=None
+                            for operator in Gui_entity.COA:
+                                if operator[0]=="evaluate_HTN_subPlan_survivability_op":
+                                    continue
+                                coa_names.append(operator[0])
+                            if Gui_entity.current_task=="evaluate_HTN_subPlan_survivability_op":
+                                current_task="   "
+                            else:
+                                current_task=Gui_entity.current_task
+                            gui_update_thread=threading.Thread(target=self.gui.updatemed, args=[str(coa_names),str(current_task)])
                             gui_update_thread.start()
-                            self.dcounter+=1
 
                 "Check if Red won"
                 numberOfAliveBlues=getNumberofAliveEnemies(self.blue_entity_list)
@@ -173,7 +185,7 @@ class RFAScenarioManager:
                                                                        self.start_scenario_time, self.AttackPos, self.spawnPos)
                         "next task implementation"
                         if entity_next_state_and_action.takeAction == 1 :
-                            current_entity.current_task=current_entity.COA[0]
+                            current_entity.current_task=current_entity.COA[0][0]
                             current_entity.COA.pop(0)
                             self.entity_next_state_and_action_impleneter(entity_next_state_and_action, current_entity)
                     # update the entity parameters that changed during this iteration
@@ -272,6 +284,8 @@ class RFAScenarioManager:
                         if current_entity.planBool==1 and current_entity.COA==[]:
                             current_entity.planBool=0
                             current_entity.current_task="Planning"
+                            gui_update_thread = threading.Thread(target=self.gui.updatemed, args=[str(current_entity.COA),str(current_entity.current_task)])
+                            gui_update_thread.start()
                             current_entity.COA=htnModel.findplan(     self.config,
                                                                       self.intervisibility_polygoins,
                                                                       self.basicRanges,
@@ -306,7 +320,7 @@ class RFAScenarioManager:
                                                      ((current_entity.preGameBool==True) and (entity_next_state_and_action.takeAction == 0))):
                             if current_entity.preGameBool==True:
                                 current_entity.preGameBool=False
-                            current_entity.current_task=current_entity.COA[0]
+                            current_entity.current_task=current_entity.COA[0][0]
                             current_entity.COA.pop(0)
                             self.entity_next_state_and_action_impleneter(entity_next_state_and_action, current_entity)
                     # update the entity parameters that changed during this iteration

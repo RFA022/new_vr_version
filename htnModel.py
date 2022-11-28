@@ -398,7 +398,7 @@ def findplan(config,intervisibility_polygoins,basicRanges,squadPosture,enemyDime
         pyhop.print_state_simple(init_state)
     print("Begin Planning Red:")
 
-    plan = pyhop.shop_m(init_state, [('attack', 'me')],debug_level) #third parameter is debug mode
+    plan = pyhop.shop_m(init_state, [('attack', [])],debug_level) #third parameter is debug mode
     print(plan)
     return plan
 

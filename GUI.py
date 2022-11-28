@@ -53,9 +53,8 @@ class Gui(threading.Thread):
 
         # self.squad_COA = Label(self.root, text="squad_COA", background="white").grid(row=1, column=0, sticky=W)
         # self.squad_current_task = Label(self.root, text="squad_current_task", background="white").grid(row=2, column=0, sticky=W)
-
-        customtkinter.set_appearance_mode("dark")
-        customtkinter.set_default_color_theme("blue")
+        # customtkinter.set_appearance_mode("dark")
+        # customtkinter.set_default_color_theme("blue")
         self.root.mainloop()
 
 

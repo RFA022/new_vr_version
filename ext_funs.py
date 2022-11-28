@@ -707,3 +707,4 @@ def enemies_relative_directionFromFusionreport(current_entity,fusionReport):
             "unit_name": fusion['fusion_name'] ,
             "value": evaluate_relative_direction(current_entity.current_location, fusion['worldLocation']['location'],fusion['velocity']['ENUVelocityVector'])})
     return enemies_relative_direction
+
