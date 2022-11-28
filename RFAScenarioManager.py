@@ -21,7 +21,7 @@ from Communicator import CommunicatorSingleton
 import utm
 import geopandas
 import threading
-
+import GUI
 #MADGIMON
 class RFAScenarioManager:
     def __init__(self):
@@ -45,7 +45,8 @@ class RFAScenarioManager:
         self.start_scenario_time = 0
         self.first_enter = True
 
-
+        #GUI
+        self.gui=GUI.Gui("anti_tank_1",None,None)
         #Entities Lists:
         self.entity_list = []
         self.green_entity_list= []
@@ -131,11 +132,19 @@ class RFAScenarioManager:
                     if len(self.fusionReport)>0:
                         ext_funs.updateBlueEntitiesFromfusionReport(self.blue_entity_list,self.fusionReport)
                         self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
-                        for entity in self.fusionReport:
-                            print(str(entity['fusion_name']) + " has been observed with SA")
-                        pos = [self.blue_entity_list_HTN[0].location['latitude'], self.blue_entity_list_HTN[0].location['longitude'],self.blue_entity_list_HTN[0].location['altitude']]
-                        self.communicator.CreateEntitySimple('locp' + str(self.dcounter), pos, 3, '16:0:0:1:0:0:0')
-                        self.dcounter+=1
+                        # for entity in self.fusionReport:
+                        #     print(str(entity['fusion_name']) + " has been observed with SA")
+                        # pos = [self.blue_entity_list_HTN[0].location['latitude'], self.blue_entity_list_HTN[0].location['longitude'],self.blue_entity_list_HTN[0].location['altitude']]
+                        # self.communicator.CreateEntitySimple('locp' + str(self.dcounter), pos, 3, '16:0:0:1:0:0:0')
+                        # self.dcounter+=1
+                "Update Gui -  one squad"
+                for i in range(len(self.entity_list)):
+                    Gui_entity = self.entity_list[i]
+                    if Gui_entity.role == "co":
+                            gui_update_thread=threading.Thread(target=self.gui.updatemed, args=[str(Gui_entity.COA),str(Gui_entity.current_task)])
+                            gui_update_thread.start()
+                            self.dcounter+=1
+
                 "Check if Red won"
                 numberOfAliveBlues=getNumberofAliveEnemies(self.blue_entity_list)
                 if numberOfAliveBlues == 0:
@@ -164,6 +173,7 @@ class RFAScenarioManager:
                                                                        self.start_scenario_time, self.AttackPos, self.spawnPos)
                         "next task implementation"
                         if entity_next_state_and_action.takeAction == 1 :
+                            current_entity.current_task=current_entity.COA[0]
                             current_entity.COA.pop(0)
                             self.entity_next_state_and_action_impleneter(entity_next_state_and_action, current_entity)
                     # update the entity parameters that changed during this iteration
@@ -261,6 +271,7 @@ class RFAScenarioManager:
                         "Plan new plan if COA is empty and planbool = 1"
                         if current_entity.planBool==1 and current_entity.COA==[]:
                             current_entity.planBool=0
+                            current_entity.current_task="Planning"
                             current_entity.COA=htnModel.findplan(     self.config,
                                                                       self.intervisibility_polygoins,
                                                                       self.basicRanges,
@@ -295,6 +306,7 @@ class RFAScenarioManager:
                                                      ((current_entity.preGameBool==True) and (entity_next_state_and_action.takeAction == 0))):
                             if current_entity.preGameBool==True:
                                 current_entity.preGameBool=False
+                            current_entity.current_task=current_entity.COA[0]
                             current_entity.COA.pop(0)
                             self.entity_next_state_and_action_impleneter(entity_next_state_and_action, current_entity)
                     # update the entity parameters that changed during this iteration
@@ -762,6 +774,7 @@ class RFAScenarioManager:
             current_entity.waitState        = entity_previous_list[k].waitState
             current_entity.waitTime        = entity_previous_list[k].waitTime
             current_entity.vulnerability   =entity_previous_list[k].vulnerability
+            current_entity.current_task=entity_previous_list[k].current_task
 
             current_entity.aim_list         = entity_previous_list[k].aim_list
             current_entity.preGameBool      = entity_previous_list[k].preGameBool

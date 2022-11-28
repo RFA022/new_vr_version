@@ -17,7 +17,7 @@ class Gui(threading.Thread):
 
     def run(self):
         self.root =tkinter.Tk()
-        self.root.iconbitmap('Resources/iai5.ico')
+        self.root.iconbitmap('Resources/icons/iai5.ico')
         self.root.title("RFA Manager")
         self.frame=tkinter.Frame(self.root)
         self.frame.pack()
@@ -47,7 +47,7 @@ class Gui(threading.Thread):
 
 
 
-        self.root.geometry("640x320")
+        self.root.geometry("1500x240")
         self.root.resizable(False, False) # cant be resizable
 
 
@@ -59,27 +59,30 @@ class Gui(threading.Thread):
         self.root.mainloop()
 
 
-    def updatemed(self,COA):
+    def updatemed(self,COA,current_task):
         self.root.update()
         self.squad_COA=COA
-        self.squad_COA_entry=tkinter.Label(self.red_squad_frame, text=self.squad_COA)
+        self.squad_COA_entry.configure(text=self.squad_COA)
 
+        self.squad_current_task = current_task
+        self.squad_current_task_entry.configure(text=self.squad_current_task)
+        #print('GUI RUNNING')
 
     def quitmed(self):
         self.root.quit()
         self.root.update()
 
+# my_gui=Gui("anti_tank",["defend","attack","shoot"],"move_position")
 
-#my_gui=Gui("anti_tank",["defend","attack","shoot"],"move_position")
-#
-#
+
 # st=time.time()
 # breakbool_0=0
 # while 1:
 #     time.sleep(0.1)
 #     for thread in threading.enumerate():
-#             print(thread.name)
+#         #print(thread.name)
+#         continue
 #     if time.time()-st >2 and breakbool_0==0:
-#         # gui_update_thread=threading.Thread(target=my_gui.updatemed)
-#         # gui_update_thread.start()
+#         gui_update_thread=threading.Thread(target=my_gui.updatemed,args=["as"])
+#         gui_update_thread.start()
 #         breakbool_0+=1
