@@ -198,6 +198,7 @@ class RFAScenarioManager:
                         # print("enemies relative direction vector: " +str(current_entity.enemies_relative_direction))
                         # print("vulnerability status is: " +str(current_entity.vulnerability))
                         # "finish debug"
+                        "BLA"
                         "scan for enemies if squad is on the move"
                         if current_entity.state==PositionType.MOVE_TO_OP:
                             if self.config['awareness_type']=='direct':
