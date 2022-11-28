@@ -24,7 +24,7 @@ class Gui(threading.Thread):
 
         #red squad data:
         self.red_squad_frame=tkinter.LabelFrame(self.frame,text="Red Squad Data")
-        self.red_squad_frame.grid(row=0, column=0,padx=20,pady=20)
+        self.red_squad_frame.grid(row=0, column=0,padx=20,pady=20,)
 
         self.squad_name_label=tkinter.Label(self.red_squad_frame, text="Squad name:")
         self.squad_name_label.grid(row=0, column=0)
@@ -71,7 +71,7 @@ class Gui(threading.Thread):
         self.root.quit()
         self.root.update()
 
-# my_gui=Gui("anti_tank",["defend","attack","shoot"],"move_position")
+my_gui=Gui("anti_tank",["defend","attack","shoot"],"move_position")
 
 
 # st=time.time()
