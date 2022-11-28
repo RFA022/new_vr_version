@@ -19,36 +19,34 @@ class Gui(threading.Thread):
         self.root =tkinter.Tk()
         self.root.iconbitmap('Resources/icons/iai5.ico')
         self.root.title("RFA Manager")
-        self.frame=tkinter.Frame(self.root)
-        self.frame.pack()
 
         #red squad data:
-        self.red_squad_frame=tkinter.LabelFrame(self.frame,text="Red Squad Data")
-        self.red_squad_frame.grid(row=0, column=0,padx=20,pady=20,)
+        self.red_squad_frame = tkinter.LabelFrame(self.frame, text="Red Squad Data")
+        self.red_squad_frame.grid(row=0, column=0, padx=20, pady=20)
 
-        self.squad_name_label=tkinter.Label(self.red_squad_frame, text="Squad name:")
-        self.squad_name_label.grid(row=0, column=0)
+        self.squad_name_label=tkinter.Label(self.root, text="Squad name:")
+        self.squad_name_label.grid(row=0, column=0,sticky=tkinter.W)
 
-        self.squad_COA_label=tkinter.Label(self.red_squad_frame, text="Squad COA:")
-        self.squad_COA_label.grid(row=1, column=0)
+        self.squad_COA_label=tkinter.Label(self.root, text="Squad COA:")
+        self.squad_COA_label.grid(row=1, column=0,sticky=tkinter.W)
 
-        self.squad_current_task_label = tkinter.Label(self.red_squad_frame, text="Squad current task:")
-        self.squad_current_task_label.grid(row=2, column=0)
+        self.squad_current_task_label = tkinter.Label(self.root, text="Squad current task:")
+        self.squad_current_task_label.grid(row=2, column=0,sticky=tkinter.W)
 
-        self.squad_name_entry=tkinter.Label(self.red_squad_frame, text=self.squad_name)
-        self.squad_COA_entry=tkinter.Label(self.red_squad_frame, text=self.squad_COA)
-        self.squad_current_task_entry=tkinter.Label(self.red_squad_frame, text=self.squad_current_task)
-        self.squad_name_entry.grid(row=0, column=1)
-        self.squad_COA_entry.grid(row=1, column=1)
-        self.squad_current_task_entry.grid(row=2, column=1)
+        self.squad_name_entry=tkinter.Label(self.root, text=self.squad_name)
+        self.squad_COA_entry=tkinter.Label(self.root, text=self.squad_COA)
+        self.squad_current_task_entry=tkinter.Label(self.root, text=self.squad_current_task)
+        self.squad_name_entry.grid(row=0, column=1,sticky=tkinter.E)
+        self.squad_COA_entry.grid(row=1, column=1,sticky=tkinter.E)
+        self.squad_current_task_entry.grid(row=2, column=1,sticky=tkinter.E)
 
-        for widget in self.red_squad_frame.winfo_children():
+        for widget in self.root.winfo_children():
             widget.grid_configure(padx=10, pady=5)
 
 
 
-        self.root.geometry("1500x240")
-        self.root.resizable(False, False) # cant be resizable
+        self.root.geometry("1000x240")
+        self.root.resizable(0, 0) # cant be resizable
 
 
         # self.squad_COA = Label(self.root, text="squad_COA", background="white").grid(row=1, column=0, sticky=W)
@@ -71,7 +69,7 @@ class Gui(threading.Thread):
         self.root.quit()
         self.root.update()
 
-my_gui=Gui("anti_tank",["defend","attack","shoot"],"move_position")
+# my_gui=Gui("anti_tank",["defend","attack","shoot"],"move_position")
 
 
 # st=time.time()
