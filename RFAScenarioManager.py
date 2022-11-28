@@ -46,7 +46,7 @@ class RFAScenarioManager:
         self.first_enter = True
 
         #GUI
-        self.gui=GUI.Gui("anti_tank_1",None,None)
+        self.gui=GUI.Gui("Anti tank Squad","None","None","None","None")
         #Entities Lists:
         self.entity_list = []
         self.green_entity_list= []
@@ -144,17 +144,40 @@ class RFAScenarioManager:
                 for i in range(len(self.entity_list)):
                     Gui_entity = self.entity_list[i]
                     if Gui_entity.role == "co":
-                            coa_names=[]
+                            coa_names=str("")
                             current_task=None
+                            geoDest=None
+                            gui_target=None
+                            "coa"
                             for operator in Gui_entity.COA:
                                 if operator[0]=="evaluate_HTN_subPlan_survivability_op":
                                     continue
-                                coa_names.append(operator[0])
+                                coa_names+=("["+str(operator[0])+"]")
+                                coa_names+=(str(', '))
+                            "current task"
                             if Gui_entity.current_task=="evaluate_HTN_subPlan_survivability_op":
                                 current_task="   "
                             else:
                                 current_task=Gui_entity.current_task
-                            gui_update_thread=threading.Thread(target=self.gui.updatemed, args=[str(coa_names),str(current_task)])
+                            "geodest"
+                            if Gui_entity.face!=None:
+                                if isinstance(Gui_entity.face, int):
+                                    geoDest=str("Attack position - " + str(Gui_entity.face))
+                                else:
+                                    if Gui_entity.face=="current_position":
+                                        geoDest=str("Current position")
+                                    elif Gui_entity.face=="nearest_cover_position":
+                                        geoDest=str("Nearest cover position")
+                                    else:
+                                        geoDest=Gui_entity.face
+                            if Gui_entity.HTNtarget!=[] and Gui_entity.HTNtarget!=None:
+                                if len(Gui_entity.HTNtarget[0])==2:
+                                    if Gui_entity.HTNtarget[0][1] == 'real':
+                                        gui_target=str(str(Gui_entity.HTNtarget[0][0])+" based on real observation")
+                                    elif Gui_entity.HTNtarget[0][1] == 'assesed':
+                                        gui_target=str(str(Gui_entity.HTNtarget[0][0])+" based on intelligence assesment")
+
+                            gui_update_thread=threading.Thread(target=self.gui.updatemed, args=[coa_names,str(current_task),geoDest,str(gui_target)])
                             gui_update_thread.start()
 
                 "Check if Red won"
@@ -476,6 +499,9 @@ class RFAScenarioManager:
                     name = entity.unit_name
                     aim_list_names.append(name)
                 logging.debug(("Target list is: " + str(aim_list_names)))
+                "Updating htn_target_for gui: 1 mission only for now"
+                current_entity.HTNtarget=[]
+                current_entity.HTNtarget.append([aim_list_names[0],"real"])
             if aim_list == []:
                 logging.debug("No enemy has been inserted to the aim list - emptying COA - planBool = 1")
                 current_entity.COA = []

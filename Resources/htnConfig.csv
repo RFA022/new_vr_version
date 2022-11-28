@@ -1,10 +1,10 @@
 Name,value,remarks
-choose_position_op,0.1,
-move_to_position_op,0.3,
+choose_position_op,0.05,
+move_to_position_op,0.25,
 evaluate_HTN_subPlan_survivability_op,0.4,
-scan_for_enemy_op,0.05,
+scan_for_enemy_op,0.00,
 bda_op,0,not in use
-shoot_enemy_op,0.15,
+shoot_enemy_op,0.20,
 sum_ops,0,
 basic_detection_probability,0.3,
 choose_position_op_dist_from_position,0,not in use
@@ -17,6 +17,6 @@ exploration_value_nextmove,2,
 choose_position_op_cover_exposure_factor,0.8,
 choose_position_op_position_bound,5,
 attack_position_survivability_factor,1,
-open_position_survivability_factor,1,
-cover_position_survivability_factor,1,
+open_position_survivability_factor,0.8,
+cover_position_survivability_factor,1.2,
 evaluate_HTN_subPlan_survivability_op_time_importance,0.1,
