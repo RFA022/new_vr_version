@@ -1,17 +1,22 @@
-import tkinter as Tkinter
+# Import the required libraries
+from tkinter import *
 
-form = Tkinter.Tk()
+# Create an instance of tkinter frame
+win= Tk()
 
-errorArea = Tkinter.LabelFrame(form, text=" Errors ", width=250, height=80)
-errorArea.grid(row=2, column=0, columnspan=2, sticky="E", \
-             padx=5, pady=0, ipadx=0, ipady=0)
+# Define the size of the window
+win.geometry("700x300")
 
-errorMessage = Tkinter.Label(errorArea, text="")
+# Function to change the color of the canvas
+def change_color():
+   canvas.configure(bg='blue')
 
-# 1) 'x' and 'y' are the x and y coordinates inside 'errorArea'
-# 2) 'place' uses 'anchor' instead of 'sticky'
-# 3) There is no need for 'padx' and 'pady' with 'place'
-# since you can specify the exact coordinates
-errorMessage.place(x=10, y=10, anchor="w")
+# Create a canvas widget
+canvas= Canvas(win, bg='skyblue')
+canvas.pack()
 
-form.mainloop()
+# Create a button
+button=Button(win, text= "Change Color", font=('Helvetica 10 bold'), command=change_color)
+button.pack()
+
+win.mainloop()
