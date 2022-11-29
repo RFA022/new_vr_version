@@ -50,7 +50,7 @@ class HTNLogic:
                     entity_next_state_and_action.nextPosture='get_in_position'
                     logging.debug(str(entity_current_state.squad) +
                         ": Next Primitive Task- locate in position")
-                if entity_current_state.COA[0][0] == 'scan_for_enemy_and_assess_exposure_op':
+                if entity_current_state.COA[0][0] == 'scan_for_enemy_op':
                     entity_next_state_and_action.scan_for_enemy = 1
                     logging.debug(str(entity_current_state.squad) +
                         ": Next Primitive Task- scan for enemy ")

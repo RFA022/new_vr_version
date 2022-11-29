@@ -573,7 +573,7 @@ def calValue(state,subtask):
         # print("pos: " + str(state.nextPositionIndex))
         # print("dep style: " + str(state.deployment_style))
         # print(ret_val)
-    elif subtask[0]=='scan_for_enemy_and_assess_exposure_op':
+    elif subtask[0]=='scan_for_enemy_op':
         "Value relative to scanning"
         "value of unit of evaluation"
         "supports only in Eitan , Ohez, SUECIDE_DRONE and UNknown"

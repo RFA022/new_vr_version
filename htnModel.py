@@ -68,7 +68,7 @@ def move_to_position_op(state,a):
     state.missionTime+= float(state.estimated_time_to_position) #added only for mission time and not to position time
     return state
 
-def scan_for_enemy_and_assess_exposure_op(state,a):
+def scan_for_enemy_op(state,a):
     state.missionTime  += state.config['scan_time']
     state.positionTime += state.config['scan_time']
     if state.deployment_style=='full_anti_tank':
@@ -147,7 +147,7 @@ def shoot_op(state,a):
     state.positionTime += float(state.config['shooting_time'])
     return state
 
-pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_and_assess_exposure_op,abort_op,aim_op,shoot_op,depart_position_op,evaluate_HTN_subPlan_survivability_op)
+pyhop.declare_operators(choose_position_op,move_to_position_op,locate_at_position_op,scan_for_enemy_op,abort_op,aim_op,shoot_op,depart_position_op,evaluate_HTN_subPlan_survivability_op)
 
 
 def end_mission_m(state,a):
@@ -226,7 +226,7 @@ pyhop.declare_methods('deploy_at_position', full_anti_tank_deployment_m,rapid_de
 pyhop.declare_original_methods('deploy_at_position', full_anti_tank_deployment_m,rapid_deployment_m)
 
 def scan_for_enemy_m(state,a):
-    return [('scan_for_enemy_and_assess_exposure_op', a),('aim_and_shoot',a)]
+    return [('scan_for_enemy_and_op', a),('aim_and_shoot',a)]
 
 pyhop.declare_methods('scan_for_enemy', scan_for_enemy_m)
 pyhop.declare_original_methods('scan_for_enemy', scan_for_enemy_m)
