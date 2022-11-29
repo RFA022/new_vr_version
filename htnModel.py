@@ -226,7 +226,7 @@ pyhop.declare_methods('deploy_at_position', full_anti_tank_deployment_m,rapid_de
 pyhop.declare_original_methods('deploy_at_position', full_anti_tank_deployment_m,rapid_deployment_m)
 
 def scan_for_enemy_m(state,a):
-    return [('scan_for_enemy_and_op', a),('aim_and_shoot',a)]
+    return [('scan_for_enemy_op', a),('aim_and_shoot',a)]
 
 pyhop.declare_methods('scan_for_enemy', scan_for_enemy_m)
 pyhop.declare_original_methods('scan_for_enemy', scan_for_enemy_m)
