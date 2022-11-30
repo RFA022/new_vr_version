@@ -55,6 +55,7 @@ class EntityCurrentState: #red entities
         self.vulnerability = 0
 
         self.COA=[]
+        self.plan=[]
         self.current_task=None
         self.face=None
         self.nextLocation=None

@@ -1,22 +1,33 @@
-# Import the required libraries
-from tkinter import *
+import tkinter as tk
+import random
 
-# Create an instance of tkinter frame
-win= Tk()
+class Example(tk.Frame):
+    def __init__(self, parent):
+        tk.Frame.__init__(self, parent)
+        self.ticker = tk.Text(height=1, wrap="none")
+        self.ticker.pack(side="top", fill="x")
 
-# Define the size of the window
-win.geometry("700x300")
+        self.ticker.tag_configure("up", foreground="green")
+        self.ticker.tag_configure("down", foreground="red")
+        self.ticker.tag_configure("event", foreground="black")
 
-# Function to change the color of the canvas
-def change_color():
-   canvas.configure(bg='blue')
+        self.data = ["AAPL", "GOOG", "MSFT"]
+        self.after_idle(self.tick)
 
-# Create a canvas widget
-canvas= Canvas(win, bg='skyblue')
-canvas.pack()
+    def tick(self):
+        symbol = self.data.pop(0)
+        self.data.append(symbol)
 
-# Create a button
-button=Button(win, text= "Change Color", font=('Helvetica 10 bold'), command=change_color)
-button.pack()
+        n = random.randint(-1,1)
+        tag = {-1: "down", 0: "even", 1: "up"}[n]
 
-win.mainloop()
+        self.ticker.configure(state="normal")
+        self.ticker.insert("end", " %s %s" % (symbol, n), tag)
+        self.ticker.see("end")
+        self.ticker.configure(state="disabled")
+        self.after(1000, self.tick)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    Example(root).pack(fill="both", expand=True)
+    root.mainloop()

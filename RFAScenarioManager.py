@@ -22,6 +22,9 @@ import utm
 import geopandas
 import threading
 import GUI
+from pyproj import _datadir, datadir
+
+
 #MADGIMON
 class RFAScenarioManager:
     def __init__(self):
@@ -149,11 +152,21 @@ class RFAScenarioManager:
                             geoDest=None
                             gui_target=None
                             "coa"
-                            for operator in Gui_entity.COA:
-                                if operator[0]=="evaluate_HTN_subPlan_survivability_op":
+                            plan_real_length=0
+                            for operator in Gui_entity.plan:
+                                if operator[0] == "evaluate_HTN_subPlan_survivability_op":
                                     continue
-                                coa_names+=("["+str(operator[0])+"]")
-                                coa_names+=(str(', '))
+                                plan_real_length += 1
+                            if Gui_entity.plan!=None:
+                                if Gui_entity.plan!=[]:
+                                    counter=0
+                                    for operator in Gui_entity.plan:
+                                        if operator[0]=="evaluate_HTN_subPlan_survivability_op":
+                                            continue
+                                        counter+=1
+                                        coa_names+=("["+str(operator[0])+"]")
+                                        if counter<plan_real_length:
+                                            coa_names+=(str(', '))
                             "current task"
                             if Gui_entity.current_task=="evaluate_HTN_subPlan_survivability_op":
                                 current_task="   "
@@ -167,15 +180,15 @@ class RFAScenarioManager:
                                     if Gui_entity.face=="current_position":
                                         geoDest=str("Current position")
                                     elif Gui_entity.face=="nearest_cover_position":
-                                        geoDest=str("Nearest cover position")
+                                        geoDest=str("Cover position")
                                     else:
                                         geoDest=Gui_entity.face
                             if Gui_entity.HTNtarget!=[] and Gui_entity.HTNtarget!=None:
                                 if len(Gui_entity.HTNtarget[0])==2:
                                     if Gui_entity.HTNtarget[0][1] == 'real':
-                                        gui_target=str(str(Gui_entity.HTNtarget[0][0])+" based on real observation")
+                                        gui_target=str(str(Gui_entity.HTNtarget[0][0]))#+" based on real observation")
                                     elif Gui_entity.HTNtarget[0][1] == 'assesed':
-                                        gui_target=str(str(Gui_entity.HTNtarget[0][0])+" based on intelligence assesment")
+                                        gui_target=str(str(Gui_entity.HTNtarget[0][0]))#+" based on intelligence assesment")
 
                             gui_update_thread=threading.Thread(target=self.gui.updatemed, args=[coa_names,str(current_task),geoDest,str(gui_target)])
                             gui_update_thread.start()
@@ -202,7 +215,9 @@ class RFAScenarioManager:
                             current_entity.planBool = 1
                         if current_entity.planBool == 1 and current_entity.COA == []:
                             current_entity.planBool = 0
-                            current_entity.COA = htnGreenModel.findplan(current_entity.current_location)
+                            plan = htnGreenModel.findplan(current_entity.current_location)
+                            current_entity.COA=plan
+                            current_entity.plan= copy.deepcopy(plan)
                             #logging.debug("New Plan has been given to " + str(current_entity.unit_name))
                         entity_next_state_and_action = HTNLogic().Step(current_entity,
                                                                        self.start_scenario_time, self.AttackPos, self.spawnPos)
@@ -307,9 +322,10 @@ class RFAScenarioManager:
                         if current_entity.planBool==1 and current_entity.COA==[]:
                             current_entity.planBool=0
                             current_entity.current_task="Planning"
-                            gui_update_thread = threading.Thread(target=self.gui.updatemed, args=[str(current_entity.COA),str(current_entity.current_task)])
+                            current_entity.plan="None"
+                            gui_update_thread = threading.Thread(target=self.gui.updatemed, args=[current_entity.plan,str(current_entity.current_task)])
                             gui_update_thread.start()
-                            current_entity.COA=htnModel.findplan(     self.config,
+                            plan=htnModel.findplan(     self.config,
                                                                       self.intervisibility_polygoins,
                                                                       self.basicRanges,
                                                                       self.squadPosture,
@@ -320,6 +336,8 @@ class RFAScenarioManager:
                                                                       self.AccuracyConfiguration,
                                                                       next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')['polygon'],
                                                                       current_entity.vulnerability)
+                            current_entity.COA = plan
+                            current_entity.plan = copy.deepcopy(plan)
                             logging.debug("New Plan has been given to Squad")
                             "Update HTN target"
                             current_entity.HTNtarget=[]
@@ -804,6 +822,7 @@ class RFAScenarioManager:
             #data updated from last iteration:
             current_entity.classification   = live_unit.classification
             current_entity.COA              = entity_previous_list[k].COA
+            current_entity.plan              = entity_previous_list[k].plan
             current_entity.face             = entity_previous_list[k].face
             current_entity.nextLocation             = entity_previous_list[k].nextLocation
             current_entity.planBool         = entity_previous_list[k].planBool
