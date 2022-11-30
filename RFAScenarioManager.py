@@ -359,7 +359,8 @@ class RFAScenarioManager:
                                                      ((current_entity.preGameBool==True) and (entity_next_state_and_action.takeAction == 0))):
                             if current_entity.preGameBool==True:
                                 current_entity.preGameBool=False
-                            current_entity.current_task=current_entity.COA[0][0]
+                            if current_entity.COA!=[]:
+                                current_entity.current_task=current_entity.COA[0][0]
                             current_entity.COA.pop(0)
                             self.entity_next_state_and_action_impleneter(entity_next_state_and_action, current_entity)
                     # update the entity parameters that changed during this iteration
@@ -453,9 +454,14 @@ class RFAScenarioManager:
                                 if path == []:
                                     path= paths[0]['pathPlanningResponseVector'][0]['path']
                                 logging.debug("mobility agent route 2 follow")
-                                self.communicator.followPathCommand(current_entity.unit_name
-                                                                    , path
-                                                                    , self.config['squad_speed'])
+                                if path != []:
+                                    self.communicator.followPathCommand(current_entity.unit_name
+                                                                        , path
+                                                                        , self.config['squad_speed'])
+                                else:
+                                    logging.debug("mobility agent failed to work - no avaliable path - REPLAN")
+                                    current_entity.COA=[]
+
                             elif len(paths[0]['pathPlanningResponseVector'])==1:
                                 path=paths[0]['pathPlanningResponseVector'][0]['path']
                                 logging.debug("mobility agent route 1 follow")
