@@ -1,6 +1,6 @@
 Name,value,remarks
 choose_position_op,0.05,
-move_to_position_op,0.30,
+move_to_position_op,0.80,
 evaluate_HTN_subPlan_survivability_op,0.5,
 scan_for_enemy_op,0.05,
 bda_op,0,not in use

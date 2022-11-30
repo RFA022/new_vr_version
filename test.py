@@ -1,33 +1,21 @@
-import tkinter as tk
-import random
+#Import required libraries
+from tkinter import *
 
-class Example(tk.Frame):
-    def __init__(self, parent):
-        tk.Frame.__init__(self, parent)
-        self.ticker = tk.Text(height=1, wrap="none")
-        self.ticker.pack(side="top", fill="x")
+#Create an instance of tkinter window
+win =Tk()
 
-        self.ticker.tag_configure("up", foreground="green")
-        self.ticker.tag_configure("down", foreground="red")
-        self.ticker.tag_configure("event", foreground="black")
+#Define the geometry of the window
+win.geometry("600x250")
 
-        self.data = ["AAPL", "GOOG", "MSFT"]
-        self.after_idle(self.tick)
+#Create a text widget
+text= Text(win)
+text.insert(INSERT, "Hello World!")
+text.insert(END, "This is a New Line")
 
-    def tick(self):
-        symbol = self.data.pop(0)
-        self.data.append(symbol)
+text.pack(fill=BOTH)
 
-        n = random.randint(-1,1)
-        tag = {-1: "down", 0: "even", 1: "up"}[n]
+#Configure the text widget with certain color
+text.tag_config("start", foreground="red")
+text.tag_add("start", "1.0", "1.10")
 
-        self.ticker.configure(state="normal")
-        self.ticker.insert("end", " %s %s" % (symbol, n), tag)
-        self.ticker.see("end")
-        self.ticker.configure(state="disabled")
-        self.after(1000, self.tick)
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    Example(root).pack(fill="both", expand=True)
-    root.mainloop()
+win.mainloop()

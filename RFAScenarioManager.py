@@ -147,7 +147,7 @@ class RFAScenarioManager:
                 for i in range(len(self.entity_list)):
                     Gui_entity = self.entity_list[i]
                     if Gui_entity.role == "co":
-                            coa_names=str("")
+                            coa_names=[]
                             current_task=None
                             geoDest=None
                             gui_target=None
@@ -164,9 +164,7 @@ class RFAScenarioManager:
                                         if operator[0]=="evaluate_HTN_subPlan_survivability_op":
                                             continue
                                         counter+=1
-                                        coa_names+=("["+str(operator[0])+"]")
-                                        if counter<plan_real_length:
-                                            coa_names+=(str(', '))
+                                        coa_names.append(str(operator[0]))
                             "current task"
                             if Gui_entity.current_task=="evaluate_HTN_subPlan_survivability_op":
                                 current_task="   "
@@ -322,7 +320,7 @@ class RFAScenarioManager:
                         if current_entity.planBool==1 and current_entity.COA==[]:
                             current_entity.planBool=0
                             current_entity.current_task="Planning"
-                            current_entity.plan="None"
+                            current_entity.plan=None
                             gui_update_thread = threading.Thread(target=self.gui.updatemed, args=[current_entity.plan,str(current_entity.current_task)])
                             gui_update_thread.start()
                             plan=htnModel.findplan(     self.config,
