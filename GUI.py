@@ -38,7 +38,7 @@ class Gui(threading.Thread):
 
         t_size=10
         self.root =tkinter.Tk()
-        self.root.iconbitmap('Resources/icons/iai5.ico')
+        self.root.iconbitmap('Resources/icons/iai7.ico')
         self.root.title("Red Force Agent")
         self.root.configure(background=self.main_bg_clr)
         self.frame = tkinter.Frame(self.root,)
@@ -62,7 +62,7 @@ class Gui(threading.Thread):
         self.squad_name_label.place(x=x_cl, y=y_cl, anchor="w")
         # self.squad_name_label.grid(row=0, column=0,sticky=tkinter.W)
 
-        self.squad_COA_label=tkinter.Label(self.red_squad_frame, text="Tasks list:",background=self.bg_clr,fg=self.lbl_tc,font=('Montserrat', t_size, 'bold'))
+        self.squad_COA_label=tkinter.Label(self.red_squad_frame, text="Plan:",background=self.bg_clr,fg=self.lbl_tc,font=('Montserrat', t_size, 'bold'))
         self.squad_COA_label.place(x=x_cl, y=y_cl+dist, anchor="w")
 
         #
@@ -76,19 +76,16 @@ class Gui(threading.Thread):
         self.target_label.place(x=x_cl, y=y_cl+4*dist, anchor="w")
 
         self.squad_name_entry=tkinter.Label(self.red_squad_frame, text=self.squad_name,background=self.bg_clr,font=('Montserrat', t_size, ), fg=self.entry_tc)
-        #self.squad_COA_entry=tkinter.Label(self.red_squad_frame, text=self.squad_COA,background=self.bg_clr,font=('Montserrat', t_size, ), fg=self.entry_tc)
+        self.squad_COA_entry=tkinter.Label(self.red_squad_frame, text=self.squad_COA,background=self.bg_clr,font=('Montserrat', t_size, ), fg=self.entry_tc)
         self.squad_current_task_entry=tkinter.Label(self.red_squad_frame, text=self.squad_current_task,background=self.bg_clr,font=('Montserrat', t_size, ), fg=self.entry_tc)
         self.destination_entry = tkinter.Label(self.red_squad_frame, text=self.destination,background=self.bg_clr,font=('Montserrat', t_size,), fg=self.entry_tc)
         self.target_entry = tkinter.Label(self.red_squad_frame, text=self.target,background=self.bg_clr,font=('Montserrat', t_size,), fg=self.entry_tc)
 
         self.squad_name_entry.place(x=160, y=y_cl, anchor="w")
-        #self.squad_COA_entry.place(x=160, y=y_cl+dist, anchor="w")
+        self.squad_COA_entry.place(x=160, y=y_cl+dist, anchor="w")
         self.squad_current_task_entry.place(x=160, y=y_cl+2*dist, anchor="w")
         self.destination_entry.place(x=160, y=y_cl+3*dist, anchor="w")
         self.target_entry.place(x=160, y=y_cl+4*dist, anchor="w")
-
-        self.squad_COA_entry = tkinter.Text(self.red_squad_frame,height=0, wrap="none",background=self.bg_clr,highlightthickness = 0, borderwidth=0)
-        self.squad_COA_entry.place(x=160, y=y_cl+dist, anchor="w")
 
         for widget in self.root.winfo_children():
             widget.grid_configure(padx=10, pady=5)

@@ -455,15 +455,27 @@ class RFAScenarioManager:
                                 if path == []:
                                     path= paths[0]['pathPlanningResponseVector'][0]['path']
                                 logging.debug("mobility agent route 2 follow")
-                                self.communicator.followPathCommand(current_entity.unit_name
-                                                                    , path
-                                                                    , self.config['squad_speed'])
+                                if path!=[]:
+                                    self.communicator.followPathCommand(current_entity.unit_name
+                                                                        , path
+                                                                        , self.config['squad_speed'])
+                                else:
+                                    logging.debug("mobility agent failed to work type 2")
+                                    self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
+                                                                           entity_next_state_and_action.position_location,
+                                                                           self.config['squad_speed'])
                             elif len(paths[0]['pathPlanningResponseVector'])==1:
                                 path=paths[0]['pathPlanningResponseVector'][0]['path']
                                 logging.debug("mobility agent route 1 follow")
-                                self.communicator.followPathCommand(current_entity.unit_name
-                                                                    , path
-                                                                    , self.config['squad_speed'])
+                                if path!=[]:
+                                    self.communicator.followPathCommand(current_entity.unit_name
+                                                                        , path
+                                                                        , self.config['squad_speed'])
+                                else:
+                                    logging.debug("mobility agent failed to work type 3")
+                                    self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
+                                                                           entity_next_state_and_action.position_location,
+                                                                           self.config['squad_speed'])
             elif current_entity.role=='ci':
                 #logging.debug("Civil started to move to " + str(entity_next_state_and_action.positionType) + " position: " + str(current_entity.face))
                 self.communicator.MoveEntityToLocation(entity_next_state_and_action.entity_id,
