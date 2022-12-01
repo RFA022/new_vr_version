@@ -590,6 +590,7 @@ class RFAScenarioManager:
                 if enemy.observed==True:
                     current_entity.COA.append(['aim_op','me'])
                     current_entity.COA.append(['shoot_op', str(enemy.unit_name)])
+                    current_entity.plan=copy.deepcopy(current_entity.COA)
                     break
             "Green unique operations"
         elif entity_next_state_and_action.wait_at_position==True:
