@@ -30,13 +30,13 @@ class Gui(threading.Thread):
 
         dist=30
         x_cl=30
-        y_cl=60
-        s_w = 2*y_cl+5*dist-30
-        s_h = 1000
+        y_cl=65
+        s_w = 2*y_cl+5*dist-40
+        s_h = 1200
 
 
 
-        t_size=10
+        t_size=12
         self.root =tkinter.Tk()
         self.root.iconbitmap('Resources/icons/iai7.ico')
         self.root.title("Red Force Agent")
@@ -81,11 +81,11 @@ class Gui(threading.Thread):
         self.destination_entry = tkinter.Label(self.red_squad_frame, text=self.destination,background=self.bg_clr,font=('Montserrat', t_size,), fg=self.entry_tc)
         self.target_entry = tkinter.Label(self.red_squad_frame, text=self.target,background=self.bg_clr,font=('Montserrat', t_size,), fg=self.entry_tc)
 
-        self.squad_name_entry.place(x=160, y=y_cl, anchor="w")
-        self.squad_COA_entry.place(x=160, y=y_cl+dist, anchor="w")
-        self.squad_current_task_entry.place(x=160, y=y_cl+2*dist, anchor="w")
-        self.destination_entry.place(x=160, y=y_cl+3*dist, anchor="w")
-        self.target_entry.place(x=160, y=y_cl+4*dist, anchor="w")
+        self.squad_name_entry.place(x=180, y=y_cl, anchor="w")
+        self.squad_COA_entry.place(x=180, y=y_cl+dist, anchor="w")
+        self.squad_current_task_entry.place(x=180, y=y_cl+2*dist, anchor="w")
+        self.destination_entry.place(x=180, y=y_cl+3*dist, anchor="w")
+        self.target_entry.place(x=180, y=y_cl+4*dist, anchor="w")
 
         for widget in self.root.winfo_children():
             widget.grid_configure(padx=10, pady=5)
@@ -108,7 +108,7 @@ class Gui(threading.Thread):
         if COA!=None:
             self.squad_COA=COA
         if len(COA)==0:
-            self.squad_COA=None
+            self.squad_COA="None"
         self.squad_COA_entry.configure(text=self.squad_COA)
         if current_task != None:
             self.squad_current_task = current_task
