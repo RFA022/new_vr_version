@@ -674,8 +674,14 @@ def calValue(state,subtask):
                 positionTypeFactor=float(state.config['open_position_survivability_factor'])
             if state.currentPositionIndex == 'nearest_cover_position':
                 positionTypeFactor = float(state.config['cover_position_survivability_factor'])
-        time_importance=(1/state.config['evaluate_HTN_subPlan_survivability_op_time_importance'])
-        time_factor=((time_importance*state.approximated_max_position_time)-state.positionTime)/(time_importance*state.approximated_max_position_time)
+        if state.config['evaluate_HTN_subPlan_survivability_op_time_importance']>0:
+            time_importance=(1/state.config['evaluate_HTN_subPlan_survivability_op_time_importance'])
+            time_factor=((time_importance*state.approximated_max_position_time)-state.positionTime)/(time_importance*state.approximated_max_position_time)
+        elif state.config['evaluate_HTN_subPlan_survivability_op_time_importance']==0:
+            time_factor=1
+        else:
+            time_factor=1
+        print("time facetor is" +str(time_factor))
         ret_val=ret_val*positionTypeFactor*time_factor
         # print("__")
         # print("op: " + str(subtask[0]))
@@ -698,6 +704,14 @@ def calValue(state,subtask):
         ret_val=0.00001
     if ret_val>100:
         ret_val=100
+
+    # print("__")
+    # print("op: " + str(subtask[0]))
+    # print("pos: " + str(state.currentPositionIndex))
+    # print("dep style: " + str(state.deployment_style))
+    # print("aim_list: " + str(state.aim_list_names))
+
+    print(ret_val)
     return ret_val
 
 def avg_q(node):
