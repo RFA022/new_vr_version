@@ -711,7 +711,7 @@ def calValue(state,subtask):
     # print("dep style: " + str(state.deployment_style))
     # print("aim_list: " + str(state.aim_list_names))
 
-    print(ret_val)
+    # print(ret_val)
     return ret_val
 
 def avg_q(node):

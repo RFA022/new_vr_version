@@ -1,15 +1,15 @@
 Name,value,remarks
-choose_position_op,0.25,
-move_to_position_op,0.15,
+choose_position_op,0.225,
+move_to_position_op,0.125,
 evaluate_HTN_subPlan_survivability_op,0.1,
 scan_for_enemy_op,0.0,
 bda_op,0,not in use
-shoot_enemy_op,0.5,
+shoot_enemy_op,0.55,
 sum_ops,0,
 basic_detection_probability,0.3,
 choose_position_op_dist_from_position,0,not in use
-choose_position_op_dist_from_polygon,-0.5,
-choose_position_op_percent_exposure,0.5,
+choose_position_op_dist_from_polygon,0.3,
+choose_position_op_percent_exposure,0.7,
 eitan_val,1.5,
 ohez_val,1,
 exploration_value_rollout,15,
