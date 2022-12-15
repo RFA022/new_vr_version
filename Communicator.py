@@ -44,7 +44,7 @@ class Communicator(CommunicatorInterface):
     EntityFollowPathCommand_DW = "EntityFollowPathCommand_DW"
     FusionReport_DR = "FusionReport_DR"
     SensorDesignationRequest_DW = "SensorDesignationRequest_DW"
-    SensorOperationalModeCommand_DW = "SensorOperationalModeCommand"
+    SensorOperationalModeCommand_DW = "SensorOperationalModeCommand_DW"
 
     def __init__(self):
         super().__init__()
@@ -71,6 +71,8 @@ class Communicator(CommunicatorInterface):
         self.entity_counter = 0
         logging.debug(self.__class__.__name__ + " is initialized")
         self.current_status = ScenarioStatusEnum.NA
+
+
 
     def SetSensorOperationalModeCommand(self, message: dict) -> None:
         with self.lock_read_write:

@@ -97,8 +97,10 @@
         <domain domain_id="3" name="RFSM_Domain">
             <!--MAK_Planner_Gateway-->
 
-            <register_type name="gw_dds_types::SensorOperationalModeCommandType" type_ref="gw_dds_types::SensorOperationalModeCommandType"/>
-            <register_type name="gw_dds_types::SensorDesignationRequest" type_ref="gw_dds_types::SensorDesignationRequest"/>
+            <register_type name="gw_dds_types::SensorOperationalModeCommandType"
+                           type_ref="gw_dds_types::SensorOperationalModeCommandType"/>
+            <register_type name="gw_dds_types::SensorDesignationRequest"
+                           type_ref="gw_dds_types::SensorDesignationRequest"/>
             <register_type name="gw_dds_types::FusionReportType" type_ref="gw_dds_types::FusionReportType"/>
             <register_type name="gw_dds_types::LosQueryResponse" type_ref="gw_dds_types::LosQueryResponse"/>
             <register_type name="gw_dds_types::LosQueryRequest" type_ref="gw_dds_types::LosQueryRequest"/>
@@ -137,7 +139,8 @@
             <register_type name="gw_dds_types::EntityFollowPathCommandType"
                            type_ref="gw_dds_types::EntityFollowPathCommandType"/>
 
-            <topic name="SensorOperationalModeCommand" register_type_ref="gw_dds_types::SensorOperationalModeCommandType"/>
+            <topic name="SensorOperationalModeCommand"
+                   register_type_ref="gw_dds_types::SensorOperationalModeCommandType"/>
             <topic name="SensorDesignationRequest" register_type_ref="gw_dds_types::SensorDesignationRequest"/>
             <topic name="FusionReport" register_type_ref="gw_dds_types::FusionReportType"/>
             <topic name="EntityFollowPathCommand" register_type_ref="gw_dds_types::EntityFollowPathCommandType"/>
@@ -202,7 +205,7 @@
                 <data_reader name="LosToPolygonResponse_DR" topic_ref="LosToPolygonResponse"/>
                 <data_reader name="GetAreasListResponse_DR" topic_ref="GetAreasListResponse"/>
                 <data_reader name="LosQueryResponse_DR" topic_ref="LosQueryResponse"/>
-<!--                <data_reader name="GeoQueryResponse_DR" topic_ref="GeoQueryResponse"/>-->
+                <!--                <data_reader name="GeoQueryResponse_DR" topic_ref="GeoQueryResponse"/>-->
                 <data_reader name="EntityReport_DR" topic_ref="EntityReport"/>
                 <data_reader name="TickCounterReport_DR" topic_ref="TickCounterReport"/>
                 <data_reader name="AttackReport_DR" topic_ref="AttackReport"/>
@@ -236,11 +239,23 @@
 
             <publisher name="Publisher">
                 <publisher_qos/>
-                <data_writer name="SensorDesignationRequest_DW" topic_ref="SensorDesignationRequest"/>
+                <data_writer name="SensorDesignationRequest_DW" topic_ref="SensorDesignationRequest">
+                    <datawriter_qos base_name="QOSLibrary::DefaultProfile">
+                        <history>
+                            <depth>1</depth>
+                        </history>
+                        <durability>
+                            <kind>TRANSIENT_DURABILITY_QOS</kind>
+                        </durability>
+                        <reliability>
+                            <kind>RELIABLE_RELIABILITY_QOS</kind>
+                        </reliability>
+                    </datawriter_qos>
+                </data_writer>
                 <data_writer name="LosToPolygonRequest_DW" topic_ref="LosToPolygonRequest"/>
                 <data_writer name="GetAreasListRequest_DW" topic_ref="GetAreasListRequest"/>
                 <data_writer name="LosQueryRequest_DW" topic_ref="LosQueryRequest"/>
-<!--                <data_writer name="GeoQueryRequest_DW" topic_ref="GeoQueryRequest"/>-->
+                <!--                <data_writer name="GeoQueryRequest_DW" topic_ref="GeoQueryRequest"/>-->
                 <data_writer name="InitialEntitySnapshot_DW" topic_ref="InitialEntitySnapshot">
                     <datawriter_qos base_name="QOSLibrary::DefaultProfile">
                         <history>
@@ -267,7 +282,9 @@
                 <data_writer name="NavigationPathPlanningRequest_DW" topic_ref="EntityNavigationPathPlanningRequest">
                     <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
                 </data_writer>
-                <data_writer name="SensorOperationalModeCommand_DW" topic_ref="SensorOperationalModeCommand"/>
+                <data_writer name="SensorOperationalModeCommand_DW" topic_ref="SensorOperationalModeCommand">
+                    <datawriter_qos base_name="QOSLibrary::DefaultProfile"/>
+                </data_writer>
                 <data_writer name="EntityFollowPathCommand_DW" topic_ref="EntityFollowPathCommand"/>
 
             </publisher>
