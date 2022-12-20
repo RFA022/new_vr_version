@@ -13,9 +13,9 @@ class Gui(threading.Thread):
 
         "theme white bg"
         self.main_bg_clr = '#FFFFFF'
-        self.bg_clr = "#d9463e"
-        self.headr_clr = '#000000'
-        self.lbl_tc = '#FFFFFF'
+        self.bg_clr = "#ECDBDB"
+        self.headr_clr = '#FF0000'
+        self.lbl_tc = '#2F1C1C'
         self.entry_tc = '#322F2F'
 
         self.start()

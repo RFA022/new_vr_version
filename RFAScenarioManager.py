@@ -129,27 +129,27 @@ class RFAScenarioManager:
                 # update Blue list from simulator and from last iteration (info about last seen location)
                 self.blue_entity_list = self.getBlueEntityList(self.blue_entity_list)
                 if self.config['awareness_type'] == 'sa':
-                    message = {
-                        "requestId": 777,
-                        "sensorId": 513,
-                        "unit_name": "at_co_1_1",
-                        "requesterName": "RFA",
-                        "subSystemAction": "1",
-                        "aimType": {
-                            "LLA": {
-                                "latitude": 33.3674636695,
-                                "longitude": 35.4905404633,
-                                "altitude": 472
-                            }
-                        }
-                    }
-                    self.communicator.SendSensorDesignationRequest(message)
-                    message = {
-                        "unit_name": "at_co_1_1",
-                        "system_name": "513",
-                        "isOperational": False
-                    }
-                    self.communicator.SetSensorOperationalModeCommand(message)
+                    # message = {
+                    #     "requestId": 777,
+                    #     "sensorId": 513,
+                    #     "unit_name": "at_co_1_1",
+                    #     "requesterName": "RFA",
+                    #     "subSystemAction": "1",
+                    #     "aimType": {
+                    #         "LLA": {
+                    #             "latitude": 33.3674636695,
+                    #             "longitude": 35.4905404633,
+                    #             "altitude": 472
+                    #         }
+                    #     }
+                    # }
+                    # self.communicator.SendSensorDesignationRequest(message)
+                    # message = {
+                    #     "unit_name": "at_co_1_1",
+                    #     "system_name": "513",
+                    #     "isOperational": False
+                    # }
+                    # self.communicator.SetSensorOperationalModeCommand(message)
 
                     self.fusionReport = self.communicator.GetFusionReport()
                     if len(self.fusionReport) > 0:
