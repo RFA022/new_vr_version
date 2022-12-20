@@ -1,9 +1,5 @@
-import logging
-import time
-
 from EntityNextStateAndAction import *
 from EntityCurrentState import *
-#from PlacementManager import *
 from ConfigManager import *
 import copy
 

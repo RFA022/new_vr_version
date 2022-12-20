@@ -1,28 +1,16 @@
-import logging
-import re
-import sys
-
 import ConfigManager
 import EntityCurrentState
-# import PlacementManager
 from HTNLogic import *
-from EntityNextStateAndAction import *
 from SpawnManager_Nadav import *
-import time
-import copy
 import htnModel
 import htnGreenModel
-import htnEmergencyModel
 import pandas as pd
 import pymap3d as pm
 from ext_funs import *
 import ext_funs
 from Communicator import CommunicatorSingleton
-import utm
-import geopandas
 import threading
 import GUI
-from pyproj import _datadir, datadir
 
 
 # MADGIMON
@@ -37,8 +25,8 @@ class RFAScenarioManager:
             logging.error("None valid mode")
             raise Exception("None valid mode")
 
-        self.spawnPos = ext_funs.get_positions_fromCSV('Resources\RedSpawnPos.csv')
-        self.AttackPos = ext_funs.get_positions_fromCSV('Resources\RedAttackPos.csv')
+        self.spawnPos = ext_funs.get_positions_fromCSV('.\Resources\RedSpawnPos.csv')
+        self.AttackPos = ext_funs.get_positions_fromCSV('.\Resources\RedAttackPos.csv')
         self.Polygons = self.communicator.getAreasQuery()
 
         BluePolygon = next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')
@@ -57,7 +45,7 @@ class RFAScenarioManager:
         self.blue_entity_list_HTN = []
         self.fusionReport = []
         # General config data:
-        self.configuration = pd.read_csv('Resources\Configuration.csv',
+        self.configuration = pd.read_csv('.\Resources\Configuration.csv',
                                          header=[0],
                                          index_col=[0])
         self.squadPosture = {}
@@ -111,7 +99,7 @@ class RFAScenarioManager:
         self.squadsData = pd.read_csv(self.squadsDatalocation,
                                       header=[0],
                                       index_col=[6])  # Squad name column
-        self.AccuracyConfiguration = pd.read_csv('Resources/AccuracyConfiguration.csv',
+        self.AccuracyConfiguration = pd.read_csv('./Resources/AccuracyConfiguration.csv',
                                                  header=[0],
                                                  index_col=[0])  # WeaponName column
         # "intervisibility_polygoins - reads from csv"

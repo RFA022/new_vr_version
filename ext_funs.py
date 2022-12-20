@@ -1,10 +1,8 @@
 import copy
-import random
 
 import numpy as np
 import csv
 import math
-from CommunicatorInterface import EntityTypeEnum
 from Communicator import *
 from EntityCurrentState import  *
 import utm
@@ -361,7 +359,7 @@ def checkIfWorldViewChangedEnough(enemy,current_entity,basicRanges,config):
     return False
 
 def readIntervisibilityCSV():
-    intervisibility=open('Resources/PolygonsIntervisebility.csv')
+    intervisibility=open('./Resources/PolygonsIntervisebility.csv')
     intervisibility_config=csv.reader(intervisibility)
     intervisibility_polygoins=[]
     header = next(intervisibility_config)

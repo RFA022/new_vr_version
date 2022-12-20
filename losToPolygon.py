@@ -25,7 +25,7 @@ for k in range (len(AttackPos)):
     print(response)
     responsevec.append(response)
 
-with open('polygonresponse.txt', 'w') as f:
+with open('./Resources/polygonresponse.txt', 'w') as f:
     for k in range(len(AttackPos)):
             f.write("position number is: "+ str(k))
             f.write('\n')

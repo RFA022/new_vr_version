@@ -1,14 +1,9 @@
-import random
-import sys
 import pyhop_mcts_game as pyhop
-import numpy as np
-import matplotlib.pyplot as plt
 import ext_funs
 from ext_funs import *
 import scipy.stats
 
 import pandas as pd
-import logging
 from copy import deepcopy
 
 

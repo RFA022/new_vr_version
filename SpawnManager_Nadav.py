@@ -1,11 +1,7 @@
-#from PlacementManager import *
-#from Communicator import *
 from CommunicatorInterface import *
 from ConfigManager import *
 import random
 from EntityCurrentState import *
-import numpy as np
-import pandas as pd
 
 class SpawnManager_Nadav:
     def __init__(self, communicator,spawnPos,AttackPos,squadsData,intervisibility_polygoins):

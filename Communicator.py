@@ -1,15 +1,13 @@
 import logging
-import sys
 import time
-from os import path as os_path
 import rticonnextdds_connector as rti
 import threading
 from CommunicatorInterface import *
 from ConfigManager import ConfigManager
 from singleton import Singleton
 
-file_path = os_path.dirname(os_path.realpath(__file__))
-sys.path.append(file_path)
+# file_path = os_path.dirname(os_path.realpath(__file__))
+# sys.path.append(file_path)
 
 
 class Communicator(CommunicatorInterface):
@@ -50,19 +48,19 @@ class Communicator(CommunicatorInterface):
         super().__init__()
         try:
             self.RFSM_connector = rti.Connector(config_name="RFSM_Participant_Library::RFSM_Participant",
-                                                url=file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
+                                                url="./DDS_Resources/RFSM_DDS_Participant_Config.xml")
         except Exception as e:
             logging.error(e)
             logging.error(
-                "connector fail !, url to file: " + file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
+                "connector fail !, url to file: ./DDS_Resources/RFSM_DDS_Participant_Config.xml")
 
         try:
             self.Geo_connector = rti.Connector(config_name="RFSM_Participant_Library::Geo_Participant",
-                                               url=file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
+                                               url="./DDS_Resources/RFSM_DDS_Participant_Config.xml")
         except Exception as e:
             logging.error(e)
             logging.error(
-                "connector fail !, url to file: " + file_path + "/DDS_Resources/RFSM_DDS_Participant_Config.xml")
+                "connector fail !, url to file: ./DDS_Resources/RFSM_DDS_Participant_Config.xml")
 
         self.publisher = "Publisher::"
         self.subscriber = "Subscriber::"

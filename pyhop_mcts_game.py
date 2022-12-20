@@ -96,9 +96,8 @@ Pyhop provides the following classes and functions:
 
 
 from __future__ import print_function
-import copy, sys, pprint
+import copy, sys
 from copy import deepcopy
-import random
 import math
 import numpy as np
 import methods_config as mc

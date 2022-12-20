@@ -1,12 +1,7 @@
-import csv
 import json
 import logging
-from enum import Enum
 import sys
 import numpy as np
-# import PlacementManager
-# import RFSMLogic
-# import RFSMManager
 from CommunicatorInterface import EntityTypeEnum
 
 
@@ -47,7 +42,7 @@ class ConfigManager:
     @staticmethod
     def init() -> None:
 
-        configfileName = "Resources/RFSMConfig.json"
+        configfileName = "./Resources/RFSMConfig.json"
         with open(configfileName, "r") as config_file:
             ConfigManager.config_data = json.load(config_file)
 

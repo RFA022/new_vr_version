@@ -1,10 +1,5 @@
 import tkinter
-from tkinter import ttk
-import customtkinter
-import time
 import threading
-import ttk
-from PIL import ImageTk, Image
 
 class Gui(threading.Thread):
     [...]#costructor and other stuff
