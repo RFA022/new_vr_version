@@ -282,7 +282,7 @@ class Communicator(CommunicatorInterface):
                 current_DR = self.RFSM_connector.getInput(self.subscriber + self.GetAreasListResponse_DR)
                 # wait for messages for 2 sec
                 try:
-                    current_DR.wait(2000)
+                    current_DR.wait(5000)
                 except:
                     logging.debug("wait to arealist response timeout")
                     return areaList
@@ -604,7 +604,7 @@ class Communicator(CommunicatorInterface):
             })
             current_DW.write()
 
-    def getLosToPolygonQuery(self, sorce, polygon) -> list:
+    def getLosToPolygonQuery(self, source, polygon) -> list:
         responseList = []
         with self.lock_read_write:
             try:
@@ -614,7 +614,7 @@ class Communicator(CommunicatorInterface):
 
             current_DW.instance.set_dictionary({
                 "requestId": 1,
-                "losSrc": sorce,
+                "losSrc": source,
                 "polygon": polygon
             }, )
             current_DW.write()

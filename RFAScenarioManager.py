@@ -25,12 +25,10 @@ class RFAScenarioManager:
             logging.error("None valid mode")
             raise Exception("None valid mode")
 
-        self.spawnPos = ext_funs.get_positions_fromCSV('.\Resources\RedSpawnPos.csv')
-        self.AttackPos = ext_funs.get_positions_fromCSV('.\Resources\RedAttackPos.csv')
-        self.Polygons = self.communicator.getAreasQuery()
-
+        self.Polygons = []
+        while not self.Polygons:
+            self.Polygons = self.communicator.getAreasQuery()
         BluePolygon = next(x for x in self.Polygons if x['areaName'] == 'BluePolygon')
-
         self.BluePolygonCentroid = ext_funs.getPolygonCentroid(BluePolygon['polygon'])
 
         self.start_scenario_time = 0
@@ -110,6 +108,10 @@ class RFAScenarioManager:
             if "cover_" in (polygon['areaName']):
                 # print(polygon['areaName'])
                 self.intervisibility_polygoins.append(polygon['polygon'])
+
+        self.spawnPos = ext_funs.get_positions_fromCSV('.\Resources\RedSpawnPos.csv')
+        self.AttackPos = ext_funs.get_positions_fromCSV('.\Resources\RedAttackPos.csv')
+
         logging.debug(self.__class__.__name__ + " Constructor executed successfully")
 
     def Run(self):

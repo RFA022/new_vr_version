@@ -2,8 +2,11 @@ from Communicator import CommunicatorSingleton
 communicator = CommunicatorSingleton().obj
 import ext_funs
 
-AttackPos = ext_funs.get_positions_fromCSV('RedAttackPos.csv')
-Polygons = communicator.getAreasQuery()
+
+AttackPos = ext_funs.get_positions_fromCSV('Resources/RedAttackPos.csv')
+Polygons = []
+while not Polygons:
+    Polygons = communicator.getAreasQuery()
 BluePolygon = next(x for x in Polygons if x['areaName'] == 'BluePolygon')['polygon']
 responsevec=[]
 
@@ -23,7 +26,17 @@ for k in range (len(AttackPos)):
     print("position: " + str(k) + "height is: " + inloc["altitude"])
     response=communicator.getLosToPolygonQuery(inloc,BluePolygon)
     print(response)
-    responsevec.append(response)
+    try:
+        responsevec.append(response[0]['exposedPolygon'])
+        communicator.CreateTacticalGraphicCommand("po"+str(k), 2, response[0]['exposedAreasInThePolygon'][0])
+    except:
+        print('ss')
+        responsevec.append(0)
+
+max_visibility = max(responsevec)
+for k,item in enumerate(responsevec):
+    responsevec[k]= 100*(item/max_visibility)
+print('ss')
 
 with open('./Resources/polygonresponse.txt', 'w') as f:
     for k in range(len(AttackPos)):
@@ -31,4 +44,3 @@ with open('./Resources/polygonresponse.txt', 'w') as f:
             f.write('\n')
             f.write(str(responsevec[k]))
             f.write('\n')
-communicator.CreateTacticalGraphicCommand("po", 2, responsevec[3][0]['exposedAreasInThePolygon'][0])
