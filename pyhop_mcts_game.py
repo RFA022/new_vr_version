@@ -682,6 +682,7 @@ def calValue(state,subtask):
             time_factor=1
         # print("time facetor is" +str(time_factor))
         ret_val=ret_val*positionTypeFactor*time_factor
+        print(time_factor)
         # print("__")
         # print("op: " + str(subtask[0]))
         # print("pos: " + str(state.currentPositionIndex))

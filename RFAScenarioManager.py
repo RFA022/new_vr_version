@@ -11,7 +11,7 @@ import ext_funs
 from Communicator import CommunicatorSingleton
 import threading
 import GUI
-
+import mapGUI
 
 # MADGIMON
 class RFAScenarioManager:
@@ -36,6 +36,8 @@ class RFAScenarioManager:
 
         # GUI
         self.gui = GUI.Gui("Anti tank Squad", "None", "None", "None", "None")
+        self.mapGui = mapGUI.Gui(None,None)
+
         # Entities Lists:
         self.entity_list = []
         self.green_entity_list = []
@@ -215,6 +217,15 @@ class RFAScenarioManager:
                                                                    str(gui_target)])
                         gui_update_thread.start()
 
+                "Update Gui -  map gui"
+                enemies = []
+                for blue_enemy in self.blue_entity_list:
+                    enemies.append({"id": blue_enemy.unit_name,"location":[blue_enemy.location['latitude'],blue_enemy.location['longitude']],
+                                    "last_known_location":[blue_enemy.last_seen_worldLocation['latitude'],blue_enemy.last_seen_worldLocation['longitude']]})
+                red_pos = [self.entity_list[0].current_location['latitude'],self.entity_list[0].current_location['longitude']]
+                gui_update_thread = threading.Thread(target=self.mapGui.updatemed,
+                                                     args=[red_pos,enemies])
+                gui_update_thread.start()
                 "Check if Red won"
                 numberOfAliveBlues = getNumberofAliveEnemies(self.blue_entity_list)
                 if numberOfAliveBlues == 0:
