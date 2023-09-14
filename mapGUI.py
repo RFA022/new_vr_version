@@ -6,6 +6,7 @@ import json
 import tkinter
 import threading
 import Resources.mapping.vrf_map_gis as vrf_map_gis
+
 class Gui(threading.Thread):
     [...]#costructor and other stuff
     def __init__(self,red_pos,blue_poses):
