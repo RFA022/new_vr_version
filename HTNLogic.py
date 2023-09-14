@@ -1,6 +1,6 @@
 from EntityNextStateAndAction import *
 from EntityCurrentState import *
-from ConfigManager import *
+import logging
 import copy
 
 class HTNLogic:

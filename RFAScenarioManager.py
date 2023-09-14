@@ -1,4 +1,3 @@
-import ConfigManager
 import EntityCurrentState
 from HTNLogic import *
 from SpawnManager_Nadav import *
@@ -18,12 +17,8 @@ class RFAScenarioManager:
     def __init__(self):
 
         # Running and Configs:
-        if ConfigManager.GetMode() == "VRF":
-            self.communicator = CommunicatorSingleton().obj
-            logging.debug("Running in vrf mode")
-        else:
-            logging.error("None valid mode")
-            raise Exception("None valid mode")
+        self.communicator = CommunicatorSingleton().obj
+        logging.debug("Running in vrf mode")
 
         self.Polygons = []
         while not self.Polygons:
@@ -416,23 +411,19 @@ class RFAScenarioManager:
                 while self.communicator.GetScenarioStatus() is ScenarioStatusEnum.RESTART or self.first_enter is True:
                     if self.first_enter:
                         self.first_enter = False
-                        if ConfigManager.GetForceRemote() == "FALSE":
-                            spawnManager = SpawnManager_Nadav(self.communicator, self.spawnPos, self.AttackPos,
-                                                              self.squadsData, self.intervisibility_polygoins)
-                            spawnManager.Run()
-                            self.entity_list = spawnManager.spawn_entity_list
-                            self.green_entity_list = spawnManager.green_spawn_entity_list
-                            self.blue_entity_list = self.getBlueEntityList()
-                            self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
-                            # Squad commander COA push scanning operation before the game starts
-                            for i in range(len(self.entity_list)):
-                                current_entity = self.entity_list[i]
-                                if current_entity.role == "co":
-                                    self.entity_list[i].COA.append(['scan_for_enemy_op', 'me'])
-                                    logging.debug("scan_for_enemy_op has been added to Squad Commander")
-                            logging.debug("Get Forces local ")
-                        else:
-                            logging.debug("Get Forces remotely ")
+                        spawnManager = SpawnManager_Nadav(self.communicator, self.spawnPos, self.AttackPos,
+                                                          self.squadsData, self.intervisibility_polygoins)
+                        spawnManager.Run()
+                        self.entity_list = spawnManager.spawn_entity_list
+                        self.green_entity_list = spawnManager.green_spawn_entity_list
+                        self.blue_entity_list = self.getBlueEntityList()
+                        self.blue_entity_list_HTN = ext_funs.getBluesDataFromVRFtoHTN(self.blue_entity_list)
+                        # Squad commander COA push scanning operation before the game starts
+                        for i in range(len(self.entity_list)):
+                            current_entity = self.entity_list[i]
+                            if current_entity.role == "co":
+                                self.entity_list[i].COA.append(['scan_for_enemy_op', 'me'])
+                                logging.debug("scan_for_enemy_op has been added to Squad Commander")
                 self.start_scenario_time = time.time()
 
     # Funtion that implements according to next state and action object
@@ -852,8 +843,7 @@ class RFAScenarioManager:
     def getBlueEntityList(self, entity_previous_list=[]):
         entity_info_list = self.communicator.GetScenarioEntitiesInfo()
         return_list = []
-        if ConfigManager.GetMode() == "VRF":
-            entity_info_list = self.CreateEntityInfoFromVrf(entity_info_list)
+        entity_info_list = self.CreateEntityInfoFromVrf(entity_info_list)
         for i in range(len(entity_info_list)):
             if entity_info_list[i].hostility == Hostility.FRIENDLY:
                 if entity_info_list[i].unit_name != 'Observer 1':

@@ -3,7 +3,6 @@ import time
 import rticonnextdds_connector as rti
 import threading
 from CommunicatorInterface import *
-from ConfigManager import ConfigManager
 from singleton import Singleton
 
 # file_path = os_path.dirname(os_path.realpath(__file__))
@@ -460,7 +459,7 @@ class Communicator(CommunicatorInterface):
                 return
             current_DW.instance.set_dictionary({
                 "unit_name": entity_id,
-                "ordered_speed": speed,  # ConfigManager.GetMovingPosSpeed(),
+                "ordered_speed": speed,
                 "altitude_reference": 0,
                 "location": location
             })
@@ -489,35 +488,6 @@ class Communicator(CommunicatorInterface):
             })
             current_DW.write()
             # looks for "ak" and if it not find its fire with default weapon
-
-    def CreateEntity(self, entity_to_create_list: list):
-        """
-        This function is responsible for create entity
-        :param entity_to_create_list: list of EntityInfo class
-        :return: N/A
-        """
-        with self.lock_read_write:
-            try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.CreateEntity_DW)
-            except:
-                logging.error("writer " + self.CreateEntity_DW + " dont exist")
-                return
-            for i in range(len(entity_to_create_list)):
-                entity_config = ConfigManager.getEntityConfig(entity_to_create_list[i].classification)
-                if str(entity_to_create_list[i].hostility.name).strip() == "OPPOSING":
-                    hostility = 2
-                if str(entity_to_create_list[i].hostility.name).strip() == "NEUTRAL":
-                    hostility = 3
-                if str(entity_to_create_list[i].hostility.name).strip() == "FRIENDLY":
-                    hostility = 1
-                current_DW.instance.set_dictionary({
-                    "unit_name": str(entity_to_create_list[i].unit_name),
-                    "location": entity_to_create_list[i].worldLocation.get("location"),
-                    "hostility": hostility,
-                    "enumeration": entity_config.vrf_or_godot_id
-                })
-                current_DW.write()
-                time.sleep(0.3)
 
     def CreateEntitySimple(self, name, location, hostility, code):
         with self.lock_read_write:
