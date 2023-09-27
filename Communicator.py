@@ -5,11 +5,9 @@ import threading
 from CommunicatorInterface import *
 from singleton import Singleton
 
-# file_path = os_path.dirname(os_path.realpath(__file__))
-# sys.path.append(file_path)
 
-
-class Communicator(CommunicatorInterface):
+class Communicator():
+    # DDS definitions:
     GetAreasListRequest_DW = "GetAreasListRequest_DW"
     GetAreasListResponse_DR = "GetAreasListResponse_DR"
     LosQueryResponse_DR = "LosQueryResponse_DR"
@@ -46,8 +44,8 @@ class Communicator(CommunicatorInterface):
     def __init__(self):
         super().__init__()
         try:
-            self.RFSM_connector = rti.Connector(config_name="RFSM_Participant_Library::RFSM_Participant",
-                                                url="./DDS_Resources/RFSM_DDS_Participant_Config.xml")
+            self.RFA_connector = rti.Connector(config_name="RFSM_Participant_Library::RFSM_Participant",
+                                               url="./DDS_Resources/RFSM_DDS_Participant_Config.xml")
         except Exception as e:
             logging.error(e)
             logging.error(
@@ -66,15 +64,13 @@ class Communicator(CommunicatorInterface):
         self.lock_read_write = threading.Lock()
         self.geo_lock_read_write = threading.Lock()
         self.entity_counter = 0
-        logging.debug(self.__class__.__name__ + " is initialized")
+        logging.info(self.__class__.__name__ + " is initialized")
         self.current_status = ScenarioStatusEnum.NA
-
-
 
     def SetSensorOperationalModeCommand(self, message: dict) -> None:
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.SensorOperationalModeCommand_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.SensorOperationalModeCommand_DW)
                 current_DW.instance.set_dictionary(message)
                 current_DW.write()
             except:
@@ -83,7 +79,7 @@ class Communicator(CommunicatorInterface):
     def SendSensorDesignationRequest(self, message: dict) -> None:
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.SensorDesignationRequest_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.SensorDesignationRequest_DW)
                 current_DW.instance.set_dictionary(message)
                 current_DW.write()
             except:
@@ -92,7 +88,7 @@ class Communicator(CommunicatorInterface):
     def GetFusionReport(self) -> list:
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.FusionReport_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.FusionReport_DR)
                 listOfMessage = []
                 current_DR.read()
                 for sample in current_DR.samples:
@@ -111,7 +107,7 @@ class Communicator(CommunicatorInterface):
         """
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.EntityReport_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.EntityReport_DR)
                 listOfMessage = []
                 current_DR.read()
                 for sample in current_DR.samples:
@@ -152,7 +148,7 @@ class Communicator(CommunicatorInterface):
         """
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.AttackReport_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.AttackReport_DR)
                 listOfMessage = []
                 current_DR.take()
                 for sample in current_DR.samples:
@@ -174,10 +170,11 @@ class Communicator(CommunicatorInterface):
 
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.ScenarioStatus_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.ScenarioStatus_DR)
                 current_DR.read()
                 for sample in current_DR.samples:
                     if sample.valid_data:
+                        print(int(sample.get_string("engine_status"))*100)
                         status = int(sample.get_string("engine_status"))
                         if status == 0:
                             self.current_status = ScenarioStatusEnum.NA
@@ -203,7 +200,7 @@ class Communicator(CommunicatorInterface):
         current_tick = 0
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.TickCounterReport_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.TickCounterReport_DR)
                 current_DR.read()
                 for sample in current_DR.samples:
                     if sample.valid_data:
@@ -230,7 +227,7 @@ class Communicator(CommunicatorInterface):
         # start_time = time.time_ns()
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.LosQueryRequest_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.LosQueryRequest_DW)
             except:
                 logging.error("writer " + self.LosQueryRequest_DW + " dont exist")
                 return los
@@ -244,7 +241,7 @@ class Communicator(CommunicatorInterface):
 
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.LosQueryResponse_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.LosQueryResponse_DR)
                 # wait for messages for 1 sec
                 try:
                     current_DR.wait(1000)
@@ -266,7 +263,7 @@ class Communicator(CommunicatorInterface):
         areaList = []
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.GetAreasListRequest_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.GetAreasListRequest_DW)
             except:
                 logging.error("writer " + self.LosQueryRequest_DW + " dont exist")
                 return areaList
@@ -278,7 +275,7 @@ class Communicator(CommunicatorInterface):
 
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.GetAreasListResponse_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.GetAreasListResponse_DR)
                 # wait for messages for 2 sec
                 try:
                     current_DR.wait(5000)
@@ -397,7 +394,7 @@ class Communicator(CommunicatorInterface):
 
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.InitialEntitySnapshot_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.InitialEntitySnapshot_DW)
             except:
                 logging.error("writer " + self.InitialEntitySnapshot_DW + " don't exist")
                 return
@@ -430,7 +427,7 @@ class Communicator(CommunicatorInterface):
         """
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.TaskStatus_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.TaskStatus_DR)
                 listOfMessage = []
                 current_DR.take()
                 for sample in current_DR.samples:
@@ -453,7 +450,7 @@ class Communicator(CommunicatorInterface):
         with self.lock_read_write:
 
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.EntityMoveCommand_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.EntityMoveCommand_DW)
             except:
                 logging.error("writer " + self.EntityMoveCommand_DW + " dont exist")
                 return
@@ -475,7 +472,7 @@ class Communicator(CommunicatorInterface):
         """
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.AttackEntityCommand_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.AttackEntityCommand_DW)
             except:
                 logging.error("writer " + self.AttackEntityCommand_DW + " dont exist")
                 return
@@ -492,7 +489,7 @@ class Communicator(CommunicatorInterface):
     def CreateEntitySimple(self, name, location, hostility, code):
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.CreateEntity_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.CreateEntity_DW)
             except:
                 logging.error("writer " + self.CreateEntity_DW + " dont exist")
                 return
@@ -508,7 +505,7 @@ class Communicator(CommunicatorInterface):
     def createSquad(self, squad_name, location):
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.SpawnSquadCommand_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.SpawnSquadCommand_DW)
             except:
                 logging.error("writer " + self.SpawnSquadCommand_DW + " dont exist")
                 return
@@ -522,7 +519,7 @@ class Communicator(CommunicatorInterface):
     def setEntityPosture(self, entity_name, posture):
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.EntityPosture_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.EntityPosture_DW)
             except:
                 logging.error("writer " + self.EntityPosture_DW + " dont exist")
                 return
@@ -536,7 +533,7 @@ class Communicator(CommunicatorInterface):
     def setEntityHeading(self, entity_name, azimuth):
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.SetEntityHeading_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.SetEntityHeading_DW)
             except:
                 logging.error("writer " + self.SetEntityHeading_DW + " dont exist")
                 return
@@ -550,7 +547,7 @@ class Communicator(CommunicatorInterface):
     def aim_weapon_at_target(self, entity_name, aiming_point):
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.AimWeaponCommand_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.AimWeaponCommand_DW)
             except:
                 logging.error("writer " + self.AimWeaponCommand_DW + " dont exist")
                 return
@@ -565,7 +562,7 @@ class Communicator(CommunicatorInterface):
     def stopCommand(self, entity_name):
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.StopTasksCommand_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.StopTasksCommand_DW)
             except:
                 logging.error("writer " + self.StopTasksCommand_DW + " dont exist")
                 return
@@ -578,7 +575,7 @@ class Communicator(CommunicatorInterface):
         responseList = []
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.LosToPolygonRequest_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.LosToPolygonRequest_DW)
             except:
                 logging.error("writer " + self.LosToPolygonRequest_DW + " dont exist")
 
@@ -593,7 +590,7 @@ class Communicator(CommunicatorInterface):
         print("Waiting for Los To Polygon response:")
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.LosToPolygonResponse_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.LosToPolygonResponse_DR)
                 # wait for messages for 2 sec
                 try:
                     current_DR.wait(20000)
@@ -619,7 +616,7 @@ class Communicator(CommunicatorInterface):
 
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.CreateTacticalGraphicCommand_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.CreateTacticalGraphicCommand_DW)
             except:
                 logging.error("writer " + self.CreateTacticalGraphicCommand_DW + " dont exist")
                 return
@@ -636,7 +633,7 @@ class Communicator(CommunicatorInterface):
         responseList = []
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.NavigationPathPlanningRequest_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.NavigationPathPlanningRequest_DW)
             except:
                 logging.error("writer " + self.NavigationPathPlanningRequest_DW + " dont exist")
             # print(origin)
@@ -693,7 +690,7 @@ class Communicator(CommunicatorInterface):
         # print("Waiting for path response:")
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.NavigationPathPlanningResponse_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.NavigationPathPlanningResponse_DR)
                 # wait for messages for 2 sec
                 try:
                     current_DR.wait(30000)
@@ -717,7 +714,7 @@ class Communicator(CommunicatorInterface):
         response = 0
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.HeightAboveTerrainRequest_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.HeightAboveTerrainRequest_DW)
             except:
                 logging.error("writer " + self.HeightAboveTerrainRequest_DW + " dont exist")
 
@@ -733,7 +730,7 @@ class Communicator(CommunicatorInterface):
             current_DW.write()
         with self.lock_read_write:
             try:
-                current_DR = self.RFSM_connector.getInput(self.subscriber + self.HeightAboveTerrainResponse_DR)
+                current_DR = self.RFA_connector.getInput(self.subscriber + self.HeightAboveTerrainResponse_DR)
                 # wait for messages for 2 sec
                 try:
                     current_DR.wait(20000)
@@ -757,7 +754,7 @@ class Communicator(CommunicatorInterface):
     def followPathCommand(self, unit_name, path, ordered_speed):
         with self.lock_read_write:
             try:
-                current_DW = self.RFSM_connector.getOutput(self.publisher + self.EntityFollowPathCommand_DW)
+                current_DW = self.RFA_connector.getOutput(self.publisher + self.EntityFollowPathCommand_DW)
             except:
                 logging.error("writer " + self.EntityFollowPathCommand_DW + " dont exist")
                 return
@@ -769,7 +766,6 @@ class Communicator(CommunicatorInterface):
                 "ordered_speed": ordered_speed,
             })
             current_DW.write()
-
 
 class CommunicatorSingleton(metaclass=Singleton):
     def __init__(self):

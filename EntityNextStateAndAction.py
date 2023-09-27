@@ -12,17 +12,18 @@ class EntityNextStateAndAction:
         self.move_pos = False
         self.takeAction = 0
         self.nextPos = None
-        self.nextLocation=None
+        self.nextLocation = None
         self.nextPosture = None
-        self.scan_for_enemy=None
-        self.aim=False
-        self.shoot=None #none is not shoot and not stop shoot. True is to shoot. False is to stop shooting
-        self.null=None
-        self.HTN_target=[]
-        self.timeOutAbortCurrentTask=False
+        self.scan_for_enemy = None
+        self.aim = False
+        self.shoot = None #none is not shoot and not stop shoot. True is to shoot. False is to stop shooting
+        self.null = None
+        self.HTN_target = []
+        self.timeOutAbortCurrentTask = False
         "Green"
-        self.wait_at_position=False
-        self.waitTime=None
+        self.wait_at_position = False
+        self.waitTime = None
+
     def SetPosition(self, new_position: PositionType, location: dict):
         self.position = new_position
         self.position_location["latitude"] = location["latitude"]

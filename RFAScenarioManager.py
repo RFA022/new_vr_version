@@ -15,11 +15,12 @@ import mapGUI
 # MADGIMON
 class RFAScenarioManager:
     def __init__(self):
-
-        # Running and Configs:
+        # General RFA manager:
+        logging.info("Running in vrf mode")
+        # 1. initiate communicator
         self.communicator = CommunicatorSingleton().obj
-        logging.debug("Running in vrf mode")
 
+        # 2. initiate polygons
         self.Polygons = []
         while not self.Polygons:
             self.Polygons = self.communicator.getAreasQuery()
@@ -120,7 +121,8 @@ class RFAScenarioManager:
                 # "Debug threading check"
                 # for thread in threading.enumerate():
                 #     print(thread.name)
-                "Entites list update"
+
+                "GT"
                 # update Red list from simulator and from last iteration
                 self.entity_list = self.CreateAndUpdateEntityList(self.entity_list)
                 # update Green list from simulator and from last iteration - same format as blues
