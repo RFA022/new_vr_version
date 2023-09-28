@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     # 2.0 init RFA
     logging.info("main.py - Initializing RFA")
-    rfa = RFAScenarioManager()
+    rfa = RFAScenarioManager_ma()
 
     # 3.0 running RFA
     logging.info("main.py  - Running RFA")
